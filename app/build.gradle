@@ -44,13 +44,13 @@ android {
         }
     }
     productFlavors {
-        debugConfig {
+        betaConfig {
             minSdkVersion 14
             applicationId 'com.getgenieapp.android'
-            signingConfig signingConfigs.Debug
+            signingConfig signingConfigs.Beta
             targetSdkVersion 21
             versionCode 1
-            versionName '0.0.1.Debug'
+            versionName '0.0.1.Beta'
         }
         releaseConfig {
             minSdkVersion 14
@@ -59,14 +59,6 @@ android {
             targetSdkVersion 21
             versionCode 1
             versionName '0.0.1.Release'
-        }
-        betaConfig {
-            minSdkVersion 14
-            applicationId 'com.getgenieapp.android'
-            signingConfig signingConfigs.Beta
-            targetSdkVersion 21
-            versionCode 1
-            versionName '0.0.1.Beta'
         }
     }
 }
