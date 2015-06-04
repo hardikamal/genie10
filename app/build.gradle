@@ -66,4 +66,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.koushikdutta.ion:ion:2.1.4'
+    compile 'com.nispok:snackbar:2.10.10'
+    compile 'ch.acra:acra:4.6.2'
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
+    compile 'com.google.android.gms:play-services-maps:7.5.0'
+    compile 'com.google.android.gms:play-services-location:7.5.0'
 }
