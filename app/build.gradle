@@ -1,9 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        Release {
+            keyAlias 'GetGenie'
+            keyPassword 'Qwerty123!'
+            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storePassword 'Qwerty123!'
+        }
+        Debug {
+            keyAlias 'GetGenie'
+            keyPassword 'Qwerty123!'
+            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storePassword 'Qwerty123!'
+        }
+        Beta {
+            keyAlias 'GetGenie'
+            keyPassword 'Qwerty123!'
+            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storePassword 'Qwerty123!'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "com.getgenieapp.android"
         minSdkVersion 14
@@ -11,11 +30,43 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        Beta {
+            debuggable true
+            jniDebuggable false
+            renderscriptDebuggable false
+            minifyEnabled false
+            zipAlignEnabled true
+        }
+    }
+    productFlavors {
+        debugConfig {
+            minSdkVersion 14
+            applicationId 'com.getgenieapp.android'
+            signingConfig signingConfigs.Debug
+            targetSdkVersion 21
+            versionCode 1
+            versionName '0.0.1.Debug'
+        }
+        releaseConfig {
+            minSdkVersion 14
+            applicationId 'com.getgenieapp.android'
+            signingConfig signingConfigs.Release
+            targetSdkVersion 21
+            versionCode 1
+            versionName '0.0.1.Release'
+        }
+        betaConfig {
+            minSdkVersion 14
+            applicationId 'com.getgenieapp.android'
+            signingConfig signingConfigs.Beta
+            targetSdkVersion 21
+            versionCode 1
+            versionName '0.0.1.Beta'
         }
     }
 }
