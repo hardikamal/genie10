@@ -3,9 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="companyname">Company Name</string>
+    <string name="companyName">Company Name</string>
     <string name="version">0.0.0.0</string>
     <string name="copyrights">Copy Rights</string>
-    <string name="welcomemessage">Welcome to Genie</string>
+    <string name="welcomeMessage">Welcome to Genie</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>
