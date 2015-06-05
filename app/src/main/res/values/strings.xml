@@ -8,4 +8,7 @@
     <string name="copyrights">Copy Rights</string>
     <string name="welcomeMessage">Welcome to Genie</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
+    <string name="openSettings">Open Settings</string>
+    <string name="exitapp">Exit App</string>
 </resources>

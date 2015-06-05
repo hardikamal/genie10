@@ -38,13 +38,17 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
         try {
+            // Version number is set here based on app build if it throws exception it will disappear.
+            // Better to hide instead of showing some weird text
             version.setText(this.getPackageManager()
                     .getPackageInfo(this.getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
             version.setVisibility(View.GONE);
         }
+        // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
             runToNextPage();
         } else {
@@ -56,14 +60,17 @@ public class SplashScreenActivity extends Activity {
         AlertDialog.Builder alertDialogBuilder;
         AlertDialog alert;
         alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Attention!\n\nPlease enable internet to shop.\nWould you like to enable them now?")
+
+        alertDialogBuilder.setMessage(R.string.splashScreenAlertBoxMessage)
                 .setCancelable(false)
-                .setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.openSettings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        // opens the settings page
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                     }
-                }).setNegativeButton("Exit App", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.exitapp, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                // kills the page and exists the app
                 finish();
             }
         });
@@ -74,7 +81,9 @@ public class SplashScreenActivity extends Activity {
     void runToNextPage() {
         new Thread(new Runnable() {
             public void run() {
+                // wait for x secs specified in datafields class
                 SystemClock.sleep(DataFields.SplashScreenGeneralTimeOut);
+                // check point to check if the token is available and exists.
                 startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                 finish();
             }
