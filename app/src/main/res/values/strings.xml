@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">GetGenieApp</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Genie</string>
     <string name="companyName">Company Name</string>
     <string name="version">0.0.0.0</string>
     <string name="copyrights">Copy Rights</string>
@@ -12,8 +9,10 @@
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
     <string name="title_activity_register">RegisterActivity</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="topText">Chat.Order.Done.</string>
+    <string name="loading">Loading...</string>
+    <string name="subText">Genie makes ordering as easy as Chatting</string>
+    <string name="getstarted">Get Started</string>
+    <string name="name">Name</string>
+    <string name="number">Number</string>
 </resources>

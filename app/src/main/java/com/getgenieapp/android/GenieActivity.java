@@ -1,11 +1,16 @@
 package com.getgenieapp.android;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 
-public class GenieBaseActivity extends AppCompatActivity {
+/**
+ * Created by Raviteja on 6/6/2015.
+ */
+public class GenieActivity extends Activity {
+
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawler;
 

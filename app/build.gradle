@@ -5,19 +5,19 @@ android {
         Release {
             keyAlias 'GetGenie'
             keyPassword 'Qwerty123!'
-            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storeFile file('C:/Users/Raviteja/Documents/genie_android_app/getgenieapp.jks')
             storePassword 'Qwerty123!'
         }
         Debug {
             keyAlias 'GetGenie'
             keyPassword 'Qwerty123!'
-            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storeFile file('C:/Users/Raviteja/Documents/genie_android_app/getgenieapp.jks')
             storePassword 'Qwerty123!'
         }
         Beta {
             keyAlias 'GetGenie'
             keyPassword 'Qwerty123!'
-            storeFile file('C:/Users/Manny/Downloads/Songs/Test/Genie/getgenieapp.jks')
+            storeFile file('C:/Users/Raviteja/Documents/genie_android_app/getgenieapp.jks')
             storePassword 'Qwerty123!'
         }
     }

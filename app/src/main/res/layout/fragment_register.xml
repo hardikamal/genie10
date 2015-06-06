@@ -38,17 +38,131 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:orientation="vertical"
-                android:gravity="center">
-                <TextView
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.getgenieapp.android.CustomViews.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/parentLoadingView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/topText"
-                    android:text="@string/topText"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Genie makes ordering as easy as Chatting"/>
+                    android:layout_height="match_parent"
+                    app:lv_color="@android:color/holo_red_dark"
+                    app:lv_loading="false"
+                    app:lv_title="@string/loading">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/topText"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/topText"
+                            android:textColor="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/subText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/subText" />
+
+                        <Space
+                            android:layout_width="1dp"
+                            android:layout_height="30dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_person_black_24dp" />
+
+                            <EditText
+                                android:id="@+id/name"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:background="#00000000"
+                                android:hint="@string/name"
+                                android:singleLine="true"
+                                android:textColorHint="@color/colorPrimaryDark" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/lin3"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorPrimaryDark" />
+
+                        <Space
+                            android:layout_width="1dp"
+                            android:layout_height="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_call_black_24dp" />
+
+                            <EditText
+                                android:id="@+id/countrycode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:background="#00000000"
+                                android:editable="false"
+                                android:singleLine="true"
+                                android:text="+91"
+                                android:textColorHint="@color/colorPrimaryDark" />
+
+                            <EditText
+                                android:id="@+id/number"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="5dp"
+                                android:background="#00000000"
+                                android:hint="@string/number"
+                                android:inputType="phone"
+                                android:singleLine="true"
+                                android:textColorHint="@color/colorPrimaryDark" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorPrimaryDark" />
+
+                        <Space
+                            android:layout_width="1dp"
+                            android:layout_height="10dp" />
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/getstartedbutton"
+                            android:padding="10dp"
+                            android:text="@string/getstarted"
+                            android:textColor="@color/generalTextColor" />
+                    </LinearLayout>
+
+                </com.getgenieapp.android.CustomViews.LoadingView>
+
             </LinearLayout>
 
             <LinearLayout

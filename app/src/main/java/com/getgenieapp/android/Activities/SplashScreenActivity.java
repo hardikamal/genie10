@@ -1,29 +1,25 @@
 package com.getgenieapp.android.Activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.getgenieapp.android.CustomViews.SplashScreenProgressCircle;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.Utils;
-import com.getgenieapp.android.GenieBaseActivity;
+import com.getgenieapp.android.GenieActivity;
 import com.getgenieapp.android.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class SplashScreenActivity extends Activity {
+public class SplashScreenActivity extends GenieActivity {
 
     @InjectView(R.id.version)
     TextView version;
@@ -54,6 +50,7 @@ public class SplashScreenActivity extends Activity {
         } else {
             showAlertToUser();
         }
+        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void showAlertToUser() {
