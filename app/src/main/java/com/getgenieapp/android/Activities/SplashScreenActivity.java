@@ -85,7 +85,7 @@ public class SplashScreenActivity extends Activity {
                 SystemClock.sleep(DataFields.SplashScreenGeneralTimeOut);
                 // check point to check if the token is available and exists.
 
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
                 finish();
             }
         }).start();
