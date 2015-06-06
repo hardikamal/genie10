@@ -25,6 +25,11 @@
             android:name=".Activities.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name=".Activities.RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="sensorPortrait">
+        </activity>
     </application>
 
 </manifest>
