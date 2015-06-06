@@ -23,6 +23,7 @@ public class SplashScreenActivity extends GenieActivity {
 
     @InjectView(R.id.version)
     TextView version;
+
     Utils utils;
 
     public SplashScreenActivity()

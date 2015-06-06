@@ -1,9 +1,6 @@
 package com.getgenieapp.android.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +8,13 @@ import android.widget.TextView;
 
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.R;
-
-import org.w3c.dom.Text;
+import com.getgenieapp.android.SharedPreference.GenieFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends GenieFragment {
 
     UIHelpers uiHelpers;
     @InjectView(R.id.topText)
@@ -34,6 +30,7 @@ public class RegisterFragment extends Fragment {
 //        uiHelpers.correctWidth(topText, getActivity());
 
         topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x/4));
+        fontChangeCrawler.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 }
