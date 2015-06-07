@@ -36,7 +36,7 @@ public class SplashScreenActivity extends GenieActivity {
     TextView version;
 
     Utils utils;
-
+    long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
@@ -52,11 +52,15 @@ public class SplashScreenActivity extends GenieActivity {
         setContentView(R.layout.activity_splash_screen);
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
+        start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                runToNextPage();
             }
         };
 
@@ -70,7 +74,11 @@ public class SplashScreenActivity extends GenieActivity {
         }
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
-            runToNextPage();
+            if (checkPlayServices()) {
+                // Start IntentService to register this application with GCM.
+                Intent intent = new Intent(SplashScreenActivity.this, RegistrationIntentService.class);
+                startService(intent);
+            }
         } else {
             showAlertToUser();
         }
@@ -102,10 +110,9 @@ public class SplashScreenActivity extends GenieActivity {
     void runToNextPage() {
         new Thread(new Runnable() {
             public void run() {
-                if (checkPlayServices()) {
-                    // Start IntentService to register this application with GCM.
-                    Intent intent = new Intent(SplashScreenActivity.this, RegistrationIntentService.class);
-                    startService(intent);
+                try {
+                    Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                } catch (Exception err) {
                 }
 
                 // wait for x secs specified in datafields class

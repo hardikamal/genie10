@@ -20,7 +20,7 @@ public class RegisterActivity extends GenieBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        Fragment fragment = new VerifyFragment();
+        Fragment fragment = new RegisterFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.body, fragment);

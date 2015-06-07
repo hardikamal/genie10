@@ -89,7 +89,9 @@ public class RegistrationIntentService extends IntentService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // Add custom implementation, as needed.
+        // if token is available update token to server
+
+        // if token is missing save it to shared pref
     }
 
     /**
