@@ -13,4 +13,6 @@ public class DataFields {
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/"+GetDate.getLogDate()+"_Log.log");
 
+    public static final String senderId = "1083662993807";
+
 }

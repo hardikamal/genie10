@@ -29,8 +29,9 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/betaConfig/Beta" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/betaConfig/Beta" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/betaConfig/Beta" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/google-services/betaConfig/Beta" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/betaConfig/Beta" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/betaConfig/Beta" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/betaConfig/Beta" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/betaConfigBeta/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/betaConfigBeta/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/betaConfigBeta/assets" type="java-resource" />
