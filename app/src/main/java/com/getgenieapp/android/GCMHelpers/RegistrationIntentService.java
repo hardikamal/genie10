@@ -23,10 +23,19 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.GenieJSON;
+import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.R;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -89,9 +98,22 @@ public class RegistrationIntentService extends IntentService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        // if token is available update token to server
+        SharedPreferences sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
+        if(sharedPreferences.getString(DataFields.TOKEN, null) != null)
+        {
+            JSONObject json = new GenieJSON(this);
 
-        // if token is missing save it to shared pref
+            Ion.with(this)
+                    .load(DataFields.getServerUrl()+DataFields.UPDATEGCMURL)
+                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+
+                        }
+                    });
+        }
     }
 
     /**

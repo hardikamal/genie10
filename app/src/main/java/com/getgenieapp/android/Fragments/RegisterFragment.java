@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.getgenieapp.android.Extras.UIHelpers;
+import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
-import com.getgenieapp.android.SharedPreference.GenieFragment;
+import com.getgenieapp.android.GenieFragment;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,5 +33,11 @@ public class RegisterFragment extends GenieFragment {
         topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x/4));
         fontChangeCrawler.replaceFonts((ViewGroup) rootView);
         return rootView;
+    }
+
+    public interface onRegister
+    {
+        public void onSuccess(Register register);
+        public void onError(Register register);
     }
 }

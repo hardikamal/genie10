@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
-import com.getgenieapp.android.SharedPreference.GenieFragment;
+import com.getgenieapp.android.GenieFragment;
 
 public class VerifyFragment extends GenieFragment {
     @Override
@@ -14,5 +15,11 @@ public class VerifyFragment extends GenieFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_verify, container, false);
+    }
+
+    public interface onVerify
+    {
+        public void onSuccess(Verify verify);
+        public void onError(Verify verify);
     }
 }

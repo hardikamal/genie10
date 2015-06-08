@@ -12,4 +12,12 @@ public class DataFields {
     public static final File mainFolder = new File(root.getAbsolutePath() + "/GetGenie");
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
+
+    public static final String TOKEN = "token";
+    public static final String PHONENUMBER = "phonenumber";
+    public static final String UPDATEGCMURL = "/URL";
+
+    public static String getServerUrl() {
+        return null;
+    }
 }

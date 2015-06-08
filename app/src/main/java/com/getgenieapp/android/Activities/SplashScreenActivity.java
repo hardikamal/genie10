@@ -38,7 +38,6 @@ public class SplashScreenActivity extends GenieActivity {
     Utils utils;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String TAG = "MainActivity";
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -50,12 +49,14 @@ public class SplashScreenActivity extends GenieActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                logging.LogD("GCM BroadCast", "Received");
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
@@ -65,21 +66,27 @@ public class SplashScreenActivity extends GenieActivity {
         };
 
         try {
+            logging.LogD("Set Version Before", version.getText().toString());
             // Version number is set here based on app build if it throws exception it will disappear.
             // Better to hide instead of showing some weird text
             version.setText(this.getPackageManager()
                     .getPackageInfo(this.getPackageName(), 0).versionName);
+            logging.LogD("Set Version After", version.getText().toString());
         } catch (PackageManager.NameNotFoundException e) {
             version.setVisibility(View.GONE);
         }
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
+            logging.LogD("Internet", "Available");
             if (checkPlayServices()) {
+                logging.LogD("Play Services", "Up to date");
                 // Start IntentService to register this application with GCM.
+                logging.LogD("Register", "GCM Start");
                 Intent intent = new Intent(SplashScreenActivity.this, RegistrationIntentService.class);
                 startService(intent);
             }
         } else {
+            logging.LogD("Internet", "Show Alert");
             showAlertToUser();
         }
         fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
@@ -94,6 +101,7 @@ public class SplashScreenActivity extends GenieActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.openSettings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        logging.LogD("Settings", "Clicked");
                         // opens the settings page
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                     }
@@ -111,13 +119,10 @@ public class SplashScreenActivity extends GenieActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                     Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                 } catch (Exception err) {
                 }
-
-                // wait for x secs specified in datafields class
-                SystemClock.sleep(DataFields.SplashScreenGeneralTimeOut);
-                // check point to check if the token is available and exists.
 
                 startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
                 finish();
@@ -149,12 +154,11 @@ public class SplashScreenActivity extends GenieActivity {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Log.i(TAG, "This device is not supported.");
+                logging.LogI("This device is not supported.")
                 finish();
             }
             return false;
         }
         return true;
     }
-
 }

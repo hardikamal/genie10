@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import com.getgenieapp.android.Fragments.RegisterFragment;
 import com.getgenieapp.android.Fragments.VerifyFragment;
 import com.getgenieapp.android.GenieBaseActivity;
+import com.getgenieapp.android.Objects.Register;
+import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
 
-public class RegisterActivity extends GenieBaseActivity {
+public class RegisterActivity extends GenieBaseActivity implements RegisterFragment.onRegister, VerifyFragment.onVerify {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +29,23 @@ public class RegisterActivity extends GenieBaseActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    public void onSuccess(Register register) {
+
+    }
+
+    @Override
+    public void onError(Register register) {
+
+    }
+
+    @Override
+    public void onSuccess(Verify verify) {
+
+    }
+
+    @Override
+    public void onError(Verify verify) {
+
+    }
 }
