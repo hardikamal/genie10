@@ -12,19 +12,25 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-
-        <com.getgenieapp.android.Extras.ProgressWheel
+        <com.getgenieapp.android.CustomViews.ProgressBarCircularIndeterminate
             android:id="@+id/progressBar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            ProgressWheel:fillRadius="true"
-            ProgressWheel:rimColor="#00000000"
-            ProgressWheel:barColor="@color/colorPrimary"
-            ProgressWheel:barLength="5dp"
-            ProgressWheel:barWidth="10dp"
-            ProgressWheel:rimWidth="10dp"
-            ProgressWheel:progressIndeterminate="true"/>
+            android:background="#1E88E5" />
+
+        <!--<com.getgenieapp.android.Extras.ProgressWheel-->
+            <!--android:id="@+id/progressBar"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--ProgressWheel:fillRadius="true"-->
+            <!--ProgressWheel:rimColor="#00000000"-->
+            <!--ProgressWheel:barColor="@color/colorPrimary"-->
+            <!--ProgressWheel:barLength="5dp"-->
+            <!--ProgressWheel:barWidth="10dp"-->
+            <!--ProgressWheel:rimWidth="10dp"-->
+            <!--ProgressWheel:progressIndeterminate="true"/>-->
 
         <TextView
             android:layout_width="wrap_content"
