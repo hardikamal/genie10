@@ -39,12 +39,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class RegistrationIntentService extends IntentService {
+public class UpdateIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
 
-    public RegistrationIntentService() {
+    public UpdateIntentService() {
         super(TAG);
     }
 
@@ -66,16 +66,68 @@ public class RegistrationIntentService extends IntentService {
                 // [END get_token]
                 Log.i(TAG, "GCM Registration Token: " + token);
 
-                subscribeTopics(token);
+                // TODO: Implement this method to send any registration to your app's servers.
 
-                Intent registrationComplete = new Intent(QuickstartPreferences.SENT_TOKEN_TO_SERVER);
-                LocalBroadcastManager.getInstance(RegistrationIntentService.this).sendBroadcast(registrationComplete);
+                sendRegistrationToServer(token, new onTokenUpdate() {
+                    @Override
+                    public void onUpdate(boolean status) {
+                        try {
+                            // Subscribe to topic channels
+                            subscribeTopics(token);
+
+                            // You should store a boolean that indicates whether the generated token has been
+                            // sent to your server. If the boolean is false, send the token to your server,
+                            // otherwise your server should have already received the token.
+                            if (status)
+                                sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
+                            else
+                                sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
+                            // [END register_for_gcm]
+                            // Notify UI that registration has completed, so the progress indicator can be hidden.
+                        } catch (Exception e) {
+                            Log.d(TAG, "Failed to complete token refresh", e);
+                            // If an exception happens while fetching the new token or updating our registration data
+                            // on a third-party server, this ensures that we'll attempt the update at a later time.
+                            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
+                        }
+                        Intent registrationComplete = new Intent(QuickstartPreferences.REGISTRATION_COMPLETE);
+                        LocalBroadcastManager.getInstance(UpdateIntentService.this).sendBroadcast(registrationComplete);
+                    }
+                });
+
+
             }
         } catch (Exception e) {
             Log.d(TAG, "Failed to complete token refresh", e);
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
+        }
+    }
+
+    /**
+     * Persist registration to third-party servers.
+     * <p/>
+     * Modify this method to associate the user's GCM registration token with any server-side account
+     * maintained by your application.
+     *
+     * @param token The new token.
+     */
+    private void sendRegistrationToServer(String token, onTokenUpdate onUpdate) {
+        SharedPreferences sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
+        if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+            JSONObject json = new GenieJSON(this);
+
+            Ion.with(this)
+                    .load(DataFields.getServerUrl() + DataFields.UPDATEGCMURL)
+                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+
+                        }
+                    });
         }
     }
 
@@ -93,5 +145,9 @@ public class RegistrationIntentService extends IntentService {
         }
     }
     // [END subscribe_topics]
+
+    private interface onTokenUpdate {
+        public void onUpdate(boolean status);
+    }
 }
 

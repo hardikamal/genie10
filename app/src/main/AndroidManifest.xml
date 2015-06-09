@@ -13,7 +13,6 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
 
-
     <application
         android:name=".GenieApplication"
         android:allowBackup="true"
@@ -26,13 +25,13 @@
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.MainActivity"
-            android:label="@string/title_activity_main" />
+            android:label="@string/title_activity_main"
+            android:theme="@style/MyMaterialThemeWIthToolBar" />
         <activity
             android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_register"
@@ -59,8 +58,10 @@
         </service>
         <service
             android:name=".GCMHelpers.RegistrationIntentService"
-            android:exported="false"/>
-
+            android:exported="false" />
+        <service
+            android:name=".GCMHelpers.UpdateIntentService"
+            android:exported="false" />
         <service
             android:name=".GCMHelpers.MyInstanceIDListenerService"
             android:exported="false">

@@ -20,4 +20,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="taptoresend">Tap to Resend</string>
     <string name="verifycodetext">Enter the verification code we texted you.</string>
+    <string name="getstartedcaps">GET STARTED</string>
 </resources>

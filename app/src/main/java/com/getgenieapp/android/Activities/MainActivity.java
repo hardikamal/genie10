@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.getgenieapp.android.GenieActivity;
+import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends GenieBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

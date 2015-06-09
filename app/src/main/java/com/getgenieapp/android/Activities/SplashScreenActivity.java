@@ -8,11 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.SystemClock;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,7 +18,7 @@ import android.widget.TextView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
-import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
+import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
 import com.getgenieapp.android.GenieActivity;
 import com.getgenieapp.android.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -28,7 +26,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
 
 public class SplashScreenActivity extends GenieActivity {
 
@@ -57,11 +54,20 @@ public class SplashScreenActivity extends GenieActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 logging.LogD("GCM BroadCast", "Received");
+                logging.LogD("Read Preference", "Yes");
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                runToNextPage();
+                logging.LogV("Sent To Server", String.valueOf(sentToken));
+                if (sentToken){
+                    logging.LogV("Go to Main Page");
+                    runToMainPage();
+                }
+                else {
+                    logging.LogV("Got to Register Page");
+                    runToRegisterPage();
+                }
             }
         };
 
@@ -82,8 +88,13 @@ public class SplashScreenActivity extends GenieActivity {
                 logging.LogD("Play Services", "Up to date");
                 // Start IntentService to register this application with GCM.
                 logging.LogD("Register", "GCM Start");
-                Intent intent = new Intent(SplashScreenActivity.this, RegistrationIntentService.class);
-                startService(intent);
+                if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+                    Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
+                    startService(intent);
+                } else {
+                    logging.LogV("Register", "Token Not found");
+                    runToRegisterPage();
+                }
             }
         } else {
             logging.LogD("Internet", "Show Alert");
@@ -115,7 +126,7 @@ public class SplashScreenActivity extends GenieActivity {
         alert.show();
     }
 
-    void runToNextPage() {
+    void runToRegisterPage() {
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -123,8 +134,23 @@ public class SplashScreenActivity extends GenieActivity {
                     Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                 } catch (Exception err) {
                 }
-
+                logging.LogI("Start Register Activity");
                 startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
+                finish();
+            }
+        }).start();
+    }
+
+    void runToMainPage() {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                    Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                } catch (Exception err) {
+                }
+                logging.LogI("Start Main Activity");
+                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                 finish();
             }
         }).start();
@@ -132,12 +158,14 @@ public class SplashScreenActivity extends GenieActivity {
 
     protected void onResume() {
         super.onResume();
+        logging.LogI("On Resume");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
     }
 
     @Override
     protected void onPause() {
+        logging.LogI("On Pause");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
@@ -154,7 +182,7 @@ public class SplashScreenActivity extends GenieActivity {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                logging.LogI("This device is not supported.")
+                logging.LogI("This device is not supported.");
                 finish();
             }
             return false;

@@ -61,17 +61,17 @@
                             android:id="@+id/topText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/topText"
                             android:singleLine="true"
+                            android:text="@string/topText"
                             android:textColor="@color/colorPrimary" />
 
                         <com.getgenieapp.android.CustomViews.AutoResizeTextView
                             android:id="@+id/subText"
                             android:layout_width="match_parent"
-                            android:singleLine="true"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
+                            android:singleLine="true"
                             android:text="@string/subText" />
 
                         <Space
@@ -156,14 +156,19 @@
                             android:layout_width="1dp"
                             android:layout_height="10dp" />
 
-                        <Button
-                            android:id="@+id/getstarted"
+                        <com.getgenieapp.android.CustomViews.ButtonRectangle
+                            android:id="@+id/getStarted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/getstartedbutton"
-                            android:padding="10dp"
-                            android:text="@string/getstarted"
-                            android:textColor="@color/generalTextColor" />
+                            android:text="@string/getstartedcaps"/>
+                        <!--<Button-->
+                        <!--android:id="@+id/getstarted"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@drawable/getstartedbutton"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="@string/getstarted"-->
+                        <!--android:textColor="@color/generalTextColor" />-->
                     </LinearLayout>
 
                 </com.getgenieapp.android.CustomViews.LoadingView>
