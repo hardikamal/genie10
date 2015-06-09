@@ -1,13 +1,20 @@
 package com.getgenieapp.android.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.getgenieapp.android.Activities.MainActivity;
+import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.LoadingView;
+import com.getgenieapp.android.CustomViews.SnackBar;
+import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
@@ -25,6 +32,10 @@ public class RegisterFragment extends GenieFragment {
     TextView topText;
     @InjectView(R.id.subText)
     TextView subText;
+    @InjectView(R.id.name)
+    EditText name;
+    @InjectView(R.id.number)
+    EditText number;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
 
@@ -45,9 +56,20 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick()
     {
-
-        parentLoadingView.setLoading(true);
-
+        if(name.getText().toString().trim().length() == 0)
+        {
+            SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentername));
+            snackbar.show();
+        }
+        else if(number.getText().toString().trim().length() < 10)
+        {
+            SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentervalidnumber));
+            snackbar.show();
+        }
+        else {
+            parentLoadingView.setText(getResources().getString(R.string.registeringuser));
+            parentLoadingView.setLoading(true);
+        }
     }
 
     public interface onRegister
