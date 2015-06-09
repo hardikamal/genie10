@@ -8,11 +8,14 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.LoggingBuilder;
 import com.securepreferences.SecurePreferences;
 
+import de.halfbit.tinybus.TinyBus;
+
 public class GenieApplication extends Application {
-    public LoggingBuilder loggingBuilder;
+    private LoggingBuilder loggingBuilder;
     private static GenieApplication genieApplication;
-    public FontChangeCrawler fontChanger;
+    private FontChangeCrawler fontChanger;
     private SharedPreferences mSecurePrefs;
+    private TinyBus mBus;
 
     @Override
     public void onCreate() {
@@ -25,11 +28,24 @@ public class GenieApplication extends Application {
                 .setFile(DataFields.logFile.getAbsolutePath())
                 .setClassName("Genie Application");
         mSecurePrefs = new SecurePreferences(this);
+        mBus = TinyBus.from(this);
     }
 
-    public SharedPreferences getSecurePrefs()
-    {
+    public SharedPreferences getSecurePrefs() {
         return mSecurePrefs;
+    }
+
+    public TinyBus getBus() {
+        return mBus;
+    }
+
+    public LoggingBuilder getLoggingBuilder() {
+        return loggingBuilder;
+
+    }
+
+    public FontChangeCrawler getFontChangeCrawler() {
+        return fontChanger;
     }
 
     public static synchronized GenieApplication getInstance() {

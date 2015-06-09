@@ -11,21 +11,25 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.google.gson.Gson;
 
+import de.halfbit.tinybus.TinyBus;
+
 public class GenieBaseActivity extends AppCompatActivity {
     public Gson gson;
     public GenieApplication genieApplication;
     public SharedPreferences sharedPreferences;
     public FontChangeCrawler fontChangeCrawler;
     public Logging logging;
+    public TinyBus mBus;
 
     @Override
     protected void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
-        fontChangeCrawler = genieApplication.fontChanger;
-        logging = genieApplication.loggingBuilder.setUp();
+        fontChangeCrawler = genieApplication.getFontChangeCrawler();
+        logging = genieApplication.getLoggingBuilder().setUp();
         sharedPreferences = genieApplication.getSecurePrefs();
+        mBus = genieApplication.getBus();
         gson = new Gson();
     }
 

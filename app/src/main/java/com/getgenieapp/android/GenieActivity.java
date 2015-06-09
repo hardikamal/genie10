@@ -9,6 +9,8 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.google.gson.Gson;
 
+import de.halfbit.tinybus.TinyBus;
+
 /**
  * Created by Raviteja on 6/6/2015.
  */
@@ -18,15 +20,17 @@ public class GenieActivity extends Activity {
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawler;
     public Logging logging;
+    public TinyBus mBus;
 
     @Override
     protected void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
-        fontChangeCrawler = genieApplication.fontChanger;
+        fontChangeCrawler = genieApplication.getFontChangeCrawler();
         sharedPreferences = genieApplication.getSecurePrefs();
-        logging = genieApplication.loggingBuilder.setUp();
+        logging = genieApplication.getLoggingBuilder().setUp();
+        mBus = genieApplication.getBus();
         gson = new Gson();
     }
 }
