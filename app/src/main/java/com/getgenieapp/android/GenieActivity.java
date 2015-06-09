@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
+import com.google.gson.Gson;
 
 /**
  * Created by Raviteja on 6/6/2015.
  */
 public class GenieActivity extends Activity {
+    public Gson gson;
     public SharedPreferences sharedPreferences;
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawler;
@@ -23,7 +25,8 @@ public class GenieActivity extends Activity {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawler = genieApplication.fontChanger;
-        sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
-        logging = GenieApplication.getInstance().loggingBuilder.setUp();
+        sharedPreferences = genieApplication.getSecurePrefs();
+        logging = genieApplication.loggingBuilder.setUp();
+        gson = new Gson();
     }
 }

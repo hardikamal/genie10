@@ -68,6 +68,8 @@ public class RegistrationIntentService extends IntentService {
 
                 subscribeTopics(token);
 
+                sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
+
                 Intent registrationComplete = new Intent(QuickstartPreferences.SENT_TOKEN_TO_SERVER);
                 LocalBroadcastManager.getInstance(RegistrationIntentService.this).sendBroadcast(registrationComplete);
             }

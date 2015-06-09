@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.getgenieapp.android.CustomViews.SnackBar;
 import com.getgenieapp.android.Fragments.RegisterFragment;
 import com.getgenieapp.android.Fragments.VerifyFragment;
 import com.getgenieapp.android.GenieBaseActivity;
@@ -22,21 +23,19 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        Fragment fragment = new RegisterFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.body, fragment);
-        fragmentTransaction.commit();
+        startFragment(R.id.body, new VerifyFragment());
     }
 
     @Override
     public void onSuccess(Register register) {
-
+        sharedPreferences.edit().putString("token", register.getToken());
+        startFragment(R.id.body, new VerifyFragment());
     }
 
     @Override
     public void onError(Register register) {
-
+        SnackBar snackBar = new SnackBar(this, getString(R.string.unexpectederror));
+        snackBar.show();
     }
 
     @Override
@@ -46,6 +45,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Verify verify) {
-
+        SnackBar snackBar = new SnackBar(this, "Server Error Try Again");
+        snackBar.show();
     }
 }

@@ -124,10 +124,10 @@
                             android:layout_width="1dp"
                             android:layout_height="50dp" />
 
-                        <Button
+                        <com.getgenieapp.android.CustomViews.ButtonFlat
+                            android:id="@+id/tapToResend"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
                             android:padding="10dp"
                             android:text="@string/taptoresend"
                             android:textColor="@color/colorPrimary" />

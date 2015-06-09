@@ -23,4 +23,5 @@
     <string name="pleaseentername">Please Enter Name</string>
     <string name="pleaseentervalidnumber">Please Enter Valid Number</string>
     <string name="registeringuser">Registering User...</string>
+    <string name="unexpectederror">Unexpected Error Try Again</string>
 </resources>
