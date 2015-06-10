@@ -59,15 +59,15 @@ public class MainActivity extends GenieBaseActivity {
 //                    });
 
             List<Categories> categoriesList = new ArrayList<>();
-            categoriesList.add(new Categories("Food", 1, "#1976d2", "R.drawable.food", "abcd", "abcde"));
-            categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "R.drawable.cake", "abcd", "abcde"));
-            categoriesList.add(new Categories("Groceries", 3, "#f44336", "R.drawable.groceries", "abcd", "abcde"));
-            categoriesList.add(new Categories("Hotel", 4, "#3f5185", "R.drawable.hotel", "abcd", "abcde"));
-            categoriesList.add(new Categories("Misc", 5, "#009688", "R.drawable.misc", "abcd", "abcde"));
-            categoriesList.add(new Categories("Mobile", 6, "#ff9800", "R.drawable.mobile", "abcd", "abcde"));
-            categoriesList.add(new Categories("Movies", 7, "#ff5722", "R.drawable.movies", "abcd", "abcde"));
-            categoriesList.add(new Categories("Shopping", 8, "#4caf50", "R.drawable.shopping", "abcd", "abcde"));
-            categoriesList.add(new Categories("Travel", 9, "#ec407a", "R.drawable.travel", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Food", 1, "#1976d2", "R.drawable.food", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "R.drawable.cake", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Groceries", 3, "#f44336", "R.drawable.groceries", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Hotel", 4, "#3f5185", "R.drawable.hotel", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Misc", 5, "#009688", "R.drawable.misc", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Mobile", 6, "#ff9800", "R.drawable.mobile", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Movies", 7, "#ff5722", "R.drawable.movies", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Shopping", 8, "#4caf50", "R.drawable.shopping", "abcd", "abcde"));
+//            categoriesList.add(new Categories("Travel", 9, "#ec407a", "R.drawable.travel", "abcd", "abcde"));
             setupCategories(categoriesList);
         } else {
             startActivity(new Intent(this, RegisterActivity.class));
@@ -76,7 +76,17 @@ public class MainActivity extends GenieBaseActivity {
     }
 
     private void setupCategories(List<Categories> categoriesList) {
+        loadingView.setLoading(false);
+        CustomAdapter adapter = new CustomAdapter(this, list);
 
+        // Set the Adapter to GridView
+        gridView.setAdapter(adapter);
+        gridView.setNumColumns(2);
+        // Set the Required Animation to GridView and start the Animation
+        // use fly_in_from_center to have 2nd type of animation effect (snapshot 2)
+        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center);
+        gridView.setAnimation(anim);
+        anim.start();
     }
 
     @Override

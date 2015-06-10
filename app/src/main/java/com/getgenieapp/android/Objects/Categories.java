@@ -4,67 +4,87 @@ package com.getgenieapp.android.Objects;
  * Created by Raviteja on 6/9/2015.
  */
 public class Categories {
-    String title;
-    int catId;
-    String catColor;
-    String catResourceId;
-    String lastMsg;
-    String time;
+    String name;
+    int id;
+    String color;
+    String imageSource;
+    boolean image_updated;
+    int notification_count;
+    String description;
+    long hideTime;
 
-    public Categories(String title, int catId, String catColor, String catResourceId, String lastMsg, String time) {
-        this.title = title;
-        this.catId = catId;
-        this.catColor = catColor;
-        this.catResourceId = catResourceId;
-        this.lastMsg = lastMsg;
-        this.time = time;
+    public Categories(String name, int id, String color, String imageSource, boolean image_updated, int notification_count, String description, long hideTime) {
+        this.name = name;
+        this.id = id;
+        this.color = color;
+        this.imageSource = imageSource;
+        this.image_updated = image_updated;
+        this.notification_count = notification_count;
+        this.description = description;
+        this.hideTime = hideTime;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getCatId() {
-        return catId;
+    public int getId() {
+        return id;
     }
 
-    public void setCatId(int catId) {
-        this.catId = catId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCatColor() {
-        return catColor;
+    public String getColor() {
+        return color;
     }
 
-    public void setCatColor(String catColor) {
-        this.catColor = catColor;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public String getCatResourceId() {
-        return catResourceId;
+    public String getImageSource() {
+        return imageSource;
     }
 
-    public void setCatResourceId(String catResourceId) {
-        this.catResourceId = catResourceId;
+    public void setImageSource(String imageSource) {
+        this.imageSource = imageSource;
     }
 
-    public String getLastMsg() {
-        return lastMsg;
+    public boolean isImage_updated() {
+        return image_updated;
     }
 
-    public void setLastMsg(String lastMsg) {
-        this.lastMsg = lastMsg;
+    public void setImage_updated(boolean image_updated) {
+        this.image_updated = image_updated;
     }
 
-    public String getTime() {
-        return time;
+    public int getNotification_count() {
+        return notification_count;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setNotification_count(int notification_count) {
+        this.notification_count = notification_count;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getHideTime() {
+        return hideTime;
+    }
+
+    public void setHideTime(long hideTime) {
+        this.hideTime = hideTime;
     }
 }
