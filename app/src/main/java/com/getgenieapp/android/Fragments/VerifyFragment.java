@@ -18,6 +18,7 @@ import com.getgenieapp.android.GenieFragment;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.halfbit.tinybus.Subscribe;
 
 public class VerifyFragment extends GenieFragment {
     @InjectView(R.id.subText)
@@ -32,6 +33,29 @@ public class VerifyFragment extends GenieFragment {
     EditText char4;
     private UIHelpers uiHelpers;
     final int entryLength = 1;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onSMSReceived(String code) {
+        if(char1!=null&&char2!=null&&char3!=null&&char4!=null)
+        {
+            char1.setText(code.substring(0,1));
+            char2.setText(code.substring(1,2));
+            char3.setText(code.substring(2,3));
+            char4.setText(code.substring(3,4));
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

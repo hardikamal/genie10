@@ -10,9 +10,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyMaterialThemeWIthToolBar" parent="MyMaterialThemeWIthToolBar.Base"></style>
+    <style name="MyMaterialThemeWithToolBar" parent="MyMaterialThemeWithToolBar.Base"></style>
 
-    <style name="MyMaterialThemeWIthToolBar.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MyMaterialThemeWithToolBar.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
