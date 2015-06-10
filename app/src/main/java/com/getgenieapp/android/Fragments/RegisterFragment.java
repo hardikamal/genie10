@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -99,6 +101,16 @@ public class RegisterFragment extends GenieFragment {
         topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x / 4));
         subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.subText), uiHelpers.getXYPixels(getActivity()).x / 4));
 
+        number.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    onGetStartedButtonClick();
+                    return true;
+                }
+                return false;
+            }
+        });
         fontChangeCrawler.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
@@ -107,12 +119,11 @@ public class RegisterFragment extends GenieFragment {
         JsonObject json = new JsonObject();
         json.addProperty("name", name.getText().toString());
         json.addProperty("number", number.getText().toString());
-        try {
-            json.addProperty("token", InstanceID.getInstance(getActivity()).getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            json.addProperty("token", );
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         if (json.get("token").isJsonNull()) {
             ((RegisterActivity) getActivity()).onError(new Register());
@@ -158,7 +169,7 @@ public class RegisterFragment extends GenieFragment {
         super.onResume();
         logging.LogI("On Resume");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+                new IntentFilter(QuickstartPreferences.SENT_TOKEN_TO_SERVER));
     }
 
     @Override
