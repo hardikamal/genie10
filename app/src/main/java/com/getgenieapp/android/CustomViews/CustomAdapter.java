@@ -2,20 +2,25 @@ package com.getgenieapp.android.CustomViews;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.getgenieapp.android.Extras.GetDate;
 import com.getgenieapp.android.Objects.Categories;
+import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
@@ -48,44 +53,57 @@ public class CustomAdapter extends BaseAdapter {
     public View getView(int arg0, View convertView, ViewGroup arg2) {
         View v = convertView;
         Categories categories = getItem(arg0);
-        if (v == null) {
+        if (v == null && categories != null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(context);
             v = vi.inflate(R.layout.gridlayout, null);
 
+            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
+            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
+            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
+            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
 
-            LinearLayout layout = (LinearLayout) v.findViewById(R.id.layout);
             TextView name = (TextView) v.findViewById(R.id.title);
-            TextView notification_count = (TextView) v.findViewById(R.id.title);
+            Button notification_count = (Button) v.findViewById(R.id.notification_count);
+
             TextView lastmessage = (TextView) v.findViewById(R.id.lastMessage);
             TextView time = (TextView) v.findViewById(R.id.time);
             ImageView image = (ImageView) v.findViewById(R.id.image);
+            View emptyspace = (View) v.findViewById(R.id.emptyspace);
 
-
-
-            if (layout != null) {
-                layout.setBackgroundColor(Color.parseColor(gridObject.getLastmsg()));
+            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
+                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
             }
-            if (gridObject != null) {
+            if(name != null && notification_count != null && lastmessage != null && time != null && image != null)
+            {
+                name.setText(categories.getName());
+                notification_count.setText(String.valueOf(categories.getNotification_count()));
+                notification_count.setTextColor(Color.parseColor(categories.getColor()));
 
-                if (tt1 != null) {
-                    tt1.setText(gridObject.getTitle());
-                }
+                Ion.with(image)
+                        .load("http://www.clipartbest.com/cliparts/4nT/Eaz/4nTEazyiA.png");
 
-                if (tt2 != null) {
-                    tt2.setText(gridObject.getLastmsg());
-                }
-
-                if (tt3 != null) {
-                    tt3.setText(gridObject.getTime());
-                }
+                lastmessage.setText(categories.getDescription());
+                time.setText(new GetDate().convertLongToDate(categories.getHideTime()));
             }
-        }
-        else
-        {
-            LinearLayout layout = (LinearLayout) v.findViewById(R.id.layout);
-            if (layout != null) {
-                layout.setBackgroundColor(Color.parseColor(gridObject.getLastmsg()));
+
+        } else {
+            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
+            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
+            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
+            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
+            View emptyspace = (View) v.findViewById(R.id.emptyspace);
+
+            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
+                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
             }
         }
 

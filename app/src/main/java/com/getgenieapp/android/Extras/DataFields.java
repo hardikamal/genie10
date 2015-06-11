@@ -15,6 +15,7 @@ public class DataFields {
 
     public static final String TOKEN = "token";
     public static final String PHONENUMBER = "phonenumber";
+    public static final String GCM_TOKEN = "gcm_token";
     public static final String UPDATEGCMURL = "/URL";
     public static final String REGISTERURL = "/URL";
 

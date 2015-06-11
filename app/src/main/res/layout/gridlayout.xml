@@ -9,7 +9,8 @@
     android:paddingRight="1dp"
     android:paddingTop="1dp">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/topbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -17,20 +18,34 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="9" />
-
-        <TextView
-            android:id="@+id/notification_count"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@drawable/circle" />
-    </LinearLayout>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/generalTextColor"
+            android:textSize="@dimen/text_size"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/notification_count"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/text_size"
+            android:background="@drawable/circle"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/middleBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4">
@@ -39,37 +54,56 @@
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/desc" />
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/desc"
+
+            android:scaleType="center" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lowerMiddleBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/lastMessage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/lastMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:singleLine="true"
+            android:textColor="@color/generalTextColor"
+            android:textSize="@dimen/general_text_size" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lowerBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:singleLine="true"
+            android:drawableLeft="@drawable/ic_message_white_24dp"
+            android:textColor="@color/generalTextColor"
+            android:textSize="@dimen/general_text_size" />
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/emptyspace"
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+
 </LinearLayout>
