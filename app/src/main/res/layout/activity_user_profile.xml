@@ -52,7 +52,6 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:gravity="start|center_vertical"
-            android:singleLine="true"
             android:text="@string/orderdetails"
             android:textColorHint="@color/colorPrimaryDark"
             android:textSize="@dimen/general_text_size" />

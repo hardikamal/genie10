@@ -81,15 +81,24 @@
 
         <activity
             android:name=".Activities.ChatActivity"
-            android:label="@string/title_activity_chat"/>
+            android:label="@string/title_activity_chat" />
         <activity
             android:name=".Activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/MyMaterialThemeWithToolBar"
-            android:parentActivityName="com.getgenieapp.android.Activities.MainActivity">
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/MyMaterialThemeWithToolBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.getgenieapp.android.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.OrderDetailsActivity"
+            android:label="@string/title_activity_order_details"
+            android:parentActivityName=".Activities.UserProfileActivity"
+            android:theme="@style/MyMaterialThemeWithToolBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.getgenieapp.android.Activities.UserProfileActivity" />
         </activity>
     </application>
 
