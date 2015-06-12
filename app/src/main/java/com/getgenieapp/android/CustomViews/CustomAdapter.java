@@ -54,9 +54,13 @@ public class CustomAdapter extends BaseAdapter {
         View v = convertView;
         Categories categories = getItem(arg0);
         if (v == null && categories != null) {
+
             LayoutInflater vi;
             vi = LayoutInflater.from(context);
-            v = vi.inflate(R.layout.gridlayout, null);
+            if (arg0 % 2 == 0)
+                v = vi.inflate(R.layout.gridlayout_left, null);
+            else
+                v = vi.inflate(R.layout.gridlayout_right, null);
 
             RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
             LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
@@ -78,14 +82,16 @@ public class CustomAdapter extends BaseAdapter {
                 lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
                 emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
             }
-            if(name != null && notification_count != null && lastmessage != null && time != null && image != null)
-            {
+            if (name != null && notification_count != null && lastmessage != null && time != null && image != null) {
                 name.setText(categories.getName());
-                notification_count.setText(String.valueOf(categories.getNotification_count()));
-                notification_count.setTextColor(Color.parseColor(categories.getColor()));
-
+                if (categories.getNotification_count() > 0) {
+                    notification_count.setText(String.valueOf(categories.getNotification_count()));
+                    notification_count.setTextColor(Color.parseColor(categories.getColor()));
+                } else {
+                    notification_count.setBackgroundResource(android.R.color.transparent);
+                }
                 Ion.with(image)
-                        .load("http://www.clipartbest.com/cliparts/4nT/Eaz/4nTEazyiA.png");
+                        .load("https://www.projectplace.com/Global/images_NEW/icons/large/security-icon.png");
 
                 lastmessage.setText(categories.getDescription());
                 time.setText(new GetDate().convertLongToDate(categories.getHideTime()));

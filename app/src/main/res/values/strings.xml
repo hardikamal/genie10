@@ -4,7 +4,7 @@
     <string name="version">0.0.0.0</string>
     <string name="copyrights">Copy Rights</string>
     <string name="welcomeMessage">Welcome to Genie</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Chat</string>
     <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
@@ -31,4 +31,9 @@
     <string name="profile">Profile</string>
     <string name="title_activity_user_profile">User Profile</string>
     <string name="desc">Description</string>
+    <string name="orderdetails">Order Details</string>
+    <string name="update">UPDATE</string>
+    <string name="email">Email</string>
+    <string name="address">Address</string>
+    <string name="defaultnumber">9999999999</string>
 </resources>

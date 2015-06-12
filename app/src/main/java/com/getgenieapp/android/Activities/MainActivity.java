@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.GridView;
@@ -43,6 +44,7 @@ public class MainActivity extends GenieBaseActivity {
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);
         loadCategories();
+        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void loadCategories() {
@@ -63,8 +65,8 @@ public class MainActivity extends GenieBaseActivity {
 
             ArrayList<Categories> categoriesList = new ArrayList<>();
             categoriesList.add(new Categories("Food", 1, "#1976d2", "food", false, 1,"abcdsddssfe fgfsdvkwnsfedivujbifsd jifegnviskjfdvniclsjkfdvnucsfkjbsvnuclskjdfnvulikjsfdlnvculfkjdbsncuilskjfdn", 1433985369));
-            categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "cake", false, 1, "abcd", 1433985369));
-            categoriesList.add(new Categories("Groceries", 3, "#f44336", "groceries", false, 1, "abcd", 1433985369));
+            categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "cake", false, 0, "abcd", 1433985369));
+            categoriesList.add(new Categories("Groceries", 3, "#f44336", "groceries", false, 0, "abcd", 1433985369));
             categoriesList.add(new Categories("Hotel", 4, "#3f5185", "hotel", false, 1, "abcd", 1433835369));
             categoriesList.add(new Categories("Misc", 5, "#009688", "misc", false, 1, "abcd", 1433835369));
             categoriesList.add(new Categories("Mobile", 6, "#ff9800", "mobile", false, 1, "abcd", 1433435369));

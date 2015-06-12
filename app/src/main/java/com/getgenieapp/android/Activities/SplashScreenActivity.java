@@ -135,8 +135,8 @@ public class SplashScreenActivity extends GenieActivity {
                 } catch (Exception err) {
                 }
                 logging.LogI("Start Register Activity");
-//                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+//                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
                 finish();
             }
         }).start();
