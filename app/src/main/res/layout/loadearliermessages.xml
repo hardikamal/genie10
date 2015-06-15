@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical">
+<com.getgenieapp.android.CustomViews.LoadingViewFlat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/loadearliermsgcolor"
+    android:id="@+id/loadingview">
+<com.getgenieapp.android.CustomViews.ButtonFlat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:text="@string/loadearliermessages"/>
+</com.getgenieapp.android.CustomViews.LoadingViewFlat>
+</LinearLayout>

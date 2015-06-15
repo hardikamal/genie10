@@ -22,6 +22,10 @@ public class GenieActivity extends Activity {
     public Logging logging;
     public TinyBus mBus;
 
+    /**
+     *
+     * @param savedInstance
+     */
     @Override
     protected void onCreate(Bundle savedInstance)
     {

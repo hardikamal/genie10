@@ -38,4 +38,5 @@
     <string name="defaultnumber">9999999999</string>
     <string name="title_activity_order_details">Orders</string>
     <string name="repeatorder">REPEAT ORDER</string>
+    <string name="loadearliermessages">load earlier messages</string>
 </resources>

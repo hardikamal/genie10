@@ -23,19 +23,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.GenieJSON;
-import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.R;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 

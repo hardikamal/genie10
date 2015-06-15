@@ -5,4 +5,5 @@
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#3399FF</color>
     <color name="generalTextColor">#FAFAFA</color>
+    <color name="loadearliermsgcolor">#E1F3FD</color>
 </resources>

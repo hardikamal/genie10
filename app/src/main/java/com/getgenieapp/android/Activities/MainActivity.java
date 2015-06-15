@@ -21,8 +21,6 @@ import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +61,8 @@ public class MainActivity extends GenieBaseActivity {
 //                        }
 //                    });
 
+        // ToDo add volley
+
             ArrayList<Categories> categoriesList = new ArrayList<>();
             categoriesList.add(new Categories("Food", 1, "#1976d2", "food", false, 1,"abcdsddssfe fgfsdvkwnsfedivujbifsd jifegnviskjfdvniclsjkfdvnucsfkjbsvnuclskjdfnvulikjsfdlnvculfkjdbsncuilskjfdn", 1433985369));
             categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "cake", false, 0, "abcd", 1433985369));
@@ -80,6 +80,10 @@ public class MainActivity extends GenieBaseActivity {
 //        }
     }
 
+    /**
+     *
+     * @param categoriesList
+     */
     private void setupCategories(ArrayList<Categories> categoriesList) {
         loadingView.setLoading(false);
         CustomAdapter adapter = new CustomAdapter(this, categoriesList);
@@ -94,6 +98,11 @@ public class MainActivity extends GenieBaseActivity {
         anim.start();
     }
 
+    /**
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -101,6 +110,11 @@ public class MainActivity extends GenieBaseActivity {
         return true;
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

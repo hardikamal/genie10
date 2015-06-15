@@ -9,41 +9,24 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.getgenieapp.android.Activities.MainActivity;
 import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.LoadingView;
 import com.getgenieapp.android.CustomViews.SnackBar;
-import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
-import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
-import com.getgenieapp.android.Objects.Register;
-import com.getgenieapp.android.Objects.RegisterUser;
-import com.getgenieapp.android.R;
 import com.getgenieapp.android.GenieFragment;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
-import com.google.gson.Gson;
+import com.getgenieapp.android.Objects.Register;
+import com.getgenieapp.android.R;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -128,22 +111,24 @@ public class RegisterFragment extends GenieFragment {
         if (json.get("token").isJsonNull()) {
             ((RegisterActivity) getActivity()).onError(new Register());
         } else {
-            Ion.with(this)
-                    .load(DataFields.getServerUrl() + DataFields.REGISTERURL)
-                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            parentLoadingView.setLoading(false);
-                            if(e != null)
-                                ((RegisterActivity) getActivity()).onError(new Register());
-                            if(result == null)
-                                ((RegisterActivity) getActivity()).onError(new Register());
-                            else
-                                ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(result, Register.class));
-                        }
-                    });
+//            Ion.with(this)
+//                    .load(DataFields.getServerUrl() + DataFields.REGISTERURL)
+//                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
+//                    .asJsonObject()
+//                    .setCallback(new FutureCallback<JsonObject>() {
+//                        @Override
+//                        public void onCompleted(Exception e, JsonObject result) {
+//                            parentLoadingView.setLoading(false);
+//                            if(e != null)
+//                                ((RegisterActivity) getActivity()).onError(new Register());
+//                            if(result == null)
+//                                ((RegisterActivity) getActivity()).onError(new Register());
+//                            else
+//                                ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(result, Register.class));
+//                        }
+//                    });
+
+            // ToDo add volley
         }
     }
 

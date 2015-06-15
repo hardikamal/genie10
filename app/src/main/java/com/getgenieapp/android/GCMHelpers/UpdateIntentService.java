@@ -30,10 +30,6 @@ import com.getgenieapp.android.R;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONObject;
 
@@ -116,16 +112,18 @@ public class UpdateIntentService extends IntentService {
         if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
             JSONObject json = new GenieJSON(this);
 
-            Ion.with(this)
-                    .load(DataFields.getServerUrl() + DataFields.UPDATEGCMURL)
-                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
+//            Ion.with(this)
+//                    .load(DataFields.getServerUrl() + DataFields.UPDATEGCMURL)
+//                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
+//                    .asJsonObject()
+//                    .setCallback(new FutureCallback<JsonObject>() {
+//                        @Override
+//                        public void onCompleted(Exception e, JsonObject result) {
+//
+//                        }
+//                    });
 
-                        }
-                    });
+            // ToDo add volley
         }
     }
 

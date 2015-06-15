@@ -2,8 +2,6 @@ package com.getgenieapp.android.CustomViews;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +16,7 @@ import android.widget.TextView;
 
 import com.getgenieapp.android.Extras.GetDate;
 import com.getgenieapp.android.Objects.Categories;
-import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
@@ -90,8 +86,10 @@ public class CustomAdapter extends BaseAdapter {
                 } else {
                     notification_count.setBackgroundResource(android.R.color.transparent);
                 }
-                Ion.with(image)
-                        .load("https://www.projectplace.com/Global/images_NEW/icons/large/security-icon.png");
+//                Ion.with(image)
+//                        .load("https://www.projectplace.com/Global/images_NEW/icons/large/security-icon.png");
+
+                // add volley
 
                 lastmessage.setText(categories.getDescription());
                 time.setText(new GetDate().convertLongToDate(categories.getHideTime()));
