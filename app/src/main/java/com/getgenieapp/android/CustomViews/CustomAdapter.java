@@ -130,14 +130,10 @@ public class CustomAdapter extends BaseAdapter {
                         line1.setText(lastmessage);
                         Layout layout = line1.getLayout();
                         int lastLine = layout.getLineCount();
-                        System.out.println(lastLine);
                         if (lastLine > 1) {
                             int lastlineindex = layout.getLineStart(1);
-                            System.out.println(lastlineindex);
                             line1.setText(lastmessage.substring(0, lastlineindex));
-                            System.out.println(lastmessage.substring(0, lastlineindex));
                             line2.setText(lastmessage.substring(lastlineindex, lastmessage.length()));
-                            System.out.println(lastmessage.substring(lastlineindex, lastmessage.length()));
                         } else {
                             line1.setText("");
                             line2.setText(lastmessage);
