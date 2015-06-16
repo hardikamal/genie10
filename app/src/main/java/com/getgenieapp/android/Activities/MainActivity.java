@@ -64,15 +64,17 @@ public class MainActivity extends GenieBaseActivity {
         // ToDo add volley
 
             ArrayList<Categories> categoriesList = new ArrayList<>();
-            categoriesList.add(new Categories("Food", 1, "#1976d2", "food", false, 1,"abcdsddssfe fgfsdvkwnsfedivujbifsd jifegnviskjfdvniclsjkfdvnucsfkjbsvnuclskjdfnvulikjsfdlnvculfkjdbsncuilskjfdn", 1433985369));
-            categoriesList.add(new Categories("Cake", 2, "#7d7d7d", "cake", false, 0, "abcd", 1433985369));
-            categoriesList.add(new Categories("Groceries", 3, "#f44336", "groceries", false, 0, "abcd", 1433985369));
-            categoriesList.add(new Categories("Hotel", 4, "#3f5185", "hotel", false, 1, "abcd", 1433835369));
-            categoriesList.add(new Categories("Misc", 5, "#009688", "misc", false, 1, "abcd", 1433835369));
-            categoriesList.add(new Categories("Mobile", 6, "#ff9800", "mobile", false, 1, "abcd", 1433435369));
-            categoriesList.add(new Categories("Movies", 7, "#ff5722", "movies", false, 1, "abcd", 1433435369));
-            categoriesList.add(new Categories("Shopping", 8, "#4caf50", "shopping", false, 1, "abcd", 1433435369));
-            categoriesList.add(new Categories("Travel", 9, "#ec407a", "travel", false, 1, "abcd", 1433435369));
+
+            categoriesList.add(new Categories(1, 1, "#1976d2", null, "abcds ddssfe fgfsd vkwnsf edivujbifsd jifegnviskj fdvniclsjkfdvn ucsfkjbsvnucl skjdfnvuli kjsfd lnvculfkjdbsn cuils kjfdn", "Food", 1433985369));
+            categoriesList.add(new Categories(2, 0, "#7d7d7d", null, "abcd", "Cake", 1433985369));
+            categoriesList.add(new Categories(3, 0, "#f44336", null, "abcd", "Groceries", 1433985369));
+            categoriesList.add(new Categories(4, 1, "#3f5185", null, "abcd", "Hotel", 1433985369));
+            categoriesList.add(new Categories(5, 0, "#009688", null, "abcd", "Misc", 1433985369));
+            categoriesList.add(new Categories(6, 0, "#ff9800", null, "abcd", "Mobile", 1433985369));
+            categoriesList.add(new Categories(7, 1, "#ff5722", null, "abcd", "Movies", 1433985369));
+            categoriesList.add(new Categories(8, 0, "#4caf50", null, "abcd", "Shopping", 1433985369));
+            categoriesList.add(new Categories(9, 0, "#ec407a", null, "abcd", "Travel", 1433985369));
+            categoriesList.add(new Categories(10, 0, "#ec407a", null, "abcds ddssfe fgfsd vkwnsf edivujbifsd jifegnviskj fdvniclsjkfdvn ucsfkjbsvnucl skjdfnvuli kjsfd lnvculfkjdbsn cuils kjfdn", "Foods", 1433985369));
             setupCategories(categoriesList);
 //        } else {
 //            startActivity(new Intent(this, RegisterActivity.class));

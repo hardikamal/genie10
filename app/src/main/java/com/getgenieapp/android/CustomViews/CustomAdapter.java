@@ -90,18 +90,20 @@ public class CustomAdapter extends BaseAdapter {
         Categories categories = getItem(arg0);
 
         if (topbar != null && middlebar != null && lowerbar != null && emptyspace != null) {
-            topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-            middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-            lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-            emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
+            topbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
+            middlebar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
+            lowerbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
+            emptyspace.setBackgroundColor(Color.parseColor(categories.getBg_color()));
         }
         if (categories != null && title != null && notification_count != null && line2 != null && image != null) {
             title.setText(categories.getName());
 
             if (categories.getNotification_count() > 0) {
                 notification_count.setText(String.valueOf(categories.getNotification_count()));
-                notification_count.setTextColor(Color.parseColor(categories.getColor()));
+                notification_count.setTextColor(Color.parseColor(categories.getBg_color()));
             } else {
+                notification_count.setText(String.valueOf(categories.getNotification_count()));
+                notification_count.setTextColor(Color.parseColor(categories.getBg_color()));
                 notification_count.setBackgroundResource(android.R.color.transparent);
             }
             // add volley ToDo
