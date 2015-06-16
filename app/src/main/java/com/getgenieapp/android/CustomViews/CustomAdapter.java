@@ -2,9 +2,11 @@ package com.getgenieapp.android.CustomViews;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -19,6 +21,9 @@ import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class CustomAdapter extends BaseAdapter {
 
@@ -48,73 +53,92 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public View getView(int arg0, View convertView, ViewGroup arg2) {
         View v = convertView;
-        Categories categories = getItem(arg0);
-        if (v == null && categories != null) {
+        final ViewHolderItem vh;
 
+        if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(context);
+
             if (arg0 % 2 == 0)
                 v = vi.inflate(R.layout.gridlayout_left, null);
             else
                 v = vi.inflate(R.layout.gridlayout_right, null);
 
-            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
-            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
-            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
-            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
+            vh = new ViewHolderItem();
+            vh.line1 = (TextView) v.findViewById(R.id.line1);
+            vh.line2 = (TextView) v.findViewById(R.id.line2);
+            vh.vto = ((TextView) v.findViewById(R.id.line1)).getViewTreeObserver();
+            v.setTag(vh);
 
-            TextView name = (TextView) v.findViewById(R.id.title);
-            Button notification_count = (Button) v.findViewById(R.id.notification_count);
-
-            TextView lastmessage = (TextView) v.findViewById(R.id.lastMessage);
-            TextView time = (TextView) v.findViewById(R.id.time);
-            ImageView image = (ImageView) v.findViewById(R.id.image);
-            View emptyspace = (View) v.findViewById(R.id.emptyspace);
-
-            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
-                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
-            }
-            if (name != null && notification_count != null && lastmessage != null && time != null && image != null) {
-                name.setText(categories.getName());
-                if (categories.getNotification_count() > 0) {
-                    notification_count.setText(String.valueOf(categories.getNotification_count()));
-                    notification_count.setTextColor(Color.parseColor(categories.getColor()));
-                } else {
-                    notification_count.setBackgroundResource(android.R.color.transparent);
-                }
-//                Ion.with(image)
-//                        .load("https://www.projectplace.com/Global/images_NEW/icons/large/security-icon.png");
-
-                // add volley
-
-                lastmessage.setText(categories.getDescription());
-                time.setText(new GetDate().convertLongToDate(categories.getHideTime()));
-            }
-
+            Animation anim = AnimationUtils.loadAnimation(context, R.anim.fly_in_from_center);
+            v.setAnimation(anim);
+            anim.start();
         } else {
-            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
-            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
-            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
-            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
-            View emptyspace = (View) v.findViewById(R.id.emptyspace);
+            vh = (ViewHolderItem) v.getTag();
+        }
+        RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
+        LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
+        LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
+        View emptyspace = (View) v.findViewById(R.id.emptyspace);
 
-            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
-                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
+        TextView title = (TextView) v.findViewById(R.id.title);
+        final TextView line1 = (TextView) v.findViewById(R.id.line1);
+        final TextView line2 = (TextView) v.findViewById(R.id.line2);
+        ImageView image = (ImageView) v.findViewById(R.id.image);
+        Button notification_count = (Button) v.findViewById(R.id.notification_count);
+
+        Categories categories = getItem(arg0);
+
+        if (topbar != null && middlebar != null && lowerbar != null && emptyspace != null) {
+            topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+            middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
+            lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
+            emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
+        }
+        if (categories != null && title != null && notification_count != null && line2 != null && image != null) {
+            title.setText(categories.getName());
+
+            if (categories.getNotification_count() > 0) {
+                notification_count.setText(String.valueOf(categories.getNotification_count()));
+                notification_count.setTextColor(Color.parseColor(categories.getColor()));
+            } else {
+                notification_count.setBackgroundResource(android.R.color.transparent);
             }
+            // add volley ToDo
+
+            image.setBackgroundResource(R.drawable.genie_android_icons_97x97);
+            final String lastmessage = categories.getDescription();
+            vh.line1.setText("");
+            vh.line2.setText(lastmessage);
+            vh.line2.setTag(lastmessage);
+
+//            if(vh.vto.isAlive())
+//            {
+//                vh.vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        Layout layout = vh.line1.getLayout();
+//                        int lastLine = layout.getLineCount();
+//                        if(lastLine>1)
+//                        {
+//
+//                        }
+//                        else
+//                        {
+//                            vh.line1.setText("");
+//                            vh.line2.setText(lastmessage);
+//                        }
+//                    }
+//                });
+//            }
         }
 
-        Animation anim = AnimationUtils.loadAnimation(context, R.anim.fly_in_from_center);
-        v.setAnimation(anim);
-        anim.start();
-
         return v;
+    }
+
+    static class ViewHolderItem {
+        TextView line1;
+        TextView line2;
+        ViewTreeObserver vto;
     }
 }

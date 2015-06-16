@@ -4,9 +4,15 @@
     android:layout_height="match_parent"
     tools:context="com.getgenieapp.android.Activities.OrderDetailsActivity">
 
-    <ListView
-        android:id="@+id/orderlist"
+    <com.getgenieapp.android.CustomViews.LoadingView
+        android:id="@+id/loadingview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/orderlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.getgenieapp.android.CustomViews.LoadingView>
 
 </RelativeLayout>

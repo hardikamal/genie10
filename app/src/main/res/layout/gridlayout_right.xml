@@ -3,10 +3,10 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="1dp"
-    android:paddingTop="1dp"
+    android:orientation="vertical"
     android:paddingBottom="1dp"
-    android:orientation="vertical">
+    android:paddingLeft="1dp"
+    android:paddingTop="1dp">
 
     <RelativeLayout
         android:id="@+id/topbar"
@@ -37,9 +37,8 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:textSize="@dimen/text_size"
             android:background="@drawable/circle"
-            android:textStyle="bold" />
+            android:textSize="@dimen/general_text_size" />
     </RelativeLayout>
 
     <LinearLayout
@@ -48,56 +47,48 @@
         android:layout_height="0dp"
         android:layout_weight="4">
 
-        <ImageView
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/image"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:contentDescription="@string/desc"
 
             android:scaleType="center" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/lowerMiddleBar"
+        android:id="@+id/lowerBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight="2"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/lastMessage"
+            android:id="@+id/line1"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="0dp"
             android:layout_gravity="bottom"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:singleLine="true"
             android:textColor="@color/generalTextColor"
             android:textSize="@dimen/small_text_size" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lowerBar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone">
-
         <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
+            android:layout_weight="1"
             android:singleLine="true"
-            android:drawableLeft="@drawable/ic_message_white_24dp"
             android:textColor="@color/generalTextColor"
-            android:textSize="@dimen/general_text_size" />
-
+            android:textSize="@dimen/small_text_size" />
 
     </LinearLayout>
 
@@ -105,6 +96,4 @@
         android:id="@+id/emptyspace"
         android:layout_width="match_parent"
         android:layout_height="5dp" />
-
-
 </LinearLayout>
