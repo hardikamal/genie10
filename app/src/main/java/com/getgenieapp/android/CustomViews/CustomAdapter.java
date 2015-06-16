@@ -67,7 +67,7 @@ public class CustomAdapter extends BaseAdapter {
             vh = new ViewHolderItem();
             vh.line1 = (TextView) v.findViewById(R.id.line1);
             vh.line2 = (TextView) v.findViewById(R.id.line2);
-            vh.vto = ((TextView) v.findViewById(R.id.line1)).getViewTreeObserver();
+            vh.vto = v.getViewTreeObserver();
             v.setTag(vh);
 
             Animation anim = AnimationUtils.loadAnimation(context, R.anim.fly_in_from_center);
@@ -108,29 +108,8 @@ public class CustomAdapter extends BaseAdapter {
 
             image.setBackgroundResource(R.drawable.genie_android_icons_97x97);
             final String lastmessage = categories.getDescription();
-            vh.line1.setText("");
-            vh.line2.setText(lastmessage);
-            vh.line2.setTag(lastmessage);
 
-//            if(vh.vto.isAlive())
-//            {
-//                vh.vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        Layout layout = vh.line1.getLayout();
-//                        int lastLine = layout.getLineCount();
-//                        if(lastLine>1)
-//                        {
-//
-//                        }
-//                        else
-//                        {
-//                            vh.line1.setText("");
-//                            vh.line2.setText(lastmessage);
-//                        }
-//                    }
-//                });
-//            }
+            vh.setValues(lastmessage);
         }
 
         return v;
@@ -140,5 +119,30 @@ public class CustomAdapter extends BaseAdapter {
         TextView line1;
         TextView line2;
         ViewTreeObserver vto;
+
+        void setValues(final String lastmessage) {
+            if (vto.isAlive()) {
+                vto.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+                        line1.setText(lastmessage);
+                        Layout layout = line1.getLayout();
+                        int lastLine = layout.getLineCount();
+                        System.out.println(lastLine);
+                        if (lastLine > 1) {
+                            int lastlineindex = layout.getLineStart(2);
+                            System.out.println(lastlineindex);
+                            line1.setText(lastmessage.substring(0, lastlineindex));
+                            System.out.println(lastmessage.substring(0, lastlineindex));
+                            line2.setText(lastmessage.substring(lastlineindex, lastmessage.length()));
+                            System.out.println(lastmessage.substring(lastlineindex, lastmessage.length()));
+                        } else {
+                            line1.setText("");
+                            line2.setText(lastmessage);
+                        }
+                    }
+                });
+            }
+        }
     }
 }

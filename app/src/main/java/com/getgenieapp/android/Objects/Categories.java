@@ -87,4 +87,90 @@ public class Categories {
     public void setHideTime(long hideTime) {
         this.hideTime = hideTime;
     }
+
+
+//    private String id;
+//
+//    private String notification_count;
+//
+//    private String bg_color;
+//
+//    private String image_url;
+//
+//    private String description;
+//
+//    private String name;
+//
+//    private String hide_chats_time;
+//
+//    public String getId ()
+//    {
+//        return id;
+//    }
+//
+//    public void setId (String id)
+//    {
+//        this.id = id;
+//    }
+//
+//    public String getNotification_count ()
+//    {
+//        return notification_count;
+//    }
+//
+//    public void setNotification_count (String notification_count)
+//    {
+//        this.notification_count = notification_count;
+//    }
+//
+//    public String getBg_color ()
+//    {
+//        return bg_color;
+//    }
+//
+//    public void setBg_color (String bg_color)
+//    {
+//        this.bg_color = bg_color;
+//    }
+//
+//    public String getImage_url ()
+//    {
+//        return image_url;
+//    }
+//
+//    public void setImage_url (String image_url)
+//    {
+//        this.image_url = image_url;
+//    }
+//
+//    public String getDescription ()
+//    {
+//        return description;
+//    }
+//
+//    public void setDescription (String description)
+//    {
+//        this.description = description;
+//    }
+//
+//    public String getName ()
+//    {
+//        return name;
+//    }
+//
+//    public void setName (String name)
+//    {
+//        this.name = name;
+//    }
+//
+//    public String getHide_chats_time ()
+//    {
+//        return hide_chats_time;
+//    }
+//
+//    public void setHide_chats_time (String hide_chats_time)
+//    {
+//        this.hide_chats_time = hide_chats_time;
+//    }
+
 }
