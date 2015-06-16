@@ -2,85 +2,109 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="1dp"
     android:background="@color/generalTextColor"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp"
-    android:paddingRight="1dp"
-    android:paddingLeft="1dp"
-    android:orientation="horizontal">
-    <LinearLayout
-        android:id="@+id/category"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-        <ImageView
-            android:id="@+id/categoryimage"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    android:elevation="1dp"
+    android:orientation="vertical"
+    android:padding="1dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/category"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/categoryimage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
+                android:scaleType="fitXY"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/companyname"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:textSize="@dimen/big_text_size" />
+
+                <TextView
+                    android:id="@+id/rate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textSize="@dimen/general_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/orderdetailstext"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="5"
+                    android:textSize="@dimen/general_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2">
+
+                <Button
+                    android:id="@+id/repeatorder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical|end"
+                    android:text="@string/repeatorder"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
+
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/companyname"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:layout_width="0dp"
-                android:textSize="@dimen/big_text_size"
-                android:gravity="center"
-                android:text="Dominos"
-                android:textStyle="bold"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@+id/rate"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:layout_width="0dp"
-                android:textStyle="bold"
-                android:text="RS 1500"
-                android:textSize="@dimen/big_text_size"
-                android:gravity="center"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3">
-            <TextView
-                android:layout_marginLeft="10dp"
-                android:id="@+id/orderdetailstext"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:layout_height="match_parent"
-                android:text="1 Coke\n1 Pizza\n1 Cups"
-                android:textSize="@dimen/general_text_size"
-                android:maxLines="5"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical|end"
-                android:layout_marginRight="30dp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/repeatorder"/>
-        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="3dip"
+            android:background="@drawable/shadow" />
     </LinearLayout>
 
 </LinearLayout>

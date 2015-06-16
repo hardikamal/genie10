@@ -17,8 +17,8 @@
             android:background="@android:color/holo_red_light">
 
             <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="108dp"
+                android:layout_height="108dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="30dp"
                 android:gravity="center">

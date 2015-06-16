@@ -14,7 +14,7 @@ public class Order {
 
     private String description;
 
-    private String created_at;
+    private long created_at;
 
     private int user_id;
 
@@ -22,7 +22,7 @@ public class Order {
 
     private double cost;
 
-    private long last_message_id;
+    private String last_message_id;
 
     public int getId() {
         return id;
@@ -64,11 +64,11 @@ public class Order {
         this.description = description;
     }
 
-    public String getCreated_at() {
+    public long getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(long created_at) {
         this.created_at = created_at;
     }
 
@@ -96,15 +96,15 @@ public class Order {
         this.cost = cost;
     }
 
-    public long getLast_message_id() {
+    public String getLast_message_id() {
         return last_message_id;
     }
 
-    public void setLast_message_id(long last_message_id) {
+    public void setLast_message_id(String last_message_id) {
         this.last_message_id = last_message_id;
     }
 
-    public Order(int id, String title, OrderCategory category, String service_provider, String description, String created_at, int user_id, int agent_id, double cost, long last_message_id) {
+    public Order(int id, String title, OrderCategory category, String service_provider, String description, long created_at, int user_id, int agent_id, double cost, String last_message_id) {
         this.id = id;
         this.title = title;
         this.category = category;

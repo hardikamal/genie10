@@ -2,9 +2,11 @@ package com.getgenieapp.android.CustomViews;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
@@ -13,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getgenieapp.android.Extras.GetDate;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Order;
+import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -51,71 +56,49 @@ public class CustomOrderAdapter extends BaseAdapter {
     @Override
     public View getView(int arg0, View convertView, ViewGroup arg2) {
         View v = convertView;
-        Order order = getItem(arg0);
-        if (v == null && order != null) {
+        final ViewHolderItem vh;
 
+        if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(context);
-
             v = vi.inflate(R.layout.orderlayout, null);
-            ButterKnife.inject(v);
-            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
-            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
-            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
-            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
 
-            TextView name = (TextView) v.findViewById(R.id.title);
-            Button notification_count = (Button) v.findViewById(R.id.notification_count);
-
-            TextView lastmessage = (TextView) v.findViewById(R.id.lastMessage);
-            TextView time = (TextView) v.findViewById(R.id.time);
-            ImageView image = (ImageView) v.findViewById(R.id.image);
-            View emptyspace = (View) v.findViewById(R.id.emptyspace);
-//
-//            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
-//                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
-//            }
-//            if (name != null && notification_count != null && lastmessage != null && time != null && image != null) {
-//                name.setText(categories.getName());
-//                if (categories.getNotification_count() > 0) {
-//                    notification_count.setText(String.valueOf(categories.getNotification_count()));
-//                    notification_count.setTextColor(Color.parseColor(categories.getColor()));
-//                } else {
-//                    notification_count.setBackgroundResource(android.R.color.transparent);
-//                }
-////                Ion.with(image)
-////                        .load("https://www.projectplace.com/Global/images_NEW/icons/large/security-icon.png");
-//
-//                // add volley
-//
-//                lastmessage.setText(categories.getDescription());
-//                time.setText(new GetDate().convertLongToDate(categories.getHideTime()));
-//            }
-//
-//        } else {
-//            RelativeLayout topbar = (RelativeLayout) v.findViewById(R.id.topbar);
-//            LinearLayout middlebar = (LinearLayout) v.findViewById(R.id.middleBar);
-//            LinearLayout lowermiddlebar = (LinearLayout) v.findViewById(R.id.lowerMiddleBar);
-//            LinearLayout lowerbar = (LinearLayout) v.findViewById(R.id.lowerBar);
-//            View emptyspace = (View) v.findViewById(R.id.emptyspace);
-//
-//            if (topbar != null && middlebar != null && lowermiddlebar != null && lowerbar != null && emptyspace != null) {
-//                topbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                middlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                lowermiddlebar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                lowerbar.setBackgroundColor(Color.parseColor(categories.getColor()));
-//                emptyspace.setBackgroundColor(Color.parseColor(categories.getColor()));
-//            }
-//        }
+            vh = new ViewHolderItem();
+            v.setTag(vh);
 
             Animation anim = AnimationUtils.loadAnimation(context, R.anim.fly_in_from_center);
             v.setAnimation(anim);
             anim.start();
+        } else {
+            vh = (ViewHolderItem) v.getTag();
         }
+
+        Order currentOrder = getItem(arg0);
+        OrderCategory currentOrderCategory = currentOrder.getCategory();
+
+        LinearLayout category = (LinearLayout) v.findViewById(R.id.category);
+        ImageView categoryimage = (ImageView) v.findViewById(R.id.categoryimage);
+        TextView companyname = (TextView) v.findViewById(R.id.companyname);
+        TextView rate = (TextView) v.findViewById(R.id.rate);
+        TextView orderdetailstext = (TextView) v.findViewById(R.id.orderdetailstext);
+        Button repeatorder = (Button) v.findViewById(R.id.repeatorder);
+
+        category.setBackgroundColor(Color.parseColor(currentOrderCategory.getBg_color()));
+        categoryimage.setBackgroundResource(R.drawable.genie_android_icons_97x97);
+        companyname.setText(currentOrder.getService_provider());
+        DecimalFormat df = new DecimalFormat("#.00");
+        rate.setText("Rs " + df.format(currentOrder.getCost()));
+        orderdetailstext.setText(currentOrder.getDescription());
+        repeatorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Repeat This Order", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return v;
+    }
+
+    static class ViewHolderItem {
     }
 }

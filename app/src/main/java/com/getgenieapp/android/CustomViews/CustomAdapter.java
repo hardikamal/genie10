@@ -131,7 +131,7 @@ public class CustomAdapter extends BaseAdapter {
                         Layout layout = line1.getLayout();
                         int lastLine = layout.getLineCount();
                         System.out.println(lastLine);
-                        if (lastLine > 0) {
+                        if (lastLine > 1) {
                             int lastlineindex = layout.getLineStart(1);
                             System.out.println(lastlineindex);
                             line1.setText(lastmessage.substring(0, lastlineindex));

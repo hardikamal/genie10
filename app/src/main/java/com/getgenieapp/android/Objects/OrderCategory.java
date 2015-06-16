@@ -4,17 +4,17 @@ package com.getgenieapp.android.Objects;
  * Created by Raviteja on 6/15/2015.
  */
 public class OrderCategory {
-    private String id;
+    private int id;
 
     private String bg_color;
 
     private String image_url;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public class OrderCategory {
         this.image_url = image_url;
     }
 
-    public OrderCategory(String id, String bg_color, String image_url) {
+    public OrderCategory(int id, String bg_color, String image_url) {
         this.id = id;
         this.bg_color = bg_color;
         this.image_url = image_url;
