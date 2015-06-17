@@ -95,7 +95,9 @@
 
         <activity
             android:name=".Activities.ChatActivity"
-            android:label="@string/title_activity_chat" />
+            android:label="@string/title_activity_chat"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/MyMaterialThemeWithToolBar" />
         <activity
             android:name=".Activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
