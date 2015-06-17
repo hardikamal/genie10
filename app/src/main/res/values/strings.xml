@@ -39,4 +39,6 @@
     <string name="title_activity_order_details">Orders</string>
     <string name="repeatorder">REPEAT ORDER</string>
     <string name="loadearliermessages">load earlier messages</string>
+    <string name="buynow">Buy Now</string>
+    <string name="typeamessage">Type a message</string>
 </resources>

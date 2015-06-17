@@ -17,22 +17,120 @@
         android:orientation="vertical"
         android:padding="5dp">
 
+        <LinearLayout
+            android:id="@+id/buynowlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="@color/generalTextColor"
+            android:elevation="1dp"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/category"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:id="@+id/categoryimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginBottom="50dp"
+                        android:scaleType="fitXY"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/companyname"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:textSize="@dimen/big_text_size" />
+
+                        <TextView
+                            android:id="@+id/rate"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textSize="@dimen/general_text_size"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3">
+
+                        <TextView
+                            android:id="@+id/orderdetailstext"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center_vertical"
+                            android:maxLines="5"
+                            android:textSize="@dimen/general_text_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2">
+
+                        <Button
+                            android:id="@+id/repeatorder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="30dp"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical|end"
+                            android:text="@string/buynow"
+                            android:textColor="@color/colorPrimary" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:scaleType="fitXY"
             android:visibility="gone" />
 
-        <com.android.volley.toolbox.NetworkImageView
+        <ImageView
             android:id="@+id/imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY" />
 
         <TextView
-            android:id="@+id/topline"
+            android:id="@+id/textTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/generalTextColor"
@@ -43,7 +141,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/lastline"
+                android:id="@+id/textBottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
@@ -52,7 +150,7 @@
                 android:textSize="@dimen/text_size" />
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/textTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

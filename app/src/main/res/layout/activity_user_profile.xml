@@ -87,6 +87,7 @@
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:enabled="false"
+                    android:alpha="0.5"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ic_call_black_24dp" />
                 <EditText
@@ -135,6 +136,7 @@
                     android:layout_height="match_parent"
                     android:enabled="false"
                     android:background="@android:color/transparent"
+                    android:alpha="0.5"
                     android:drawableLeft="@drawable/ic_person_black_24dp" />
 
                 <EditText
@@ -166,6 +168,7 @@
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:enabled="false"
+                    android:alpha="0.5"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ic_email_black_24dp" />
 
@@ -199,6 +202,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:enabled="false"
+                    android:alpha="0.5"
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/ic_location_on_black_24dp" />
 
@@ -220,6 +224,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:alpha="0.5"
                     android:background="@android:color/transparent"
                     android:drawableRight="@drawable/ic_gps_fixed_black_24dp" />
             </LinearLayout>
