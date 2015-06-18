@@ -1,254 +1,271 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/generalTextColor"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
         android:layout_weight="4"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_red_light">
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottomline"
+                android:layout_alignParentBottom="true"
+                android:background="@color/generalTextColor" />
 
             <LinearLayout
-                android:layout_width="108dp"
-                android:layout_height="108dp"
+                android:layout_width="@dimen/profilepic"
+                android:layout_height="@dimen/profilepic"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="30dp"
+                android:background="@drawable/bluecircle"
                 android:gravity="center">
 
-                <ImageView
+                <ImageButton
+                    android:id="@+id/userPicture"
+                    android:background="@drawable/ic_person_white_48dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
+
+
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:background="@color/generalTextColor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="30dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/orderdetailsbutton"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_list_black_24dp" />
-
-        <Button
-            android:id="@+id/orderdetails"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="start|center_vertical"
-            android:text="@string/orderdetails"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:textSize="@dimen/general_text_size" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_weight="5"
+        android:layout_weight="6"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Contact Details"
-            android:textColor="@color/colorPrimary" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:enabled="false"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ic_call_black_24dp" />
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@android:color/transparent"
-                    android:text="+91"
-                    android:enabled="false"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimaryDark" />
-                <EditText
-                    android:id="@+id/number"
-                    android:editable="false"
-                    android:enabled="false"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@android:color/transparent"
-                    android:maxLength="10"
-                    android:text="@string/defaultnumber"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimaryDark" />
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:enabled="false"
-                    android:background="@android:color/transparent"
-                    android:alpha="0.5"
-                    android:drawableLeft="@drawable/ic_person_black_24dp" />
-
-                <EditText
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/name"
-                    android:inputType="textPersonName"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimaryDark" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:enabled="false"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ic_email_black_24dp" />
-
-                <EditText
-                    android:id="@+id/email"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/email"
-                    android:maxLines="1"
-                    android:inputType="textEmailAddress"
-                    android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimaryDark" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="false"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:drawableLeft="@drawable/ic_location_on_black_24dp" />
-
-                <EditText
-                    android:id="@+id/address"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="3"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/address"
-                    android:maxLines="1"
-                    android:inputType="textPostalAddress"
-                    android:singleLine="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textColorHint="@color/colorPrimaryDark" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:drawableRight="@drawable/ic_gps_fixed_black_24dp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorPrimary" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/orderdetailsbutton"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                android:gravity="end|center_vertical"
-                android:text="@string/update"
-                android:textColor="@color/colorPrimary" />
+                android:drawableLeft="@drawable/ic_list_black_24dp" />
+
+            <Button
+                android:id="@+id/orderdetails"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="start|center_vertical"
+                android:text="@string/orderdetails"
+                android:textColorHint="@color/colorPrimaryDark"
+                android:textSize="@dimen/general_text_size" />
+
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contact Details"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_call_black_24dp"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@android:color/transparent"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="+91"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimaryDark" />
+
+                    <EditText
+                        android:id="@+id/number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@android:color/transparent"
+                        android:editable="false"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/defaultnumber"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimaryDark" />
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_person_black_24dp"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/name"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimaryDark" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_email_black_24dp"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimaryDark" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_location_on_black_24dp"
+                        android:enabled="false" />
+
+                    <EditText
+                        android:id="@+id/address"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="3"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/address"
+                        android:inputType="textPostalAddress"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textColorHint="@color/colorPrimaryDark" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:drawableRight="@drawable/ic_gps_fixed_black_24dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="end"
+                android:layout_weight="1">
+
+                <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/update"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
-

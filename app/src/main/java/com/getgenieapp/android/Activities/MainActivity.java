@@ -2,6 +2,8 @@ package com.getgenieapp.android.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -23,14 +25,15 @@ import butterknife.InjectView;
 public class MainActivity extends GenieBaseActivity {
     @InjectView(R.id.loadingView)
     LoadingView loadingView;
-    @InjectView(R.id.gridView)
-    GridView gridView;
+    @InjectView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        logging.LogV("Main Activity");
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);
         loadCategories();
@@ -38,20 +41,8 @@ public class MainActivity extends GenieBaseActivity {
     }
 
     private void loadCategories() {
+        logging.LogV("Get Categories");
 //        if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-//            JsonObject jsonObject = new JsonObject();
-//
-//            Ion.with(this)
-//                    .load(DataFields.getServerUrl() + DataFields.REGISTERURL)
-//                    .setJsonObjectBody((JsonObject) new JsonParser().parse(jsonObject.toString()))
-//                    .asJsonObject()
-//                    .setCallback(new FutureCallback<JsonObject>() {
-//                        @Override
-//                        public void onCompleted(Exception e, JsonObject result) {
-//                            loadingView.setLoading(false);
-//                            setupCategories(gson.fromJson(result, ListCategories.class).getCategoriesList());
-//                        }
-//                    });
 
         // ToDo add volley
 
@@ -77,15 +68,14 @@ public class MainActivity extends GenieBaseActivity {
      */
     private void setupCategories(ArrayList<Categories> categoriesList) {
         loadingView.setLoading(false);
-        CustomAdapter adapter = new CustomAdapter(this, categoriesList);
-
-        // Set the Adapter to GridView
-        gridView.setAdapter(adapter);
-        gridView.setNumColumns(2);
+        logging.LogV("Close Loading View and Set Recycler");
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setAdapter(new CustomAdapter(categoriesList, this));
         // Set the Required Animation to GridView and start the Animation
         // use fly_in_from_center to have 2nd type of animation effect (snapshot 2)
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_200);
-        gridView.setAnimation(anim);
+        recyclerView.setAnimation(anim);
         anim.start();
     }
 

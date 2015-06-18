@@ -1,19 +1,24 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.Extras.Logging;
+import com.getgenieapp.android.GenieApplication;
+import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Order;
 import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
@@ -21,77 +26,75 @@ import com.getgenieapp.android.R;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class CustomOrderAdapter extends BaseAdapter {
+/**
+ * Created by Manny on 6/16/2015.
+ */
+public class CustomOrderAdapter extends RecyclerView.Adapter {
+    private ArrayList<Order> orders;
+    private Context context;
+    private Logging logging;
 
-    Context context;
-    static ArrayList<Order> items;
-
-    public CustomOrderAdapter(Context context, ArrayList<Order> items) {
+    public CustomOrderAdapter(ArrayList<Order> orders, Context context) {
+        this.orders = orders;
         this.context = context;
-        CustomOrderAdapter.items = items;
+        this.logging = GenieApplication.getInstance().getLoggingBuilder().setUp();
     }
 
     @Override
-    public int getCount() {
-        return items.size();
-    }
-
-    @Override
-    public Order getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
+    public int getItemViewType(int position) {
         return position;
     }
 
-    @Override
-    public View getView(int arg0, View convertView, ViewGroup arg2) {
-        View v = convertView;
-        final ViewHolderItem vh;
+    static class ViewHolderMain extends RecyclerView.ViewHolder {
+        LinearLayout category;
+        ImageView categoryimage;
+        TextView companyname;
+        TextView rate;
+        TextView orderdetailstext;
+        Button repeatorder;
 
-        if (v == null) {
-            LayoutInflater vi;
-            vi = LayoutInflater.from(context);
-            v = vi.inflate(R.layout.orderlayout, null);
-
-            vh = new ViewHolderItem();
-            v.setTag(vh);
-
-            Animation anim = AnimationUtils.loadAnimation(context, R.anim.fly_in_from_center);
-            v.setAnimation(anim);
-            anim.start();
-        } else {
-            vh = (ViewHolderItem) v.getTag();
+        public ViewHolderMain(View itemView) {
+            super(itemView);
+            category = (LinearLayout) itemView.findViewById(R.id.category);
+            categoryimage = (ImageView) itemView.findViewById(R.id.categoryimage);
+            companyname = (TextView) itemView.findViewById(R.id.companyname);
+            rate = (TextView) itemView.findViewById(R.id.rate);
+            orderdetailstext = (TextView) itemView.findViewById(R.id.orderdetailstext);
+            repeatorder = (Button) itemView.findViewById(R.id.repeatorder);
         }
-
-        Order currentOrder = getItem(arg0);
-        OrderCategory currentOrderCategory = currentOrder.getCategory();
-
-        LinearLayout category = (LinearLayout) v.findViewById(R.id.category);
-        ImageView categoryimage = (ImageView) v.findViewById(R.id.categoryimage);
-        TextView companyname = (TextView) v.findViewById(R.id.companyname);
-        TextView rate = (TextView) v.findViewById(R.id.rate);
-        TextView orderdetailstext = (TextView) v.findViewById(R.id.orderdetailstext);
-        Button repeatorder = (Button) v.findViewById(R.id.repeatorder);
-
-        category.setBackgroundColor(Color.parseColor(currentOrderCategory.getBg_color()));
-        categoryimage.setBackgroundResource(R.drawable.genie_android_icons_97x97);
-        companyname.setText(currentOrder.getService_provider());
-        DecimalFormat df = new DecimalFormat("#.00");
-        rate.setText("Rs " + df.format(currentOrder.getCost()));
-        orderdetailstext.setText(currentOrder.getDescription());
-        repeatorder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "Repeat This Order", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return v;
     }
 
-    static class ViewHolderItem {
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        logging.LogV("Item Position Order Activity " + viewType);
+        return new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.orderlayout, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final Order order = orders.get(position);
+        OrderCategory currentOrderCategory = order.getCategory();
+        final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
+
+        viewHolderMain.category.setBackgroundColor(Color.parseColor(currentOrderCategory.getBg_color()));
+
+        int id = context.getResources().getIdentifier(currentOrderCategory.getImage_url(), "drawable", context.getPackageName());
+        viewHolderMain.categoryimage.setBackgroundResource(id);
+
+        viewHolderMain.companyname.setText(order.getService_provider());
+        DecimalFormat df = new DecimalFormat("#.00");
+        viewHolderMain.rate.setText("Rs " + df.format(order.getCost()));
+        viewHolderMain.orderdetailstext.setText(order.getDescription());
+        viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SnackBar((Activity) context, "Just Clicked Repeat Order").show();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return orders.size();
     }
 }
