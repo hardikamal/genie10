@@ -23,7 +23,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.R;
+import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -42,7 +45,8 @@ public class RegistrationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+        GenieApplication genieApplication = GenieApplication.getInstance();
+        final SecurePreferences securePreference = genieApplication.getSecurePrefs();
         try {
             // In the (unlikely) event that multiple refresh operations occur simultaneously,
             // ensure that they are processed sequentially.
@@ -60,6 +64,7 @@ public class RegistrationIntentService extends IntentService {
                 subscribeTopics(token);
 
                 sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
+                securePreference.edit().putString(DataFields.GCM_TOKEN, token).apply();
 
                 Intent registrationComplete = new Intent(QuickstartPreferences.SENT_TOKEN_TO_SERVER);
                 LocalBroadcastManager.getInstance(RegistrationIntentService.this).sendBroadcast(registrationComplete);

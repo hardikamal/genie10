@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.ProgressBar;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import com.getgenieapp.android.CustomViews.ProgressBar.EaseInOutCubicInterpolator;
 import com.getgenieapp.android.R;
 
 public class SplashScreenProgressCircle extends View {

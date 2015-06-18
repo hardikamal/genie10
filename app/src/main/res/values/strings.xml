@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Genie</string>
-    <string name="companyName">Company Name</string>
+    <string name="companyName">Genie</string>
     <string name="version">0.0.0.0</string>
-    <string name="copyrights">Copy Rights</string>
+    <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to Genie</string>
     <string name="title_activity_main">Chat</string>
     <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
@@ -11,7 +11,7 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="topText">Chat.Order.Done.</string>
     <string name="loading">Loading...</string>
-    <string name="subText">Genie makes ordering as easy as Chatting</string>
+    <string name="subText">Genie makes ordering as easy as chatting</string>
     <string name="getstarted">Get Started</string>
     <string name="name">Name</string>
     <string name="number">Number</string>

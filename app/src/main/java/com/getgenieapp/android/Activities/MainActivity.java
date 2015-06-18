@@ -1,7 +1,6 @@
 package com.getgenieapp.android.Activities;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,20 +9,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.GridView;
 
-import com.getgenieapp.android.CustomViews.CustomAdapter;
-import com.getgenieapp.android.CustomViews.LoadingView;
-import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.GenieActivity;
+import com.getgenieapp.android.CustomViews.Adapters.CustomAdapter;
+import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
-import com.getgenieapp.android.Objects.ListCategories;
-import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

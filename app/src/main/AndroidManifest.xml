@@ -96,8 +96,13 @@
         <activity
             android:name=".Activities.ChatActivity"
             android:label="@string/title_activity_chat"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/MyMaterialThemeWithToolBar" />
+            android:parentActivityName=".Activities.MainActivity"
+            android:theme="@style/MyMaterialThemeWithToolBar"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.getgenieapp.android.Activities.MainActivity" />
+        </activity>
         <activity
             android:name=".Activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"

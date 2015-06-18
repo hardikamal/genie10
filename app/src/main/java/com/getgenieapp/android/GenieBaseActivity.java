@@ -1,6 +1,5 @@
 package com.getgenieapp.android;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
+import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 
 import de.halfbit.tinybus.TinyBus;
@@ -16,7 +16,7 @@ import de.halfbit.tinybus.TinyBus;
 public class GenieBaseActivity extends AppCompatActivity {
     public Gson gson;
     public GenieApplication genieApplication;
-    public SharedPreferences sharedPreferences;
+    public SecurePreferences sharedPreferences;
     public FontChangeCrawler fontChangeCrawler;
     public Logging logging;
     public TinyBus mBus;

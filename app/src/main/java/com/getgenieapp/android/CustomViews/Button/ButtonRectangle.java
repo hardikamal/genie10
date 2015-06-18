@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Button;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -88,7 +88,7 @@ public class ButtonRectangle extends Button {
             textButton.setTextColor(Color.WHITE);
             textButton.setTypeface(null, Typeface.BOLD);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+            params.addRule(CENTER_IN_PARENT, TRUE);
             params.setMargins(Utils.dpToPx(5, getResources()), Utils.dpToPx(5, getResources()), Utils.dpToPx(5, getResources()), Utils.dpToPx(5, getResources()));
             textButton.setLayoutParams(params);
             addView(textButton);

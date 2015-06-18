@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="vertical">
-<com.getgenieapp.android.CustomViews.LoadingViewFlat
+<com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/loadearliermsgcolor"
     android:id="@+id/loadingview">
-<com.getgenieapp.android.CustomViews.ButtonFlat
+<com.getgenieapp.android.CustomViews.Button.ButtonFlat
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:text="@string/loadearliermessages"/>
-</com.getgenieapp.android.CustomViews.LoadingViewFlat>
+</com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat>
 </LinearLayout>

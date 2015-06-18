@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
@@ -31,8 +32,15 @@ public class SplashScreenActivity extends GenieActivity {
 
     @InjectView(R.id.version)
     TextView version;
+    @InjectView(R.id.companyname)
+    TextView companyName;
+    @InjectView(R.id.copyrights)
+    TextView copyrights;
+    @InjectView(R.id.welcomemsg)
+    TextView welcomemsg;
 
     Utils utils;
+    UIHelpers uiHelpers;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -49,6 +57,13 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
+
+        // ToDo Remove this later
+        copyrights.setVisibility(View.GONE);
+
+        uiHelpers = new UIHelpers();
+        welcomemsg.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.welcomeMessage), uiHelpers.getXYPixels(this).x / 4));
+
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -60,11 +75,10 @@ public class SplashScreenActivity extends GenieActivity {
                 boolean sentToken = sharedPreferences
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
                 logging.LogV("Sent To Server", String.valueOf(sentToken));
-                if (sentToken){
+                if (sentToken) {
                     logging.LogV("Go to Main Page");
                     runToMainPage();
-                }
-                else {
+                } else {
                     logging.LogV("Got to Register Page");
                     runToRegisterPage();
                 }
@@ -135,8 +149,7 @@ public class SplashScreenActivity extends GenieActivity {
                 } catch (Exception err) {
                 }
                 logging.LogI("Start Register Activity");
-                startActivity(new Intent(SplashScreenActivity.this, ChatActivity.class));
-//                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
                 finish();
             }
         }).start();

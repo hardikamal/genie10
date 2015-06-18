@@ -3,16 +3,10 @@ package com.getgenieapp.android.Activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.getgenieapp.android.CustomViews.SnackBar;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Fragments.RegisterFragment;
 import com.getgenieapp.android.Fragments.VerifyFragment;
 import com.getgenieapp.android.GenieBaseActivity;

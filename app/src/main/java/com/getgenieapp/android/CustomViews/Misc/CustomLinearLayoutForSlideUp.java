@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Misc;
 
 import android.content.Context;
 import android.util.AttributeSet;

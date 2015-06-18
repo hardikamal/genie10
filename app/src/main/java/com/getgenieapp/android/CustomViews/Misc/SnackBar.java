@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Misc;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -15,6 +15,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
 import com.getgenieapp.android.R;
 
 public class SnackBar extends Dialog{

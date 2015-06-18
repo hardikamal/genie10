@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
-import com.getgenieapp.android.GenieApplication;
+import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 
 import de.halfbit.tinybus.TinyBus;
@@ -14,6 +14,7 @@ public class GenieFragment extends Fragment {
     public Gson gson;
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawler;
+    public SecurePreferences sharedPreferences;
     public Logging logging;
     public TinyBus mBus;
 
@@ -22,6 +23,7 @@ public class GenieFragment extends Fragment {
     {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
+        sharedPreferences = genieApplication.getSecurePrefs();
         fontChangeCrawler = genieApplication.getFontChangeCrawler();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();

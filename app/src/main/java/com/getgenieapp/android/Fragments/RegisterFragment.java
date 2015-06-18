@@ -17,9 +17,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.getgenieapp.android.Activities.MainActivity;
 import com.getgenieapp.android.Activities.RegisterActivity;
-import com.getgenieapp.android.CustomViews.LoadingView;
-import com.getgenieapp.android.CustomViews.SnackBar;
+import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
@@ -27,6 +35,10 @@ import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 import com.google.gson.JsonObject;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -41,9 +53,9 @@ public class RegisterFragment extends GenieFragment {
     @InjectView(R.id.subText)
     TextView subText;
     @InjectView(R.id.name)
-    EditText name;
+    MaterialEditText name;
     @InjectView(R.id.number)
-    EditText number;
+    MaterialEditText number;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
 
@@ -53,7 +65,7 @@ public class RegisterFragment extends GenieFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
-        for(int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
 
@@ -73,8 +85,10 @@ public class RegisterFragment extends GenieFragment {
                 logging.LogV("Sent To Server", String.valueOf(sentToken));
 
                 if (sentToken) {
+                    logging.LogV("Register User");
                     RegisterUser();
                 } else {
+                    logging.LogE("Error in getting GCM token");
                     ((RegisterActivity) getActivity()).onError(new Register());
                 }
             }
@@ -88,6 +102,7 @@ public class RegisterFragment extends GenieFragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    logging.LogV("Presed Done on Keyboard");
                     onGetStartedButtonClick();
                     return true;
                 }
@@ -99,41 +114,62 @@ public class RegisterFragment extends GenieFragment {
     }
 
     private void RegisterUser() {
-        JsonObject json = new JsonObject();
-        json.addProperty("name", name.getText().toString());
-        json.addProperty("number", number.getText().toString());
-//        try {
-//            json.addProperty("token", );
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(DataFields.SplashScreenGeneralTimeOut);
+                } catch (Exception err) {
+                }
+                ((RegisterActivity) getActivity()).onSuccess(new Register());
+            }
+        }).start();
 
-        if (json.get("token").isJsonNull()) {
-            ((RegisterActivity) getActivity()).onError(new Register());
-        } else {
-//            Ion.with(this)
-//                    .load(DataFields.getServerUrl() + DataFields.REGISTERURL)
-//                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
-//                    .asJsonObject()
-//                    .setCallback(new FutureCallback<JsonObject>() {
-//                        @Override
-//                        public void onCompleted(Exception e, JsonObject result) {
-//                            parentLoadingView.setLoading(false);
-//                            if(e != null)
-//                                ((RegisterActivity) getActivity()).onError(new Register());
-//                            if(result == null)
-//                                ((RegisterActivity) getActivity()).onError(new Register());
-//                            else
-//                                ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(result, Register.class));
-//                        }
-//                    });
 
-            // ToDo add volley
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name", name.getText().toString());
+            json.put("number", number.getText().toString());
+            json.put("gcm_token", sharedPreferences.getString(DataFields.GCM_TOKEN, null));
+            if (json.has(DataFields.GCM_TOKEN) && json.getString(DataFields.GCM_TOKEN) != null) {
+                logging.LogV("GCM Token", json.getString(DataFields.GCM_TOKEN));
+//                JsonObjectRequest req = new JsonObjectRequest(DataFields.REGISTERURL, json,
+//                        new Response.Listener<JSONObject>() {
+//                            @Override
+//                            public void onResponse(JSONObject response) {
+//                                parentLoadingView.setLoading(false);
+//                                if (response != null) {
+//                                    ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
+//                                } else {
+//                                    ((RegisterActivity) getActivity()).onError(new Register());
+//                                }
+//                            }
+//                        }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        ((RegisterActivity) getActivity()).onError(new Register());
+//                    }
+//                });
+//
+//                genieApplication.addToRequestQueue(req);
+            } else {
+                logging.LogE("GCM Token not found");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
+//        if (name.getText().toString().trim().length() == 0) {
+//            name.setErrorColor(getResources().getColor(R.color.colorPrimary));
+//            name.setError(getResources().getString(R.string.pleaseentername));
+//        }
+//        if (number.getText().toString().trim().length() < 10) {
+//            number.setErrorColor(getResources().getColor(R.color.colorPrimary));
+//            number.setError(getResources().getString(R.string.pleaseentervalidnumber));
+//        }
+
         if (name.getText().toString().trim().length() == 0) {
             SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentername));
             snackbar.show();
@@ -166,6 +202,7 @@ public class RegisterFragment extends GenieFragment {
 
     public interface onRegister {
         public void onSuccess(Register register);
+
         public void onError(Register register);
     }
 }

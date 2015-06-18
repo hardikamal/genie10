@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Button;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -46,7 +46,7 @@ public class ButtonFlat extends Button {
             textButton.setText(text.toUpperCase());
             textButton.setTextColor(backgroundColor);
             textButton.setTypeface(null, Typeface.BOLD);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
             textButton.setLayoutParams(params);
             addView(textButton);

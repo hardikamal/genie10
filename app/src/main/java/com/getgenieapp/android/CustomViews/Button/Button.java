@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Button;
 
 import android.content.Context;
 import android.graphics.Bitmap;

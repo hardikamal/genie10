@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.TextView;
 
 /**
  *               DO WHAT YOU WANT TO PUBLIC LICENSE

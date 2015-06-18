@@ -1,32 +1,25 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getgenieapp.android.Extras.GetDate;
-import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Order;
 import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import butterknife.ButterKnife;
 
 public class CustomOrderAdapter extends BaseAdapter {
 

@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -16,14 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.getgenieapp.android.Extras.GetDate;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 
 import java.util.ArrayList;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class CustomAdapter extends BaseAdapter {
 

@@ -12,7 +12,7 @@ import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.LoggingBuilder;
 import com.getgenieapp.android.Extras.LruBitmapCache;
-import com.securepreferences.SecurePreferences;
+import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -20,7 +20,7 @@ public class GenieApplication extends Application {
     private LoggingBuilder loggingBuilder;
     private static GenieApplication genieApplication;
     private FontChangeCrawler fontChanger;
-    private SharedPreferences mSecurePrefs;
+    private SecurePreferences mSecurePrefs;
     private TinyBus mBus;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
@@ -39,7 +39,7 @@ public class GenieApplication extends Application {
         mBus = TinyBus.from(this);
     }
 
-    public SharedPreferences getSecurePrefs() {
+    public SecurePreferences getSecurePrefs() {
         return mSecurePrefs;
     }
 

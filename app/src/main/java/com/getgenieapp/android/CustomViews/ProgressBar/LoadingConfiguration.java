@@ -1,4 +1,4 @@
-package com.getgenieapp.android.CustomViews;
+package com.getgenieapp.android.CustomViews.ProgressBar;
 
 /**
  * Created by Raviteja on 6/6/2015.

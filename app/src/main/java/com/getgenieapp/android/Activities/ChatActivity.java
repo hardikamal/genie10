@@ -1,22 +1,15 @@
 package com.getgenieapp.android.Activities;
 
 import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
-import com.getgenieapp.android.CustomViews.CustomChatAdapter;
-import com.getgenieapp.android.CustomViews.CustomLinearLayoutForSlideUp;
+import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
