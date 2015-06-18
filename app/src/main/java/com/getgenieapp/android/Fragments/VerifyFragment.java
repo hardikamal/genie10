@@ -37,17 +37,20 @@ public class VerifyFragment extends GenieFragment {
     @Override
     public void onStart() {
         super.onStart();
+        logging.LogV("Showed","on Start");
         mBus.register(this);
     }
 
     @Override
     public void onStop() {
         mBus.unregister(this);
+        logging.LogV("Showed", "on Stop");
         super.onStop();
     }
 
     @Subscribe
     public void onSMSReceived(String code) {
+        logging.LogV("SMS Received Code", code);
         if(char1!=null&&char2!=null&&char3!=null&&char4!=null)
         {
             char1.setText(code.substring(0,1));
@@ -76,8 +79,10 @@ public class VerifyFragment extends GenieFragment {
         char1.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                logging.LogV("Char 1","on Text Changed");
                 if (char1.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
+                    logging.LogV("Char 1","Text length 1");
                     char2.requestFocus();
                 }
             }
@@ -94,8 +99,10 @@ public class VerifyFragment extends GenieFragment {
         char2.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                logging.LogV("Char 2","on Text Changed");
                 if (char2.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
+                    logging.LogV("Char 2","Text length 1");
                     char3.requestFocus();
                 }
             }
@@ -112,8 +119,10 @@ public class VerifyFragment extends GenieFragment {
         char3.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                logging.LogV("Char 3","on Text Changed");
                 if (char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
+                    logging.LogV("Char 3","Text length 1");
                     char4.requestFocus();
                 }
             }
@@ -130,11 +139,13 @@ public class VerifyFragment extends GenieFragment {
         char4.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                logging.LogV("Char 4","on Text Changed");
                 if (char4.getText().toString().trim().length() == entryLength
                         && char1.getText().toString().trim().length() == entryLength
                         && char2.getText().toString().trim().length() == entryLength
                         && char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
+                    logging.LogV("Char","Texts length 1");
                     goNext();
                 }
             }

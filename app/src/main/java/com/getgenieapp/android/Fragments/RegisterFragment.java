@@ -123,7 +123,7 @@ public class RegisterFragment extends GenieFragment {
                 ((RegisterActivity) getActivity()).onSuccess(new Register());
             }
         }).start();
-
+// todo remove upper block
 
         JSONObject json = new JSONObject();
         try {
