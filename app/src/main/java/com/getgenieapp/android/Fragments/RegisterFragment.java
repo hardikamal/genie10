@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Activities.MainActivity;
 import com.getgenieapp.android.Activities.RegisterActivity;
+import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
@@ -58,6 +60,8 @@ public class RegisterFragment extends GenieFragment {
     MaterialEditText number;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
+    @InjectView(R.id.getStarted)
+    ButtonRectangle getStarted;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -104,7 +108,8 @@ public class RegisterFragment extends GenieFragment {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     logging.LogV("Presed Done on Keyboard");
                     onGetStartedButtonClick();
-                    return true;
+                    InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(number.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
                 return false;
             }
@@ -179,7 +184,8 @@ public class RegisterFragment extends GenieFragment {
         } else {
             parentLoadingView.setText(getResources().getString(R.string.registeringuser));
             parentLoadingView.setLoading(true);
-
+            InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(getStarted.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
             getActivity().startService(intent);
         }

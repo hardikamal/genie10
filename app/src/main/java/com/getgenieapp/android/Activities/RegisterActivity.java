@@ -33,13 +33,13 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                                 String senderNum = phoneNumber;
                                 String message = currentMessage.getDisplayMessageBody();
                                 String phrase = "Code : ";
-                                if(message.contains(phrase))
-                                {
+                                if (message.contains(phrase)) {
                                     int index = message.indexOf(phrase);
                                     String code = message.substring(index + phrase.length());
                                     System.out.println(code);
                                     code = code.trim();
-                                    mBus.post(code);
+                                    if (code.length() == 4)
+                                        mBus.post(code);
                                 }
                             }
                         }
@@ -70,7 +70,8 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Verify verify) {
-
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     @Override

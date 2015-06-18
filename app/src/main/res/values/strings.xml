@@ -41,4 +41,5 @@
     <string name="loadearliermessages">load earlier messages</string>
     <string name="buynow">Buy Now</string>
     <string name="typeamessage">Type a message</string>
+    <string name="resendcoderequest">Requesting Server to resend code</string>
 </resources>

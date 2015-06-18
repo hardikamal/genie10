@@ -54,6 +54,7 @@
         <activity
             android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_register"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
