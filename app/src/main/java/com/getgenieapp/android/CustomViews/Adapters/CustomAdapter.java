@@ -1,7 +1,10 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class CustomAdapter extends BaseAdapter {
@@ -84,7 +88,6 @@ public class CustomAdapter extends BaseAdapter {
         Button notification_count = (Button) v.findViewById(R.id.notification_count);
 
         Categories categories = getItem(arg0);
-
         if (topbar != null && middlebar != null && lowerbar != null && emptyspace != null) {
             topbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
             middlebar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
@@ -104,12 +107,10 @@ public class CustomAdapter extends BaseAdapter {
             }
             // add volley ToDo
 
-            image.setBackgroundResource(R.drawable.genie_android_icons_97x97);
-            final String lastmessage = categories.getDescription();
-
-            vh.setValues(lastmessage);
+            int id = context.getResources().getIdentifier(categories.getImage_url(), "drawable", context.getPackageName());
+            image.setBackgroundResource(id);
         }
-
+        vh.setValues(categories.getDescription());
         return v;
     }
 
@@ -118,6 +119,7 @@ public class CustomAdapter extends BaseAdapter {
         TextView line2;
         ViewTreeObserver vto;
 
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         void setValues(final String lastmessage) {
             if (vto.isAlive()) {
                 vto.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -135,6 +137,26 @@ public class CustomAdapter extends BaseAdapter {
                             line2.setText(lastmessage);
                         }
                     }
+                });
+
+                vto.addOnWindowFocusChangeListener(new ViewTreeObserver.OnWindowFocusChangeListener() {
+                    @Override
+                    public void onWindowFocusChanged(boolean hasFocus) {
+                        if (hasFocus) {
+                            line1.setText(lastmessage);
+                            Layout layout = line1.getLayout();
+                            int lastLine = layout.getLineCount();
+                            if (lastLine > 1) {
+                                int lastlineindex = layout.getLineStart(1);
+                                line1.setText(lastmessage.substring(0, lastlineindex));
+                                line2.setText(lastmessage.substring(lastlineindex, lastmessage.length()));
+                            } else {
+                                line1.setText("");
+                                line2.setText(lastmessage);
+                            }
+                        }
+                    }
+
                 });
             }
         }

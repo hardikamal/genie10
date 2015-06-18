@@ -55,19 +55,17 @@ public class MainActivity extends GenieBaseActivity {
 
         // ToDo add volley
 
-            ArrayList<Categories> categoriesList = new ArrayList<>();
-
-            categoriesList.add(new Categories(1, 1, "#1976d2", null, "abcds ddssfe fgfsd vkwnsf edivujbifsd jifegnviskj fdvniclsjkfdvn ucsfkjbsvnucl skjdfnvuli kjsfd lnvculfkjdbsn cuils kjfdn", "Food", 1433985369));
-            categoriesList.add(new Categories(2, 0, "#7d7d7d", null, "abcd", "Cake", 1433985369));
-            categoriesList.add(new Categories(3, 0, "#f44336", null, "abcd", "Groceries", 1433985369));
-            categoriesList.add(new Categories(4, 1, "#3f5185", null, "abcd", "Hotel", 1433985369));
-            categoriesList.add(new Categories(5, 0, "#009688", null, "abcd", "Misc", 1433985369));
-            categoriesList.add(new Categories(6, 0, "#ff9800", null, "abcd", "Mobile", 1433985369));
-            categoriesList.add(new Categories(7, 1, "#ff5722", null, "abcd", "Movies", 1433985369));
-            categoriesList.add(new Categories(8, 0, "#4caf50", null, "abcd", "Shopping", 1433985369));
-            categoriesList.add(new Categories(9, 0, "#ec407a", null, "abcd", "Travel", 1433985369));
-            categoriesList.add(new Categories(10, 0, "#ec407a", null, "abcds ddssfe fgfsd vkwnsf edivujbifsd jifegnviskj fdvniclsjkfdvn ucsfkjbsvnucl skjdfnvuli kjsfd lnvculfkjdbsn cuils kjfdn", "Foods", 1433985369));
-            setupCategories(categoriesList);
+        ArrayList<Categories> categoriesList = new ArrayList<>();
+        categoriesList.add(new Categories(1, 1, "#1976d2", "food", "Your food is on the way! Enjoy your meal!!", "Food", 1433985369));
+        categoriesList.add(new Categories(2, 0, "#7d7d7d", "cake", "Order best cakes in city", "Cake", 1433985369));
+        categoriesList.add(new Categories(3, 0, "#f44336", "groceries", "Running out of thing, but no time", "Groceries", 1433985369));
+        categoriesList.add(new Categories(4, 1, "#3f5185", "hotel", "You ask, we find", "Hotel", 1433985369));
+        categoriesList.add(new Categories(5, 0, "#ff9800", "mobile", "Low balance!!", "Mobile", 1433985369));
+        categoriesList.add(new Categories(6, 1, "#ff5722", "movies", "Book tickets for your favorite movie", "Movies", 1433985369));
+        categoriesList.add(new Categories(7, 0, "#4caf50", "shopping", "Its fun for someone", "Shopping", 1433985369));
+        categoriesList.add(new Categories(8, 0, "#ec407a", "travel", "Going some where", "Travel", 1433985369));
+        categoriesList.add(new Categories(9, 0, "#009688", "misc", "Whatever", "Misc", 1433985369));
+        setupCategories(categoriesList);
 //        } else {
 //            startActivity(new Intent(this, RegisterActivity.class));
 //            finish();
@@ -75,7 +73,6 @@ public class MainActivity extends GenieBaseActivity {
     }
 
     /**
-     *
      * @param categoriesList
      */
     private void setupCategories(ArrayList<Categories> categoriesList) {
@@ -93,7 +90,6 @@ public class MainActivity extends GenieBaseActivity {
     }
 
     /**
-     *
      * @param menu
      * @return
      */
@@ -105,7 +101,6 @@ public class MainActivity extends GenieBaseActivity {
     }
 
     /**
-     *
      * @param item
      * @return
      */
