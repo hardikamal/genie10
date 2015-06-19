@@ -22,7 +22,7 @@
     <string name="getstartedcaps">GET STARTED</string>
     <string name="pleaseentername">Please Enter Name</string>
     <string name="pleaseentervalidnumber">Please Enter Valid Number</string>
-    <string name="registeringuser">Registering User...</string>
+    <string name="registeringuser">Setting you up</string>
     <string name="unexpectederror">Unexpected Error Try Again</string>
     <string name="title_activity_chat">Chat Activity</string>
 

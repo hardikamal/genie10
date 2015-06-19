@@ -71,8 +71,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:singleLine="true"
                             android:gravity="center"
+                            android:singleLine="true"
                             android:text="@string/subText" />
 
                         <Space
@@ -89,12 +89,10 @@
                             android:inputType="textCapWords"
                             android:maxLength="50"
                             android:singleLine="true"
-                            android:textColor="@color/colorPrimary"
                             app:met_floatingLabel="highlight"
                             app:met_iconLeft="@drawable/ic_person_black_24dp"
                             app:met_iconPadding="0dp"
-                            app:met_maxCharacters="50"
-                            app:met_textColor="@color/colorPrimary" />
+                            app:met_maxCharacters="50" />
 
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/number"
@@ -109,8 +107,7 @@
                             app:met_floatingLabel="highlight"
                             app:met_iconLeft="@drawable/ic_call_black_24dp"
                             app:met_iconPadding="0dp"
-                            app:met_maxCharacters="10"
-                            app:met_textColor="@color/colorPrimary" />
+                            app:met_maxCharacters="10" />
 
                         <com.getgenieapp.android.CustomViews.Button.ButtonRectangle
                             android:id="@+id/getStarted"

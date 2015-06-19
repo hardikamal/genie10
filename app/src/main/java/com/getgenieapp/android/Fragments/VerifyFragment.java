@@ -161,10 +161,10 @@ public class VerifyFragment extends GenieFragment {
                     InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     in.hideSoftInputFromWindow(char4.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     parentLoadingView.setLoading(true);
-                    parentLoadingView.setText("Verifying User...");
-                    String code = char1.getText().toString().trim()+
-                            char2.getText().toString().trim()+
-                            char3.getText().toString().trim()+
+                    parentLoadingView.setText("Verifying...");
+                    String code = char1.getText().toString().trim() +
+                            char2.getText().toString().trim() +
+                            char3.getText().toString().trim() +
                             char4.getText().toString().trim();
                     goNext(code);
                 }
