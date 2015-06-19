@@ -13,7 +13,9 @@ import de.halfbit.tinybus.TinyBus;
 public class GenieFragment extends Fragment {
     public Gson gson;
     public GenieApplication genieApplication;
-    public FontChangeCrawler fontChangeCrawler;
+    public FontChangeCrawler fontChangeCrawlerRegular;
+    public FontChangeCrawler fontChangeCrawlerMedium;
+    public FontChangeCrawler fontChangeCrawlerLight;
     public SecurePreferences sharedPreferences;
     public Logging logging;
     public TinyBus mBus;
@@ -24,7 +26,9 @@ public class GenieFragment extends Fragment {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
         sharedPreferences = genieApplication.getSecurePrefs();
-        fontChangeCrawler = genieApplication.getFontChangeCrawler();
+        fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
+        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
+        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();
         gson = new Gson();

@@ -55,7 +55,6 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         setContentView(R.layout.activity_register);
 
         startFragment(R.id.body, new RegisterFragment());
-        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @Override

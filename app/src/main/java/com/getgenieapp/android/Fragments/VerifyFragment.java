@@ -84,7 +84,7 @@ public class VerifyFragment extends GenieFragment {
         moveToNextMech();
         uiHelpers = new UIHelpers();
         subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.verifycodetext), uiHelpers.getXYPixels(getActivity()).x / 4));
-        fontChangeCrawler.replaceFonts((ViewGroup) rootView);
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 
@@ -98,6 +98,7 @@ public class VerifyFragment extends GenieFragment {
                     logging.LogV("Char 1", "Text length 1");
                     char2.requestFocus();
                 }
+                checkFields();
             }
 
             public void beforeTextChanged(CharSequence s, int start,
@@ -118,6 +119,7 @@ public class VerifyFragment extends GenieFragment {
                     logging.LogV("Char 2", "Text length 1");
                     char3.requestFocus();
                 }
+                checkFields();
             }
 
             public void beforeTextChanged(CharSequence s, int start,
@@ -138,6 +140,7 @@ public class VerifyFragment extends GenieFragment {
                     logging.LogV("Char 3", "Text length 1");
                     char4.requestFocus();
                 }
+                checkFields();
             }
 
             public void beforeTextChanged(CharSequence s, int start,
@@ -153,22 +156,12 @@ public class VerifyFragment extends GenieFragment {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 logging.LogV("Char 4", "on Text Changed");
-                if (char4.getText().toString().trim().length() == entryLength
-                        && char1.getText().toString().trim().length() == entryLength
-                        && char2.getText().toString().trim().length() == entryLength
-                        && char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
+                if (char4.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
-                    logging.LogV("Char", "Texts length 1");
-                    InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(char4.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    parentLoadingView.setLoading(true);
-                    parentLoadingView.setText("Verifying...");
-                    String code = char1.getText().toString().trim() +
-                            char2.getText().toString().trim() +
-                            char3.getText().toString().trim() +
-                            char4.getText().toString().trim();
-                    goNext(code);
+                    logging.LogV("Char 1", "Text length 1");
+                    char1.requestFocus();
                 }
+                checkFields();
             }
 
             public void beforeTextChanged(CharSequence s, int start,
@@ -272,5 +265,25 @@ public class VerifyFragment extends GenieFragment {
         public void onSuccess(Verify verify);
 
         public void onError(Verify verify);
+    }
+
+    public void checkFields()
+    {
+        if (char4.getText().toString().trim().length() == entryLength
+                && char1.getText().toString().trim().length() == entryLength
+                && char2.getText().toString().trim().length() == entryLength
+                && char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
+        {
+            logging.LogV("Char", "Texts length 1");
+            InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(char4.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            parentLoadingView.setLoading(true);
+            parentLoadingView.setText("Verifying...");
+            String code = char1.getText().toString().trim() +
+                    char2.getText().toString().trim() +
+                    char3.getText().toString().trim() +
+                    char4.getText().toString().trim();
+            goNext(code);
+        }
     }
 }

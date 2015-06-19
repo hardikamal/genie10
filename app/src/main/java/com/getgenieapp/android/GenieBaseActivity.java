@@ -17,7 +17,9 @@ public class GenieBaseActivity extends AppCompatActivity {
     public Gson gson;
     public GenieApplication genieApplication;
     public SecurePreferences sharedPreferences;
-    public FontChangeCrawler fontChangeCrawler;
+    public FontChangeCrawler fontChangeCrawlerRegular;
+    public FontChangeCrawler fontChangeCrawlerMedium;
+    public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
 
@@ -26,7 +28,9 @@ public class GenieBaseActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
-        fontChangeCrawler = genieApplication.getFontChangeCrawler();
+        fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
+        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
+        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         logging = genieApplication.getLoggingBuilder().setUp();
         sharedPreferences = genieApplication.getSecurePrefs();
         mBus = genieApplication.getBus();

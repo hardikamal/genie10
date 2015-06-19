@@ -40,7 +40,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         address.setText("India");
 
 //        userPicture.setImageBitmap(new GraphicsUtil().getCircleBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_person_white_24dp), R.dimen.profilepic));
-        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @OnClick(R.id.orderdetails)

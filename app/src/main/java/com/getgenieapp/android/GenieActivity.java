@@ -17,20 +17,22 @@ public class GenieActivity extends Activity {
     public Gson gson;
     public SecurePreferences sharedPreferences;
     public GenieApplication genieApplication;
-    public FontChangeCrawler fontChangeCrawler;
+    public FontChangeCrawler fontChangeCrawlerRegular;
+    public FontChangeCrawler fontChangeCrawlerMedium;
+    public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
 
     /**
-     *
      * @param savedInstance
      */
     @Override
-    protected void onCreate(Bundle savedInstance)
-    {
+    protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
-        fontChangeCrawler = genieApplication.getFontChangeCrawler();
+        fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
+        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
+        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         sharedPreferences = genieApplication.getSecurePrefs();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();

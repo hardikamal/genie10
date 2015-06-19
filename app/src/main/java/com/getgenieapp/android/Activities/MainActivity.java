@@ -37,7 +37,7 @@ public class MainActivity extends GenieBaseActivity {
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);
         loadCategories();
-        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void loadCategories() {

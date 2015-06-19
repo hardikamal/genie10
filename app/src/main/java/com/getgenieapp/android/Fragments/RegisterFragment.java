@@ -28,6 +28,7 @@ import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.Extras.UIHelpers;
@@ -114,7 +115,7 @@ public class RegisterFragment extends GenieFragment {
                 return false;
             }
         });
-        fontChangeCrawler.replaceFonts((ViewGroup) rootView);
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 

@@ -117,7 +117,7 @@ public class SplashScreenActivity extends GenieActivity {
 //            logging.LogD("Internet", "Show Alert");
 //            showAlertToUser();
 //        }
-        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void showAlertToUser() {

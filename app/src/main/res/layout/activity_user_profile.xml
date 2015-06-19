@@ -29,9 +29,10 @@
 
                 <ImageButton
                     android:id="@+id/userPicture"
-                    android:background="@drawable/ic_person_white_48dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_person_white_48dp" />
 
             </LinearLayout>
 
@@ -40,10 +41,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:background="@color/generalTextColor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
+        android:background="@color/generalTextColor"
         android:orientation="vertical">
 
         <LinearLayout
@@ -86,8 +87,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Contact Details"
-                android:visibility="gone"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -258,16 +259,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:gravity="end"
-                android:layout_weight="1.5">
+                android:layout_weight="1.5"
+                android:gravity="end">
 
                 <com.getgenieapp.android.CustomViews.Button.ButtonFlat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/update"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

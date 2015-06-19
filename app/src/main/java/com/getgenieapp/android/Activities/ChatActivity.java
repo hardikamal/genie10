@@ -61,7 +61,7 @@ public class ChatActivity extends GenieBaseActivity {
         ArrayList<Messages> messages = new ArrayList<>();
         recyclerView.setAdapter(new CustomChatAdapter(messages, this));
 
-        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void setThemeBasedOnSelection() {
