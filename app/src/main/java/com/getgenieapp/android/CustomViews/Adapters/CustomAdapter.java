@@ -1,6 +1,8 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -13,13 +15,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.getgenieapp.android.Activities.ChatActivity;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by Manny on 6/16/2015.
@@ -41,28 +48,29 @@ public class CustomAdapter extends RecyclerView.Adapter {
     }
 
     static class ViewHolderMain extends RecyclerView.ViewHolder {
+        @InjectView(R.id.line1)
         TextView line1;
+        @InjectView(R.id.line2)
         TextView line2;
+        @InjectView(R.id.topbar)
         RelativeLayout topbar;
+        @InjectView(R.id.middleBar)
         LinearLayout middlebar;
+        @InjectView(R.id.lowerBar)
         LinearLayout lowerbar;
+        @InjectView(R.id.emptyspace)
         View emptyspace;
+        @InjectView(R.id.title)
         TextView title;
+        @InjectView(R.id.image)
         ImageView image;
+        @InjectView(R.id.notification_count)
         Button notification_count;
         ViewTreeObserver vto;
 
         public ViewHolderMain(View itemView) {
             super(itemView);
-            topbar = (RelativeLayout) itemView.findViewById(R.id.topbar);
-            middlebar = (LinearLayout) itemView.findViewById(R.id.middleBar);
-            lowerbar = (LinearLayout) itemView.findViewById(R.id.lowerBar);
-            emptyspace = (View) itemView.findViewById(R.id.emptyspace);
-            title = (TextView) itemView.findViewById(R.id.title);
-            line1 = (TextView) itemView.findViewById(R.id.line1);
-            line2 = (TextView) itemView.findViewById(R.id.line2);
-            image = (ImageView) itemView.findViewById(R.id.image);
-            notification_count = (Button) itemView.findViewById(R.id.notification_count);
+            ButterKnife.inject(this, itemView);
             vto = itemView.getViewTreeObserver();
         }
 
@@ -91,16 +99,37 @@ public class CustomAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         logging.LogV("Item Position Main Activity " + viewType);
+        ViewHolderMain viewHolderMain;
         if (viewType % 2 == 0)
-            return new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.gridlayout_left, parent, false));
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.gridlayout_left, parent, false));
         else
-            return new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.gridlayout_right, parent, false));
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.gridlayout_right, parent, false));
+        return viewHolderMain;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Categories category = categories.get(position);
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
+
+        viewHolderMain.topbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChatActivity(category);
+            }
+        });
+        viewHolderMain.middlebar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChatActivity(category);
+            }
+        });
+        viewHolderMain.lowerbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToChatActivity(category);
+            }
+        });
 
         viewHolderMain.topbar.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.middlebar.setBackgroundColor(Color.parseColor(category.getBg_color()));
@@ -124,8 +153,19 @@ public class CustomAdapter extends RecyclerView.Adapter {
         viewHolderMain.showText(category.getDescription());
     }
 
+    private void goToChatActivity(Categories category) {
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra("title", category.getName());
+        intent.putExtra("color", category.getBg_color());
+        ((Activity) context).startActivity(intent);
+    }
+
     @Override
     public int getItemCount() {
         return categories.size();
+    }
+
+    private Categories getCategory(int position) {
+        return categories.get(position);
     }
 }
