@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -59,6 +60,8 @@ public class ChatActivity extends GenieBaseActivity {
 
         ArrayList<Messages> messages = new ArrayList<>();
         recyclerView.setAdapter(new CustomChatAdapter(messages, this));
+
+        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     private void setThemeBasedOnSelection() {

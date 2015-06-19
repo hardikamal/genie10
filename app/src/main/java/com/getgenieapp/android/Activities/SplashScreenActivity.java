@@ -98,24 +98,25 @@ public class SplashScreenActivity extends GenieActivity {
             version.setVisibility(View.GONE);
         }
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
-        if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
-            logging.LogD("Internet", "Available");
-            if (checkPlayServices()) {
-                logging.LogD("Play Services", "Up to date");
-                // Start IntentService to register this application with GCM.
-                logging.LogD("Register", "GCM Start");
-                if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-                    Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
-                    startService(intent);
-                } else {
-                    logging.LogV("Register", "Token Not found");
-                    runToRegisterPage();
-                }
+        //ToDo check later
+//        if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
+        logging.LogD("Internet", "Available");
+        if (checkPlayServices()) {
+            logging.LogD("Play Services", "Up to date");
+            // Start IntentService to register this application with GCM.
+            logging.LogD("Register", "GCM Start");
+            if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+                Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
+                startService(intent);
+            } else {
+                logging.LogV("Register", "Token Not found");
+                runToRegisterPage();
             }
-        } else {
-            logging.LogD("Internet", "Show Alert");
-            showAlertToUser();
         }
+//        } else {
+//            logging.LogD("Internet", "Show Alert");
+//            showAlertToUser();
+//        }
         fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 

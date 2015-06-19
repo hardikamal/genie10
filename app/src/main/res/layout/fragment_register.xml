@@ -29,10 +29,11 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+            <!--<LinearLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@android:color/transparent" />-->
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -55,12 +56,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
                         android:orientation="vertical">
 
                         <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
                             android:id="@+id/topText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:singleLine="true"
                             android:text="@string/topText"
                             android:textColor="@color/colorPrimary" />
@@ -121,10 +125,11 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+            <!--<LinearLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@android:color/transparent" />-->
         </LinearLayout>
 
         <LinearLayout

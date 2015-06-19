@@ -84,6 +84,7 @@ public class VerifyFragment extends GenieFragment {
         moveToNextMech();
         uiHelpers = new UIHelpers();
         subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.verifycodetext), uiHelpers.getXYPixels(getActivity()).x / 4));
+        fontChangeCrawler.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 

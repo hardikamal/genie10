@@ -186,8 +186,10 @@ public class RegisterFragment extends GenieFragment {
             parentLoadingView.setLoading(true);
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(getStarted.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
-            getActivity().startService(intent);
+//            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
+//            getActivity().startService(intent);
+            // todo remove below code
+            RegisterUser();
         }
     }
 

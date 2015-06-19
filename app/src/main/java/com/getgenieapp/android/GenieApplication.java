@@ -29,7 +29,7 @@ public class GenieApplication extends Application {
     public void onCreate() {
         super.onCreate();
         genieApplication = this;
-        fontChanger = new FontChangeCrawler(getAssets(), "custom_regular.otf");
+        fontChanger = new FontChangeCrawler(getAssets(), "Roboto-Regular.ttf");
         loggingBuilder = new LoggingBuilder(getApplicationContext())
                 .setCanDisplayOnLogCat(true)
                 .setWriteToLog(false)

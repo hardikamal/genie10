@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.view.ViewGroup;
 
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Fragments.RegisterFragment;
@@ -54,6 +55,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         setContentView(R.layout.activity_register);
 
         startFragment(R.id.body, new RegisterFragment());
+        fontChangeCrawler.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @Override
