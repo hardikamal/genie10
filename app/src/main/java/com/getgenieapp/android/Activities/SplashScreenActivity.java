@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.Extras.Utils;
@@ -33,7 +34,7 @@ public class SplashScreenActivity extends GenieActivity {
     @InjectView(R.id.version)
     TextView version;
     @InjectView(R.id.companyname)
-    TextView companyName;
+    AutoResizeTextView companyName;
     @InjectView(R.id.copyrights)
     TextView copyrights;
     @InjectView(R.id.welcomemsg)
@@ -63,6 +64,7 @@ public class SplashScreenActivity extends GenieActivity {
 
         uiHelpers = new UIHelpers();
         welcomemsg.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.welcomeMessage), uiHelpers.getXYPixels(this).x / 4));
+        companyName.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.companyName), uiHelpers.getXYPixels(this).x / 4));
 
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {

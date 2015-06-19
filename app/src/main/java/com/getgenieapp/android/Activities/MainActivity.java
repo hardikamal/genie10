@@ -45,17 +45,15 @@ public class MainActivity extends GenieBaseActivity {
 //        if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
 
         // ToDo add volley
-
         ArrayList<Categories> categoriesList = new ArrayList<>();
-        categoriesList.add(new Categories(1, 1, "#1976d2", "food", "Your food is on the way! Enjoy your meal!!", "Food", 1433985369));
-        categoriesList.add(new Categories(2, 0, "#7d7d7d", "cake", "Order best cakes in city", "Cake", 1433985369));
-        categoriesList.add(new Categories(3, 0, "#f44336", "groceries", "Running out of thing, but no time", "Groceries", 1433985369));
-        categoriesList.add(new Categories(4, 1, "#3f5185", "hotel", "You ask, we find", "Hotel", 1433985369));
-        categoriesList.add(new Categories(5, 0, "#ff9800", "mobile", "Low balance!!", "Mobile", 1433985369));
-        categoriesList.add(new Categories(6, 1, "#ff5722", "movies", "Book tickets for your favorite movie", "Movies", 1433985369));
-        categoriesList.add(new Categories(7, 0, "#4caf50", "shopping", "Its fun for someone", "Shopping", 1433985369));
-        categoriesList.add(new Categories(8, 0, "#ec407a", "travel", "Going some where", "Travel", 1433985369));
-        categoriesList.add(new Categories(9, 0, "#009688", "misc", "Whatever", "Misc", 1433985369));
+        categoriesList.add(new Categories(1, 1, "#0088CC", "food", "Eat More, Eat Faster, Eat Healthier.", "Food", 1433985369));
+        categoriesList.add(new Categories(2, 0, "#444444", "cake", "Ordering a cake is now a piece of cake.", "Cake", 1433985369));
+        categoriesList.add(new Categories(3, 0, "#f44336", "groceries", "Fresh supplies for you refrigerator.", "Groceries", 1433985369));
+        categoriesList.add(new Categories(4, 1, "#3f5185", "hotel", "Need a place to stay, it's a chat away.", "Hotel", 1433985369));
+        categoriesList.add(new Categories(5, 0, "#ff9800", "mobile", "Ran out of Balance? Balance is very important in life.", "Recharge", 1433985369));
+        categoriesList.add(new Categories(6, 1, "#ff5722", "movies", "Best price, Seat and Timing make for a great movie experience.", "Movies", 1433985369));
+        categoriesList.add(new Categories(7, 0, "#4caf50", "shopping", "We get you what you want, no hassle, no clutter and best prices.", "Shopping", 1433985369));
+        categoriesList.add(new Categories(8, 0, "#ec407a", "travel", "It's a flight, it's a bus, it's a train.", "Travel", 1433985369));
         setupCategories(categoriesList);
 //        } else {
 //            startActivity(new Intent(this, RegisterActivity.class));

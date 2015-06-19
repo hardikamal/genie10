@@ -10,12 +10,9 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/orderlist"
+            android:id="@+id/orderList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:divider="@null"
-            android:dividerHeight="0dp"/>
+            android:layout_height="match_parent" />
     </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
 
 </RelativeLayout>

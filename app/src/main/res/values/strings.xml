@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Genie</string>
-    <string name="companyName">Genie</string>
+    <string name="companyName">GENIE</string>
     <string name="version">0.0.0.0</string>
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to Genie</string>
@@ -42,4 +42,5 @@
     <string name="buynow">Buy Now</string>
     <string name="typeamessage">Type a message</string>
     <string name="resendcoderequest">Requesting Server to resend code</string>
+    <string name="code91">+91</string>
 </resources>

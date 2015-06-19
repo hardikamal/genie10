@@ -1,15 +1,12 @@
 package com.getgenieapp.android.Activities;
 
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
 
-import com.getgenieapp.android.CustomViews.Adapters.CustomAdapter;
 import com.getgenieapp.android.CustomViews.Adapters.CustomOrderAdapter;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.GenieBaseActivity;
@@ -26,7 +23,7 @@ import butterknife.InjectView;
 public class OrderDetailsActivity extends GenieBaseActivity {
     @InjectView(R.id.loadingview)
     LoadingView loadingView;
-    @InjectView(R.id.orderlist)
+    @InjectView(R.id.orderList)
     RecyclerView orderList;
 
     List<Order> orders = new ArrayList<>();

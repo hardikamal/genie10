@@ -23,7 +23,7 @@
             <ImageView
                 android:id="@+id/categoryimage"
                 android:layout_width="80dp"
-                android:layout_height="50dp"
+                android:layout_height="80dp"
                 android:layout_marginBottom="50dp"
                 android:layout_marginTop="50dp"
                 android:adjustViewBounds="false"
@@ -96,7 +96,7 @@
                     android:id="@+id/repeatorder"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="20dp"
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical|end"
                     android:text="@string/repeatorder"
@@ -107,14 +107,14 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="3dip"
-            android:background="@drawable/shadow" />
-    </LinearLayout>
+        <!--<View-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="3dip"-->
+            <!--android:background="@drawable/shadow" />-->
+    <!--</LinearLayout>-->
 
 </LinearLayout>

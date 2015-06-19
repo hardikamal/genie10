@@ -1,6 +1,5 @@
 package com.getgenieapp.android.Activities;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,7 +53,6 @@ public class ChatActivity extends GenieBaseActivity {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        setTheme(R.style.MyMaterialThemeWithToolBar7d7d7d);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -64,8 +62,8 @@ public class ChatActivity extends GenieBaseActivity {
     }
 
     private void setThemeBasedOnSelection() {
-        if (color.equalsIgnoreCase("#7d7d7d"))
-            setTheme(R.style.MyMaterialThemeWithToolBar7d7d7d);
+        if (color.equalsIgnoreCase("#444444"))
+            setTheme(R.style.MyMaterialThemeWithToolBar444444);
         else if (color.equalsIgnoreCase("#f44336")) {
             setTheme(R.style.MyMaterialThemeWithToolBarf44336);
         } else if (color.equalsIgnoreCase("#3f5185")) {
@@ -80,12 +78,14 @@ public class ChatActivity extends GenieBaseActivity {
             setTheme(R.style.MyMaterialThemeWithToolBarec407a);
         } else if (color.equalsIgnoreCase("#009688")) {
             setTheme(R.style.MyMaterialThemeWithToolBar009688);
+        } else if (color.equalsIgnoreCase("#0088CC")) {
+            setTheme(R.style.MyMaterialThemeWithToolBar0088cc);
         }
     }
 
     private void setSendButtonBasedOnSelection() {
-        if (color.equalsIgnoreCase("#7d7d7d"))
-            sendBackground.setBackgroundResource(R.drawable.bubble7d7d7d);
+        if (color.equalsIgnoreCase("#444444"))
+            sendBackground.setBackgroundResource(R.drawable.bubble444444);
         else if (color.equalsIgnoreCase("#f44336")) {
             sendBackground.setBackgroundResource(R.drawable.bubblef44336);
         } else if (color.equalsIgnoreCase("#3f5185")) {
@@ -100,6 +100,8 @@ public class ChatActivity extends GenieBaseActivity {
             sendBackground.setBackgroundResource(R.drawable.bubbleec407a);
         } else if (color.equalsIgnoreCase("#009688")) {
             sendBackground.setBackgroundResource(R.drawable.bubble009688);
+        } else if (color.equalsIgnoreCase("#0088CC")) {
+            sendBackground.setBackgroundResource(R.drawable.bubble0088cc);
         }
     }
 

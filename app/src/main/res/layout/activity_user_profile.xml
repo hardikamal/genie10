@@ -58,6 +58,7 @@
                 android:id="@+id/orderdetailsbutton"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
+                android:alpha="0.5"
                 android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/ic_list_black_24dp" />
 
@@ -67,8 +68,8 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:gravity="start|center_vertical"
+                android:inputType="text"
                 android:text="@string/orderdetails"
-                android:textColorHint="@color/colorPrimaryDark"
                 android:textSize="@dimen/general_text_size" />
 
         </LinearLayout>
@@ -85,6 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Contact Details"
+                android:visibility="gone"
                 android:textColor="@color/colorPrimary" />
 
             <LinearLayout
@@ -116,8 +118,8 @@
                         android:inputType="number"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="+91"
-                        android:textColor="@color/colorPrimary"
+                        android:text="@string/code91"
+                        android:textColor="#000"
                         android:textColorHint="@color/colorPrimaryDark" />
 
                     <EditText
@@ -133,7 +135,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="@string/defaultnumber"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark" />
                 </LinearLayout>
 
@@ -167,7 +169,7 @@
                         android:inputType="textPersonName"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark" />
                 </LinearLayout>
 
@@ -200,7 +202,7 @@
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark" />
                 </LinearLayout>
 
@@ -235,7 +237,7 @@
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark" />
 
                     <Button
@@ -257,7 +259,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="end"
-                android:layout_weight="1">
+                android:layout_weight="1.5">
 
                 <com.getgenieapp.android.CustomViews.Button.ButtonFlat
                     android:layout_width="wrap_content"
