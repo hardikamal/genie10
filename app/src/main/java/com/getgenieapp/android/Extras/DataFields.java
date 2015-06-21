@@ -19,6 +19,7 @@ public class DataFields {
     public static final String GCM_TOKEN = "gcm_token";
     public static final String UPDATEGCMURL = "/URL";
     public static final String REGISTERURL = getServerUrl()+"/URL";
+    public static final String CHAT_SERVER_URL = "http://chat.socket.io";
 
     public static String getServerUrl() {
         return null;
