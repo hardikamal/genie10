@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginEnd="10dp"
-    android:layout_marginLeft="100dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginStart="100dp"
+    android:layout_marginEnd="@dimen/_10sdp"
+    android:layout_marginLeft="@dimen/_100sdp"
+    android:layout_marginRight="@dimen/_10sdp"
+    android:layout_marginStart="@dimen/_100sdp"
     android:gravity="right"
     android:orientation="vertical"
     android:padding="5dp">
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/sentbubble"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="@dimen/_5sdp">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapview"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/generalTextColor"
-            android:textSize="@dimen/text_size" />
+            android:textSize="@dimen/_15sdp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -46,23 +46,23 @@
                 android:id="@+id/lastline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:paddingBottom="@dimen/_10sdp"
                 android:singleLine="true"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size" />
+                android:textSize="@dimen/_15sdp" />
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:layout_toEndOf="@+id/lastline"
                 android:layout_toRightOf="@+id/lastline"
-                android:paddingTop="10dp"
+                android:paddingTop="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="16dp"
+                android:textSize="@dimen/_16sdp"
                 android:textStyle="italic" />
         </RelativeLayout>
     </LinearLayout>

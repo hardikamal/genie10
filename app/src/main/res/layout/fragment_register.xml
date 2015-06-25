@@ -30,10 +30,10 @@
             android:orientation="horizontal">
 
             <!--<LinearLayout-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@android:color/transparent" />-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@android:color/transparent" />-->
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -56,9 +56,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="30dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/_30sdp"
+                        android:paddingRight="@dimen/_30sdp">
 
                         <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
                             android:id="@+id/topText"
@@ -73,21 +73,22 @@
                             android:id="@+id/subText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="@dimen/_25sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
                             android:gravity="center"
                             android:singleLine="true"
                             android:text="@string/subText" />
 
                         <Space
-                            android:layout_width="1dp"
-                            android:layout_height="20dp" />
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_20sdp" />
 
                         <com.rengwuxian.materialedittext.MaterialEditText
                             android:id="@+id/name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="-10dp"
+                            android:layout_marginLeft="@dimen/_minus5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:hint="@string/name"
                             android:imeOptions="actionNext"
                             android:inputType="textCapWords"
@@ -102,7 +103,8 @@
                             android:id="@+id/number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="-10dp"
+                            android:layout_marginLeft="@dimen/_minus5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:hint="@string/number"
                             android:imeOptions="actionDone"
                             android:inputType="phone"
@@ -126,10 +128,10 @@
             </LinearLayout>
 
             <!--<LinearLayout-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@android:color/transparent" />-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@android:color/transparent" />-->
         </LinearLayout>
 
         <LinearLayout

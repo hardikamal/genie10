@@ -60,15 +60,15 @@
                         <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
                             android:id="@+id/subText"
                             android:layout_width="match_parent"
-                            android:singleLine="true"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:singleLine="true"
                             android:text="@string/verifycodetext" />
 
                         <Space
-                            android:layout_width="1dp"
-                            android:layout_height="50dp" />
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_30sdp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -78,57 +78,57 @@
 
                             <EditText
                                 android:id="@+id/char1"
-                                android:maxLength="1"
                                 android:layout_width="0dp"
-                                android:imeOptions="actionNext"
-                                android:gravity="center"
-                                android:inputType="number"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLength="1" />
 
                             <EditText
                                 android:id="@+id/char2"
-                                android:maxLength="1"
                                 android:layout_width="0dp"
-                                android:imeOptions="actionNext"
-                                android:gravity="center"
-                                android:inputType="number"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLength="1" />
 
 
                             <EditText
                                 android:id="@+id/char3"
-                                android:maxLength="1"
                                 android:layout_width="0dp"
-                                android:imeOptions="actionNext"
-                                android:gravity="center"
-                                android:inputType="number"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:maxLength="1" />
 
                             <EditText
                                 android:id="@+id/char4"
-                                android:maxLength="1"
                                 android:layout_width="0dp"
-                                android:imeOptions="actionDone"
-                                android:gravity="center"
-                                android:inputType="number"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"/>
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:imeOptions="actionDone"
+                                android:inputType="number"
+                                android:maxLength="1" />
 
 
                         </LinearLayout>
 
                         <Space
-                            android:layout_width="1dp"
-                            android:layout_height="50dp" />
+                            android:layout_width="@dimen/_1sdp"
+                            android:layout_height="@dimen/_30sdp" />
 
                         <com.getgenieapp.android.CustomViews.Button.ButtonFlat
                             android:id="@+id/tapToResend"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
+                            android:padding="@dimen/_10sdp"
                             android:text="@string/taptoresend"
                             android:textColor="@color/colorPrimary" />
                     </LinearLayout>

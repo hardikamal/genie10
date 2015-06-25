@@ -14,23 +14,10 @@
 
         <com.getgenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate
             android:id="@+id/progressBar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
             android:layout_gravity="center"
             android:background="#1E88E5" />
-
-        <!--<com.getgenieapp.android.Extras.ProgressWheel-->
-            <!--android:id="@+id/progressBar"-->
-            <!--android:layout_width="100dp"-->
-            <!--android:layout_height="100dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--ProgressWheel:fillRadius="true"-->
-            <!--ProgressWheel:rimColor="#00000000"-->
-            <!--ProgressWheel:barColor="@color/colorPrimary"-->
-            <!--ProgressWheel:barLength="5dp"-->
-            <!--ProgressWheel:barWidth="10dp"-->
-            <!--ProgressWheel:rimWidth="10dp"-->
-            <!--ProgressWheel:progressIndeterminate="true"/>-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,7 +25,7 @@
             android:visibility="gone"
             tools:visibility="visible"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/_10sdp"
             tools:text="Loading..."
             android:textColor="@color/colorPrimary"
             android:id="@+id/LoadingView_text"

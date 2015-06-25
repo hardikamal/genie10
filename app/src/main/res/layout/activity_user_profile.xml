@@ -15,15 +15,16 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/bottomline"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/generalTextColor" />
 
             <LinearLayout
-                android:layout_width="@dimen/profilepic"
-                android:layout_height="@dimen/profilepic"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_30sdp"
                 android:background="@drawable/bluecircle"
                 android:gravity="center">
 
@@ -31,7 +32,7 @@
                     android:id="@+id/userPicture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="@dimen/_10sdp"
                     android:background="@drawable/ic_person_white_48dp" />
 
             </LinearLayout>
@@ -50,14 +51,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/orderdetailsbutton"
-                android:layout_width="40dp"
+                android:layout_width="@dimen/_40sdp"
                 android:layout_height="match_parent"
                 android:alpha="0.5"
                 android:background="@android:color/transparent"
@@ -71,15 +72,15 @@
                 android:gravity="start|center_vertical"
                 android:inputType="text"
                 android:text="@string/orderdetails"
-                android:textSize="@dimen/general_text_size" />
+                android:textSize="@dimen/_15sdp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
             android:layout_weight="5"
             android:orientation="vertical">
 
@@ -103,7 +104,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:layout_width="40dp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
@@ -121,7 +122,8 @@
                         android:singleLine="true"
                         android:text="@string/code91"
                         android:textColor="#000"
-                        android:textColorHint="@color/colorPrimaryDark" />
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_15sdp" />
 
                     <EditText
                         android:id="@+id/number"
@@ -137,13 +139,14 @@
                         android:singleLine="true"
                         android:text="@string/defaultnumber"
                         android:textColor="@color/text_color"
-                        android:textColorHint="@color/colorPrimaryDark" />
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_15sdp" />
                 </LinearLayout>
 
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/_1sdp"
                     android:background="@color/colorPrimary" />
 
                 <LinearLayout
@@ -153,7 +156,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:layout_width="40dp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
@@ -171,7 +174,8 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/text_color"
-                        android:textColorHint="@color/colorPrimaryDark" />
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_15sdp" />
                 </LinearLayout>
 
                 <View
@@ -186,7 +190,7 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:layout_width="40dp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
@@ -204,7 +208,8 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/text_color"
-                        android:textColorHint="@color/colorPrimaryDark" />
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_15sdp" />
                 </LinearLayout>
 
                 <View
@@ -219,9 +224,8 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
                         android:drawableLeft="@drawable/ic_location_on_black_24dp"
@@ -229,7 +233,7 @@
 
                     <EditText
                         android:id="@+id/address"
-                        android:layout_width="100dp"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="3"
@@ -239,12 +243,12 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:textColor="@color/text_color"
-                        android:textColorHint="@color/colorPrimaryDark" />
+                        android:textColorHint="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_15sdp" />
 
                     <Button
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/_40sdp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
                         android:drawableRight="@drawable/ic_gps_fixed_black_24dp" />
