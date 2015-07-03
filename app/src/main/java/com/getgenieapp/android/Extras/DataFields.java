@@ -14,14 +14,19 @@ public class DataFields {
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
 
     public static final String TOKEN = "token";
-    public static final String PHONENUMBER = "phone_number";
-    public static final String USERID = "user_id";
     public static final String GCM_TOKEN = "gcm_token";
-    public static final String UPDATEGCMURL = "/URL";
-    public static final String REGISTERURL = getServerUrl()+"/URL";
+
+
+    public static final String UPDATEGCMURL = "/updategcm";
+    public static final String REGISTERURL = "/users";
     public static final String CHAT_SERVER_URL = "http://chat.socket.io";
+    private static final String StagingServer = "http://staging0.getgenieapp.com";
+    private static final String API = "/api";
+    private static final String Version = "/v1";
+    public static final String CountryCode = "+1";
+    public static final String VERIFYURL = "/verifyuser";
 
     public static String getServerUrl() {
-        return null;
+        return StagingServer + API + Version;
     }
 }

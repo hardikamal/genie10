@@ -12,10 +12,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Activities.RegisterActivity;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
@@ -24,6 +28,9 @@ import com.getgenieapp.android.GenieFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -175,44 +182,47 @@ public class VerifyFragment extends GenieFragment {
     }
 
     private void goNext(String code) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(DataFields.SplashScreenGeneralTimeOut);
-                } catch (Exception err) {
-                }
-                ((RegisterActivity) getActivity()).onSuccess(new Verify());
-            }
-        }).start();
-// todo remove upper block
-
-        JSONObject json = new GenieJSON(getActivity());
+        JSONObject json = new JSONObject();
         try {
-            json.put("verify", code);
-            if (json.has(DataFields.TOKEN) && json.getString(DataFields.TOKEN) != null) {
-                logging.LogV("GCM Token", json.getString(DataFields.TOKEN));
-//                JsonObjectRequest req = new JsonObjectRequest(DataFields.REGISTERURL, json,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                parentLoadingView.setLoading(false);
-//                                if (response != null) {
-//                                    ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
-//                                } else {
-//                                    ((RegisterActivity) getActivity()).onError(new Register());
-//                                }
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        ((RegisterActivity) getActivity()).onError(new Register());
-//                    }
-//                });
-//
-//                genieApplication.addToRequestQueue(req);
-            } else {
-                logging.LogE("GCM Token not found");
-            }
+            json.put("verification_code", Integer.parseInt(code));
+            JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.VERIFYURL, json,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            parentLoadingView.setLoading(false);
+                            System.out.println(response.toString());
+                            if (response != null) {
+                                try {
+                                    if (response.has("verified") && response.getBoolean("verified")) {
+                                        ((RegisterActivity) getActivity()).onSuccess(new Verify());
+                                    } else {
+                                        ((RegisterActivity) getActivity()).onError(new Verify());
+                                        SnackBar snackbar = new SnackBar(getActivity(), genieApplication.getString(R.string.wrongverificationcode));
+                                        snackbar.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                ((RegisterActivity) getActivity()).onError(new Verify());
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    ((RegisterActivity) getActivity()).onError(new Register());
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                    return params;
+                }
+            };
+
+            genieApplication.addToRequestQueue(req);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -233,7 +243,7 @@ public class VerifyFragment extends GenieFragment {
         }).start();
 // todo remove upper block
 
-        JSONObject json = new GenieJSON(getActivity());
+        JSONObject json = new JSONObject();
         try {
             if (json.has(DataFields.TOKEN) && json.getString(DataFields.TOKEN) != null) {
                 logging.LogV("Token", json.getString(DataFields.TOKEN));
@@ -267,8 +277,7 @@ public class VerifyFragment extends GenieFragment {
         public void onError(Verify verify);
     }
 
-    public void checkFields()
-    {
+    public void checkFields() {
         if (char4.getText().toString().trim().length() == entryLength
                 && char1.getText().toString().trim().length() == entryLength
                 && char2.getText().toString().trim().length() == entryLength

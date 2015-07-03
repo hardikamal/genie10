@@ -58,8 +58,6 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
-
-        // ToDo Remove this later
         copyrights.setVisibility(View.GONE);
 
         uiHelpers = new UIHelpers();
@@ -76,13 +74,15 @@ public class SplashScreenActivity extends GenieActivity {
                         PreferenceManager.getDefaultSharedPreferences(context);
                 boolean sentToken = sharedPreferences
                         .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                boolean verifyStatus = sharedPreferences
+                        .getBoolean(QuickstartPreferences.VERIFICATION_COMPLETE, false);
                 logging.LogV("Sent To Server", String.valueOf(sentToken));
                 if (sentToken) {
                     logging.LogV("Go to Main Page");
-                    runToMainPage();
+                    runToMainPage(verifyStatus);
                 } else {
                     logging.LogV("Got to Register Page");
-                    runToRegisterPage();
+                    runToRegisterPage(verifyStatus);
                 }
             }
         };
@@ -98,25 +98,24 @@ public class SplashScreenActivity extends GenieActivity {
             version.setVisibility(View.GONE);
         }
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
-        //ToDo check later
-//        if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
-        logging.LogD("Internet", "Available");
-        if (checkPlayServices()) {
-            logging.LogD("Play Services", "Up to date");
-            // Start IntentService to register this application with GCM.
-            logging.LogD("Register", "GCM Start");
-            if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-                Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
-                startService(intent);
-            } else {
-                logging.LogV("Register", "Token Not found");
-                runToRegisterPage();
+        if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
+            logging.LogD("Internet", "Available");
+            if (checkPlayServices()) {
+                logging.LogD("Play Services", "Up to date");
+                // Start IntentService to register this application with GCM.
+                logging.LogD("Register", "GCM Start");
+                if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+                    Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
+                    startService(intent);
+                } else {
+                    logging.LogV("Register", "Token Not found");
+                    runToRegisterPage(true);
+                }
             }
+        } else {
+            logging.LogD("Internet", "Show Alert");
+            showAlertToUser();
         }
-//        } else {
-//            logging.LogD("Internet", "Show Alert");
-//            showAlertToUser();
-//        }
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
@@ -143,35 +142,51 @@ public class SplashScreenActivity extends GenieActivity {
         alert.show();
     }
 
-    void runToRegisterPage() {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
-                    Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
-                } catch (Exception err) {
+    void runToRegisterPage(boolean verified) {
+        if (verified) {
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                        Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                    } catch (Exception err) {
+                    }
+                    logging.LogI("Start Register Activity");
+                    Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
+                    intent.putExtra("page", "Register");
+                    startActivity(intent);
+                    finish();
                 }
-                logging.LogI("Start Register Activity");
-                startActivity(new Intent(SplashScreenActivity.this, RegisterActivity.class));
-//                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                finish();
-            }
-        }).start();
+            }).start();
+        } else {
+            goToVerify();
+        }
     }
 
-    void runToMainPage() {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
-                    Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
-                } catch (Exception err) {
+    private void goToVerify() {
+        Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
+        intent.putExtra("page", "Verify");
+        startActivity(intent);
+        finish();
+    }
+
+    void runToMainPage(boolean verified) {
+        if (verified) {
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                        Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                    } catch (Exception err) {
+                    }
+                    logging.LogI("Start Main Activity");
+                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    finish();
                 }
-                logging.LogI("Start Main Activity");
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                finish();
-            }
-        }).start();
+            }).start();
+        } else {
+            goToVerify();
+        }
     }
 
     protected void onResume() {

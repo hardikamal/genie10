@@ -5,6 +5,17 @@
     android:orientation="vertical"
     tools:context=".ChatActivity">
 
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="fill_parent"
@@ -73,10 +84,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_11sdp"
+                android:layout_marginBottom="@dimen/_11sdp"
+                android:layout_marginRight="@dimen/_9sdp"
+                android:layout_marginEnd="@dimen/_9sdp"
+                android:layout_marginLeft="@dimen/_11sdp"
+                android:layout_marginStart="@dimen/_11sdp"
                 android:background="@drawable/ic_send_white_24dp" />
         </LinearLayout>
 

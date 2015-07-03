@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.util.TypedValue;
 import android.view.View;
@@ -104,5 +106,24 @@ public class Utils {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public String getDeviceSerialNumber()
+    {
+        TelephonyManager tManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        return tManager.getDeviceId();
+    }
+
+//    public String getPhoneNumber()
+//    {
+//        TelephonyManager tManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+//        return tManager.getLine1Number();
+//    }
+
+    public String getMacId()
+    {
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        return info.getMacAddress();
     }
 }

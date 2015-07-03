@@ -21,93 +21,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyMaterialThemeWithToolBar444444" parent="MyMaterialThemeWithToolBar444444.Base"></style>
 
-    <style name="MyMaterialThemeWithToolBar444444.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimary444444</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="subText" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/_10sdp</item>
+        <item name="android:textColor">#ffffff</item>
     </style>
 
-    <style name="MyMaterialThemeWithToolBarff9800" parent="MyMaterialThemeWithToolBarff9800.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBarff9800.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimaryff9800</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBar4caf50" parent="MyMaterialThemeWithToolBar4caf50.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBar4caf50.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimary4caf50</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBarec407a" parent="MyMaterialThemeWithToolBarec407a.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBarec407a.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimaryec407a</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBarff5722" parent="MyMaterialThemeWithToolBarff5722.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBarff5722.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimaryff5722</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBar3f5185" parent="MyMaterialThemeWithToolBar3f5185.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBar3f5185.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimary3f5185</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBar009688" parent="MyMaterialThemeWithToolBar009688.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBar009688.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimary009688</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBarf44336" parent="MyMaterialThemeWithToolBarf44336.Base"></style>
-
-    <style name="MyMaterialThemeWithToolBarf44336.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimaryf44336</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MyMaterialThemeWithToolBar0088cc" parent="MyMaterialThemeWithToolBar0088cc.Base"/>
-
-    <style name="MyMaterialThemeWithToolBar0088cc.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="colorPrimary">@color/colorPrimary0088CC</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
 </resources>

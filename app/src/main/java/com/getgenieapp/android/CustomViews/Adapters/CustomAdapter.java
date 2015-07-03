@@ -156,6 +156,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
     private void goToChatActivity(Categories category) {
         Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra("title", category.getName());
+        intent.putExtra("description", category.getDescription());
         intent.putExtra("color", category.getBg_color());
         ((Activity) context).startActivity(intent);
     }

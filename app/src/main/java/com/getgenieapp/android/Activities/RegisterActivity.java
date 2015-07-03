@@ -3,6 +3,7 @@ package com.getgenieapp.android.Activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.view.ViewGroup;
@@ -19,6 +20,18 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
 
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(myBroadcastReceiver, filter);
+    }
+
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(myBroadcastReceiver);
+    }
+
     private BroadcastReceiver myBroadcastReceiver =
             new BroadcastReceiver() {
                 @Override
@@ -33,7 +46,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                                 String phoneNumber = currentMessage.getDisplayOriginatingAddress();
                                 String senderNum = phoneNumber;
                                 String message = currentMessage.getDisplayMessageBody();
-                                String phrase = "Code : ";
+                                String phrase = "code : ";
                                 if (message.contains(phrase)) {
                                     int index = message.indexOf(phrase);
                                     String code = message.substring(index + phrase.length());
@@ -53,8 +66,10 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        startFragment(R.id.body, new RegisterFragment());
+        if (getIntent().getStringExtra("page").equals("Register"))
+            startFragment(R.id.body, new RegisterFragment());
+        else
+            startFragment(R.id.body, new VerifyFragment());
     }
 
     @Override

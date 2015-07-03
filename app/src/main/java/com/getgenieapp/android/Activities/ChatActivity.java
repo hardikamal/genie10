@@ -1,8 +1,11 @@
 package com.getgenieapp.android.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -40,12 +43,14 @@ public class ChatActivity extends GenieBaseActivity {
     LinearLayout sendBackground;
 
     String title = "Chat";
+    String description = "Chat Window";
     String color = "#1976d2";
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private ChatHelper chatHelper;
 
     private Socket mSocket;
-
     {
         try {
             mSocket = IO.socket(DataFields.CHAT_SERVER_URL);
@@ -63,12 +68,29 @@ public class ChatActivity extends GenieBaseActivity {
 
         if (getIntent().getExtras() != null) {
             title = getIntent().getStringExtra("title");
+            description = getIntent().getStringExtra("description");
             color = getIntent().getStringExtra("color");
         }
 
-        setThemeBasedOnSelection();
         setContentView(R.layout.activity_chat);
+
         ButterKnife.inject(this);
+
+        setSupportActionBar(mToolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+        }
+
+        mToolbar.setTitle(title);
+        mToolbar.setSubtitle(description);
+        mToolbar.setSubtitleTextAppearance(this, R.style.subText);
+
+        mToolbar.setBackgroundColor(Color.parseColor(color));
+
         setSendButtonBasedOnSelection();
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         try {
@@ -84,28 +106,6 @@ public class ChatActivity extends GenieBaseActivity {
         recyclerView.setAdapter(new CustomChatAdapter(messages, this));
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
-    }
-
-    private void setThemeBasedOnSelection() {
-        if (color.equalsIgnoreCase("#444444"))
-            setTheme(R.style.MyMaterialThemeWithToolBar444444);
-        else if (color.equalsIgnoreCase("#f44336")) {
-            setTheme(R.style.MyMaterialThemeWithToolBarf44336);
-        } else if (color.equalsIgnoreCase("#3f5185")) {
-            setTheme(R.style.MyMaterialThemeWithToolBar3f5185);
-        } else if (color.equalsIgnoreCase("#ff9800")) {
-            setTheme(R.style.MyMaterialThemeWithToolBarff9800);
-        } else if (color.equalsIgnoreCase("#ff5722")) {
-            setTheme(R.style.MyMaterialThemeWithToolBarff5722);
-        } else if (color.equalsIgnoreCase("#4caf50")) {
-            setTheme(R.style.MyMaterialThemeWithToolBar4caf50);
-        } else if (color.equalsIgnoreCase("#ec407a")) {
-            setTheme(R.style.MyMaterialThemeWithToolBarec407a);
-        } else if (color.equalsIgnoreCase("#009688")) {
-            setTheme(R.style.MyMaterialThemeWithToolBar009688);
-        } else if (color.equalsIgnoreCase("#0088CC")) {
-            setTheme(R.style.MyMaterialThemeWithToolBar0088cc);
-        }
     }
 
     private void setSendButtonBasedOnSelection() {

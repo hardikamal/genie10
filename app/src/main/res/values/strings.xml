@@ -43,4 +43,6 @@
     <string name="typeamessage">Type a message</string>
     <string name="resendcoderequest">Requesting Server to resend code</string>
     <string name="code91">+91</string>
+    <string name="errortryagain">Error. Try Again.</string>
+    <string name="wrongverificationcode">Wrong Verification code.</string>
 </resources>

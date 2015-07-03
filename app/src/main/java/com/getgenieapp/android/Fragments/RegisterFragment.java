@@ -15,29 +15,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.getgenieapp.android.Activities.MainActivity;
 import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
-import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.Extras.UIHelpers;
+import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
-import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONException;
@@ -63,6 +57,7 @@ public class RegisterFragment extends GenieFragment {
     LoadingView parentLoadingView;
     @InjectView(R.id.getStarted)
     ButtonRectangle getStarted;
+    Utils utils;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -76,7 +71,7 @@ public class RegisterFragment extends GenieFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_register, container, false);
         ButterKnife.inject(this, rootView);
-
+        utils = new Utils(getActivity());
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -120,45 +115,47 @@ public class RegisterFragment extends GenieFragment {
     }
 
     private void RegisterUser() {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(DataFields.SplashScreenGeneralTimeOut);
-                } catch (Exception err) {
-                }
-                ((RegisterActivity) getActivity()).onSuccess(new Register());
-            }
-        }).start();
-// todo remove upper block
-
         JSONObject json = new JSONObject();
         try {
             json.put("name", name.getText().toString());
-            json.put("number", number.getText().toString());
+            json.put("phone", DataFields.CountryCode + number.getText().toString());
+            json.put("device_serial_number", utils.getDeviceSerialNumber());
+            json.put("mac_id", utils.getMacId());
             json.put("gcm_token", sharedPreferences.getString(DataFields.GCM_TOKEN, null));
             if (json.has(DataFields.GCM_TOKEN) && json.getString(DataFields.GCM_TOKEN) != null) {
                 logging.LogV("GCM Token", json.getString(DataFields.GCM_TOKEN));
-//                JsonObjectRequest req = new JsonObjectRequest(DataFields.REGISTERURL, json,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                parentLoadingView.setLoading(false);
-//                                if (response != null) {
-//                                    ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
-//                                } else {
-//                                    ((RegisterActivity) getActivity()).onError(new Register());
-//                                }
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        ((RegisterActivity) getActivity()).onError(new Register());
-//                    }
-//                });
-//
-//                genieApplication.addToRequestQueue(req);
+                JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.REGISTERURL, json,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                parentLoadingView.setLoading(false);
+                                if (response != null) {
+                                    logging.LogV("GCM Token", response.toString());
+                                    if (response.has("token")) {
+                                        try {
+                                            sharedPreferences.edit().putString(DataFields.TOKEN, response.getString("token")).apply();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
+                                } else {
+                                    ((RegisterActivity) getActivity()).onError(new Register());
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ((RegisterActivity) getActivity()).onError(new Register());
+                    }
+                });
+
+                genieApplication.addToRequestQueue(req);
             } else {
                 logging.LogE("GCM Token not found");
+                parentLoadingView.setLoading(false);
+                SnackBar snackbar = new SnackBar(getActivity(), genieApplication.getString(R.string.errortryagain));
+                snackbar.show();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -187,10 +184,8 @@ public class RegisterFragment extends GenieFragment {
             parentLoadingView.setLoading(true);
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(getStarted.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-//            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
-//            getActivity().startService(intent);
-            // todo remove below code
-            RegisterUser();
+            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
+            getActivity().startService(intent);
         }
     }
 

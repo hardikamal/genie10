@@ -23,17 +23,24 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.GenieJSON;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.R;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UpdateIntentService extends IntentService {
 
@@ -64,7 +71,7 @@ public class UpdateIntentService extends IntentService {
 
                 sendRegistrationToServer(token, new onTokenUpdate() {
                     @Override
-                    public void onUpdate(boolean status) {
+                    public void onUpdate(boolean status, boolean verify) {
                         try {
                             // Subscribe to topic channels
                             subscribeTopics(token);
@@ -72,10 +79,9 @@ public class UpdateIntentService extends IntentService {
                             // You should store a boolean that indicates whether the generated token has been
                             // sent to your server. If the boolean is false, send the token to your server,
                             // otherwise your server should have already received the token.
-                            if (status)
-                                sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
-                            else
-                                sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
+
+                            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, status).apply();
+                            sharedPreferences.edit().putBoolean(QuickstartPreferences.VERIFICATION_COMPLETE, verify).apply();
                             // [END register_for_gcm]
                             // Notify UI that registration has completed, so the progress indicator can be hidden.
                         } catch (Exception e) {
@@ -99,6 +105,8 @@ public class UpdateIntentService extends IntentService {
         }
     }
 
+    int i = 0;
+
     /**
      * Persist registration to third-party servers.
      * <p/>
@@ -107,23 +115,47 @@ public class UpdateIntentService extends IntentService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token, onTokenUpdate onUpdate) {
-        SharedPreferences sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
-        if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-            JSONObject json = new GenieJSON(this);
+    private void sendRegistrationToServer(final String token, final onTokenUpdate onTokenUpdate) {
+        if (i < 2) {
+            final SharedPreferences sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
+            if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("gcm_token", token);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, DataFields.getServerUrl() + DataFields.UPDATEGCMURL, "", new Response.Listener<JSONObject>() {
 
-//            Ion.with(this)
-//                    .load(DataFields.getServerUrl() + DataFields.UPDATEGCMURL)
-//                    .setJsonObjectBody((JsonObject) new JsonParser().parse(json.toString()))
-//                    .asJsonObject()
-//                    .setCallback(new FutureCallback<JsonObject>() {
-//                        @Override
-//                        public void onCompleted(Exception e, JsonObject result) {
-//
-//                        }
-//                    });
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+                        try {
+                            onTokenUpdate.onUpdate(response.has("gcm_updated"), response.getBoolean("verified"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
 
-            // ToDo add volley
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        i++;
+                        sendRegistrationToServer(token, onTokenUpdate);
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("Content-Type", "application/json");
+                        System.out.println(sharedPreferences.getString(DataFields.TOKEN, ""));
+                        params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                        return params;
+                    }
+                };
+                GenieApplication.getInstance().addToRequestQueue(req);
+
+            }
         }
     }
 
@@ -143,7 +175,7 @@ public class UpdateIntentService extends IntentService {
     // [END subscribe_topics]
 
     private interface onTokenUpdate {
-        public void onUpdate(boolean status);
+        public void onUpdate(boolean status, boolean verify);
     }
 }
 
