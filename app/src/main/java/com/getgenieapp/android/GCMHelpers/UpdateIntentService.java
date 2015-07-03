@@ -31,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.R;
+import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -53,7 +54,7 @@ public class UpdateIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SecurePreferences securePreferences = GenieApplication.getInstance().getSecurePrefs();
 
         try {
             // In the (unlikely) event that multiple refresh operations occur simultaneously,
@@ -75,22 +76,12 @@ public class UpdateIntentService extends IntentService {
                         try {
                             // Subscribe to topic channels
                             subscribeTopics(token);
-
-                            // You should store a boolean that indicates whether the generated token has been
-                            // sent to your server. If the boolean is false, send the token to your server,
-                            // otherwise your server should have already received the token.
-
-                            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, status).apply();
-                            sharedPreferences.edit().putBoolean(QuickstartPreferences.VERIFICATION_COMPLETE, verify).apply();
-                            // [END register_for_gcm]
-                            // Notify UI that registration has completed, so the progress indicator can be hidden.
                         } catch (Exception e) {
                             Log.d(TAG, "Failed to complete token refresh", e);
-                            // If an exception happens while fetching the new token or updating our registration data
-                            // on a third-party server, this ensures that we'll attempt the update at a later time.
-                            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
                         }
                         Intent registrationComplete = new Intent(QuickstartPreferences.REGISTRATION_COMPLETE);
+                        registrationComplete.putExtra("status", status);
+                        registrationComplete.putExtra("verify", verify);
                         LocalBroadcastManager.getInstance(UpdateIntentService.this).sendBroadcast(registrationComplete);
                     }
                 });
@@ -101,7 +92,6 @@ public class UpdateIntentService extends IntentService {
             Log.d(TAG, "Failed to complete token refresh", e);
             // If an exception happens while fetching the new token or updating our registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
-            sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
         }
     }
 

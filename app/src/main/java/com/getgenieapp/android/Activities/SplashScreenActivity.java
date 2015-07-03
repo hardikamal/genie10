@@ -70,12 +70,9 @@ public class SplashScreenActivity extends GenieActivity {
             public void onReceive(Context context, Intent intent) {
                 logging.LogD("GCM BroadCast", "Received");
                 logging.LogD("Read Preference", "Yes");
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                boolean verifyStatus = sharedPreferences
-                        .getBoolean(QuickstartPreferences.VERIFICATION_COMPLETE, false);
+                boolean sentToken = intent.getBooleanExtra("status",false);
+                boolean verifyStatus = intent.getBooleanExtra("verify",false);
+
                 logging.LogV("Sent To Server", String.valueOf(sentToken));
                 if (sentToken) {
                     logging.LogV("Go to Main Page");

@@ -25,6 +25,7 @@ public class DataFields {
     private static final String Version = "/v1";
     public static final String CountryCode = "+1";
     public static final String VERIFYURL = "/verifyuser";
+    public static final String RESENDURL = "/startverification";
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

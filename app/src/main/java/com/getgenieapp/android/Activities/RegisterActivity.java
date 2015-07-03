@@ -92,7 +92,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Verify verify) {
-        SnackBar snackBar = new SnackBar(this, "Server Error Try Again");
+        SnackBar snackBar = new SnackBar(this, getString(R.string.servererrortryagain));
         snackBar.show();
     }
 }

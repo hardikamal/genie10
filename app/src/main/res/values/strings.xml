@@ -45,4 +45,5 @@
     <string name="code91">+91</string>
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
+    <string name="servererrortryagain">Server Error. Try Again</string>
 </resources>

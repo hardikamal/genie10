@@ -197,8 +197,6 @@ public class VerifyFragment extends GenieFragment {
                                         ((RegisterActivity) getActivity()).onSuccess(new Verify());
                                     } else {
                                         ((RegisterActivity) getActivity()).onError(new Verify());
-                                        SnackBar snackbar = new SnackBar(getActivity(), genieApplication.getString(R.string.wrongverificationcode));
-                                        snackbar.show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -230,45 +228,34 @@ public class VerifyFragment extends GenieFragment {
 
     @OnClick(R.id.tapToResend)
     public void topToResend() {
-//        parentLoadingView.setLoading(true);
-//        parentLoadingView.setText(genieApplication.getString(R.string.resendcoderequest));
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(DataFields.SplashScreenGeneralTimeOut);
-                } catch (Exception err) {
-                }
-
+        JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.RESENDURL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+                        if (response.has("token")) {
+                            try {
+                                sharedPreferences.edit().putString(DataFields.TOKEN, response.getString("token")).apply();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ((RegisterActivity) getActivity()).onError(new Register());
             }
-        }).start();
-// todo remove upper block
-
-        JSONObject json = new JSONObject();
-        try {
-            if (json.has(DataFields.TOKEN) && json.getString(DataFields.TOKEN) != null) {
-                logging.LogV("Token", json.getString(DataFields.TOKEN));
-//                JsonObjectRequest req = new JsonObjectRequest(DataFields.VERIFYCODEURL, json,
-//                        new Response.Listener<JSONObject>() {
-//                            @Override
-//                            public void onResponse(JSONObject response) {
-//                                parentLoadingView.setLoading(false);
-//                                if (response != null) {
-//
-//                                }
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                    }
-//                });
-//
-//                genieApplication.addToRequestQueue(req);
-            } else {
-                logging.LogE("GCM Token not found");
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                return params;
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        };
+
+        genieApplication.addToRequestQueue(req);
     }
 
     public interface onVerify {
