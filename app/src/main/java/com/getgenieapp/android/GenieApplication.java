@@ -1,7 +1,6 @@
 package com.getgenieapp.android;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -14,7 +13,23 @@ import com.getgenieapp.android.Extras.LoggingBuilder;
 import com.getgenieapp.android.Extras.LruBitmapCache;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender;
+
 import de.halfbit.tinybus.TinyBus;
+
+@ReportsCrashes(
+        formUri = "https://mannywilson.cloudant.com/acra-mannywilson/_design/acra-storage/_update/report",
+        reportType = HttpSender.Type.JSON,
+        httpMethod = HttpSender.Method.POST,
+        formUriBasicAuthLogin = "handermentlyoughtsepried",
+        formUriBasicAuthPassword = "fC5176aYhXy47CaGPRWm77Jb",
+        mode = ReportingInteractionMode.TOAST,
+        resToastText = R.string.error_toast
+)
+
 
 public class GenieApplication extends Application {
     private LoggingBuilder loggingBuilder;
@@ -41,6 +56,7 @@ public class GenieApplication extends Application {
                 .setClassName("Genie Application");
         mSecurePrefs = new SecurePreferences(this);
         mBus = TinyBus.from(this);
+        ACRA.init(this);
     }
 
     public SecurePreferences getSecurePrefs() {

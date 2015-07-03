@@ -46,4 +46,5 @@
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
     <string name="servererrortryagain">Server Error. Try Again</string>
+    <string name="error_toast">Unfortunately Genie Crashed.\\nSending crash reports to Genie</string>
 </resources>
