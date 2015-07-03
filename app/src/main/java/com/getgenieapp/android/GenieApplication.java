@@ -21,7 +21,7 @@ import org.acra.sender.HttpSender;
 import de.halfbit.tinybus.TinyBus;
 
 @ReportsCrashes(
-        formUri = "https://mannywilson.cloudant.com/acra-mannywilson/_design/acra-storage/_update/report",
+        formUri = "https://getgenieapp.cloudant.com/acra-getgenieapp/_design/acra-storage/_update/report",
         reportType = HttpSender.Type.JSON,
         httpMethod = HttpSender.Method.POST,
         formUriBasicAuthLogin = "handermentlyoughtsepried",
