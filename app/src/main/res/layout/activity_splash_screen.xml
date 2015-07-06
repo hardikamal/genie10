@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -31,20 +31,24 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:gravity="center">
+        android:gravity="center"
+        xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android">
 
-        <ImageView
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="@dimen/_150sdp"
+        <com.getgenieapp.android.CustomViews.Misc.GifMovieView
+            android:id="@+id/splash_image"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:padding="50dp"
+            custom:gif="@drawable/genie_splash"/>
 
-            android:background="@drawable/money_genie_ticket_main" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="0"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
             android:id="@+id/companyname"

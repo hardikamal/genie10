@@ -3,8 +3,10 @@ package com.getgenieapp.android;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
+import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 
@@ -22,6 +24,8 @@ public class GenieActivity extends Activity {
     public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
+    public ImageLoader imageLoader;
+    public Utils utils;
 
     /**
      * @param savedInstance
@@ -37,5 +41,7 @@ public class GenieActivity extends Activity {
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();
         gson = new Gson();
+        imageLoader = genieApplication.getImageLoader();
+        utils = new Utils(this);
     }
 }

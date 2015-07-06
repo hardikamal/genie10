@@ -6,15 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.getgenieapp.android.CustomViews.Misc.GifMovieView;
 import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.UIHelpers;
@@ -40,7 +40,6 @@ public class SplashScreenActivity extends GenieActivity {
     @InjectView(R.id.welcomemsg)
     TextView welcomemsg;
 
-    Utils utils;
     UIHelpers uiHelpers;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -58,6 +57,7 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
+
         copyrights.setVisibility(View.GONE);
 
         uiHelpers = new UIHelpers();

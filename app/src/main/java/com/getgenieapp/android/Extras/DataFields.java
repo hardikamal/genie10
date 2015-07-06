@@ -16,14 +16,13 @@ public class DataFields {
     public static final String TOKEN = "token";
     public static final String GCM_TOKEN = "gcm_token";
 
-
     public static final String UPDATEGCMURL = "/updategcm";
     public static final String REGISTERURL = "/users";
     public static final String CHAT_SERVER_URL = "http://chat.socket.io";
     private static final String StagingServer = "http://staging0.getgenieapp.com";
     private static final String API = "/api";
     private static final String Version = "/v1";
-    public static final String CountryCode = "+91";
+    public static final String CountryCode = "+1";
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
 
