@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@color/colorPrimary"
+    android:orientation="horizontal"
     tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
 
     <LinearLayout
@@ -54,9 +54,9 @@
                     app:lv_title="@string/loading">
 
                     <LinearLayout
-                        android:background="@color/generalTextColor"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/generalTextColor"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:paddingLeft="@dimen/_30sdp"
@@ -68,9 +68,10 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:singleLine="true"
-                            android:textSize="@dimen/_32sdp"
                             android:text="@string/topText"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/colorPrimary"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/_32sdp" />
 
                         <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
                             android:id="@+id/subText"
@@ -78,10 +79,11 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_15sdp"
                             android:layout_marginRight="@dimen/_15sdp"
-                            android:textSize="@dimen/_8sdp"
-                            android:singleLine="true"
                             android:gravity="center"
-                            android:text="@string/subText" />
+                            android:singleLine="true"
+                            android:text="@string/subText"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/_8sdp" />
 
                         <Space
                             android:layout_width="@dimen/_1sdp"

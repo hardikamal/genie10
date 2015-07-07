@@ -25,6 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/_10sdp"
             android:textColor="@color/generalTextColor"
+            android:textIsSelectable="false"
             android:textSize="@dimen/_14sdp" />
 
         <Button
@@ -38,6 +39,7 @@
             android:layout_marginRight="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/circle"
+            android:textIsSelectable="false"
             android:textSize="@dimen/_12sdp" />
     </RelativeLayout>
 
@@ -76,6 +78,7 @@
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_weight="1"
             android:textColor="@color/generalTextColor"
+            android:textIsSelectable="false"
             android:textSize="@dimen/_10sdp" />
 
         <TextView
@@ -90,6 +93,7 @@
             android:layout_weight="1"
             android:singleLine="true"
             android:textColor="@color/generalTextColor"
+            android:textIsSelectable="false"
             android:textSize="@dimen/_10sdp" />
 
     </LinearLayout>

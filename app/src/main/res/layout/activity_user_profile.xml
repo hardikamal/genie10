@@ -72,6 +72,7 @@
                 android:gravity="start|center_vertical"
                 android:inputType="text"
                 android:text="@string/orderdetails"
+                android:textIsSelectable="false"
                 android:textSize="@dimen/_15sdp" />
 
         </LinearLayout>
@@ -123,6 +124,7 @@
                         android:text="@string/code91"
                         android:textColor="#000"
                         android:textColorHint="@color/colorPrimaryDark"
+                        android:textIsSelectable="false"
                         android:textSize="@dimen/_15sdp" />
 
                     <EditText
@@ -140,6 +142,7 @@
                         android:text="@string/defaultnumber"
                         android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark"
+                        android:textIsSelectable="false"
                         android:textSize="@dimen/_15sdp" />
                 </LinearLayout>
 
@@ -263,9 +266,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.5"
-                android:layout_marginRight="@dimen/_minus10sdp"
                 android:layout_marginEnd="@dimen/_minus10sdp"
+                android:layout_marginRight="@dimen/_minus10sdp"
+                android:layout_weight="1.5"
                 android:gravity="end">
 
                 <com.getgenieapp.android.CustomViews.Button.ButtonFlat

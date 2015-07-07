@@ -82,5 +82,5 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.nkzawa:socket.io-client:0.5.1'
     compile 'com.intuit.sdp:sdp-android:1.0.0'
-    compile 'com.github.clans:fab:1.5.3'
+//    compile 'com.github.clans:fab:1.5.3'
 }

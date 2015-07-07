@@ -7,10 +7,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
@@ -42,6 +45,9 @@ public class ChatActivity extends GenieBaseActivity {
     String color = "#1976d2";
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
+
+    @InjectView(R.id.message)
+    EditText message;
 
     private ChatHelper chatHelper;
 
@@ -100,6 +106,36 @@ public class ChatActivity extends GenieBaseActivity {
 
         ArrayList<Messages> messages = new ArrayList<>();
         recyclerView.setAdapter(new CustomChatAdapter(messages, this));
+
+        message.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (message.getText().toString().trim().length() > 0)
+                {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp, ChatActivity.this.getTheme()));
+                    } else {
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp));
+                    }
+                }
+                else
+                {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_white_48dp, ChatActivity.this.getTheme()));
+                    } else {
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_white_48dp));
+                    }
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+
+        });
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
