@@ -11,10 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
@@ -27,9 +23,6 @@ import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -113,6 +106,7 @@ public class ChatActivity extends GenieBaseActivity {
 
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
+
 //        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
 //        buttonSend.startAnimation(animTranslate);
     }
