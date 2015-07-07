@@ -95,8 +95,8 @@ public class RegisterFragment extends GenieFragment {
         };
 
         uiHelpers = new UIHelpers();
-        topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x / 4));
-        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.subText), uiHelpers.getXYPixels(getActivity()).x / 4));
+//        topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x));
+//        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.subText), uiHelpers.getXYPixels(getActivity()).x/4));
 
         number.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

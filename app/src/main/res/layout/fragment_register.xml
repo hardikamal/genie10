@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:background="@color/colorPrimary"
     tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
 
     <LinearLayout
@@ -24,7 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="6"
             android:background="@color/generalTextColor"
             android:gravity="center"
             android:orientation="horizontal">
@@ -53,6 +54,7 @@
                     app:lv_title="@string/loading">
 
                     <LinearLayout
+                        android:background="@color/generalTextColor"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -66,6 +68,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:singleLine="true"
+                            android:textSize="@dimen/_32sdp"
                             android:text="@string/topText"
                             android:textColor="@color/colorPrimary" />
 
@@ -73,10 +76,11 @@
                             android:id="@+id/subText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_25sdp"
-                            android:layout_marginRight="@dimen/_25sdp"
-                            android:gravity="center"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            android:textSize="@dimen/_8sdp"
                             android:singleLine="true"
+                            android:gravity="center"
                             android:text="@string/subText" />
 
                         <Space
@@ -137,7 +141,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2" />
+            android:layout_weight="3" />
     </LinearLayout>
 
     <LinearLayout
