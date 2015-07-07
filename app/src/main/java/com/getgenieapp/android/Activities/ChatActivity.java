@@ -1,11 +1,14 @@
 package com.getgenieapp.android.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -15,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
+import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.ChatHelper;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
@@ -38,9 +42,7 @@ public class ChatActivity extends GenieBaseActivity {
     @InjectView(R.id.list)
     RecyclerView recyclerView;
     @InjectView(R.id.send)
-    Button send;
-    @InjectView(R.id.sendBackground)
-    LinearLayout sendBackground;
+    CircularButton send;
 
     String title = "Chat";
     String description = "Chat Window";
@@ -51,6 +53,7 @@ public class ChatActivity extends GenieBaseActivity {
     private ChatHelper chatHelper;
 
     private Socket mSocket;
+
     {
         try {
             mSocket = IO.socket(DataFields.CHAT_SERVER_URL);
@@ -82,7 +85,6 @@ public class ChatActivity extends GenieBaseActivity {
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
-
         }
 
         mToolbar.setTitle(title);
@@ -90,8 +92,9 @@ public class ChatActivity extends GenieBaseActivity {
         mToolbar.setSubtitleTextAppearance(this, R.style.subText);
 
         mToolbar.setBackgroundColor(Color.parseColor(color));
+        send.setButtonColor(Color.parseColor(color));
+        send.setShadowColor(Color.parseColor(color));
 
-        setSendButtonBasedOnSelection();
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         try {
             getSupportActionBar().setTitle(title);
@@ -108,32 +111,10 @@ public class ChatActivity extends GenieBaseActivity {
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
-    private void setSendButtonBasedOnSelection() {
-        if (color.equalsIgnoreCase("#444444"))
-            sendBackground.setBackgroundResource(R.drawable.bubble444444);
-        else if (color.equalsIgnoreCase("#f44336")) {
-            sendBackground.setBackgroundResource(R.drawable.bubblef44336);
-        } else if (color.equalsIgnoreCase("#3f5185")) {
-            sendBackground.setBackgroundResource(R.drawable.bubble3f5185);
-        } else if (color.equalsIgnoreCase("#ff9800")) {
-            sendBackground.setBackgroundResource(R.drawable.bubbleff9800);
-        } else if (color.equalsIgnoreCase("#ff5722")) {
-            sendBackground.setBackgroundResource(R.drawable.bubbleff5722);
-        } else if (color.equalsIgnoreCase("#4caf50")) {
-            sendBackground.setBackgroundResource(R.drawable.bubble4caf50);
-        } else if (color.equalsIgnoreCase("#ec407a")) {
-            sendBackground.setBackgroundResource(R.drawable.bubbleec407a);
-        } else if (color.equalsIgnoreCase("#009688")) {
-            sendBackground.setBackgroundResource(R.drawable.bubble009688);
-        } else if (color.equalsIgnoreCase("#0088CC")) {
-            sendBackground.setBackgroundResource(R.drawable.bubble0088cc);
-        }
-    }
-
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
-        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
-        buttonSend.startAnimation(animTranslate);
+//        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
+//        buttonSend.startAnimation(animTranslate);
     }
 
     @Override
@@ -216,4 +197,35 @@ public class ChatActivity extends GenieBaseActivity {
             });
         }
     };
+
+    /**
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    /**
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_profile) {
+            startActivity(new Intent(this, UserProfileActivity.class));
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

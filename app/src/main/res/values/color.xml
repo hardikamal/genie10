@@ -15,4 +15,5 @@
     <color name="colorAccent">#3399FF</color>
     <color name="generalTextColor">#FAFAFA</color>
     <color name="loadearliermsgcolor">#E1F3FD</color>
+    <color name="lineColor">#ccc</color>
 </resources>

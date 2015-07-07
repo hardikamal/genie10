@@ -14,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.CustomViews.Misc.GifMovieView;
 import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
@@ -22,9 +27,18 @@ import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
 import com.getgenieapp.android.GenieActivity;
+import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,7 +54,7 @@ public class SplashScreenActivity extends GenieActivity {
     @InjectView(R.id.welcomemsg)
     TextView welcomemsg;
 
-    UIHelpers uiHelpers;
+//    UIHelpers uiHelpers;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -60,9 +74,9 @@ public class SplashScreenActivity extends GenieActivity {
 
         copyrights.setVisibility(View.GONE);
 
-        uiHelpers = new UIHelpers();
-        welcomemsg.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.welcomeMessage), uiHelpers.getXYPixels(this).x / 4));
-        companyName.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.companyName), uiHelpers.getXYPixels(this).x / 4));
+//        uiHelpers = new UIHelpers();
+//        welcomemsg.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.welcomeMessage), uiHelpers.getXYPixels(this).x / 4));
+//        companyName.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.companyName), uiHelpers.getXYPixels(this).x / 4));
 
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -70,8 +84,8 @@ public class SplashScreenActivity extends GenieActivity {
             public void onReceive(Context context, Intent intent) {
                 logging.LogD("GCM BroadCast", "Received");
                 logging.LogD("Read Preference", "Yes");
-                boolean sentToken = intent.getBooleanExtra("status",false);
-                boolean verifyStatus = intent.getBooleanExtra("verify",false);
+                boolean sentToken = intent.getBooleanExtra("status", false);
+                boolean verifyStatus = intent.getBooleanExtra("verify", false);
 
                 logging.LogV("Sent To Server", String.valueOf(sentToken));
                 if (sentToken) {
@@ -161,43 +175,91 @@ public class SplashScreenActivity extends GenieActivity {
     }
 
     private void goToVerify() {
-        Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
-        intent.putExtra("page", "Verify");
-        startActivity(intent);
-        finish();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                    Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                } catch (Exception err) {
+                }
+                logging.LogI("Start Verify Activity");
+                Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
+                intent.putExtra("page", "Verify");
+                startActivity(intent);
+                finish();
+            }
+        }).start();
     }
 
     void runToMainPage(boolean verified) {
         if (verified) {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
-                        Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
-                    } catch (Exception err) {
-                    }
-                    logging.LogI("Start Main Activity");
-                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                    finish();
-                }
-            }).start();
+            getCategories();
         } else {
             goToVerify();
         }
     }
 
-    protected void onResume() {
-        super.onResume();
-        logging.LogI("On Resume");
+    private void getCategories() {
+        JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(final JSONArray response) {
+                        System.out.println(response.toString());
+                        if (response.length() > 0) {
+                            new Thread(new Runnable() {
+                                public void run() {
+                                    ArrayList<String> categoriesList = new ArrayList<String>();
+                                    try {
+                                        logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                                        Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
+                                    } catch (Exception err) {
+                                    }
+                                    for (int i = 0; i < response.length(); i++) {
+                                        try {
+                                            categoriesList.add(response.getJSONObject(i).toString());
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    logging.LogI("Start Main Activity");
+                                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                                    intent.putStringArrayListExtra("category", categoriesList);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }).start();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.print(error);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                return params;
+            }
+        };
+
+        genieApplication.addToRequestQueue(req);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logging.LogI("On Start");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
     }
 
     @Override
-    protected void onPause() {
-        logging.LogI("On Pause");
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
+        super.onDestroy();
     }
 
     /**

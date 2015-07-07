@@ -72,27 +72,12 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/sendBackground"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_5sdp"
-            android:background="@drawable/bluecircle">
-
-            <Button
-                android:id="@+id/send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_11sdp"
-                android:layout_marginBottom="@dimen/_11sdp"
-                android:layout_marginRight="@dimen/_9sdp"
-                android:layout_marginEnd="@dimen/_9sdp"
-                android:layout_marginLeft="@dimen/_11sdp"
-                android:layout_marginStart="@dimen/_11sdp"
-                android:background="@drawable/ic_send_white_24dp" />
-        </LinearLayout>
-
+        <com.getgenieapp.android.CustomViews.Button.CircularButton
+            android:id="@+id/send"
+            android:gravity="center"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/ic_send_white_24dp" />
 
     </LinearLayout>
 </LinearLayout>

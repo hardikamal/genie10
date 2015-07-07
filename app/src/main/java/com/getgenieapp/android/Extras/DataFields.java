@@ -6,6 +6,7 @@ import java.io.File;
 
 public class DataFields {
     public static final int SplashScreenGeneralTimeOut = 3000;
+    public static final int VerifyTimeOut = 2000;
     public static final String TAG = "Get Genie App";
 
     public static final File root = Environment.getExternalStorageDirectory();
@@ -25,6 +26,7 @@ public class DataFields {
     public static final String CountryCode = "+1";
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
+    public static final String CATEGORIES = "/categories";
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

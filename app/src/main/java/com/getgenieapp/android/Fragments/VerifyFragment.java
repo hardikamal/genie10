@@ -2,6 +2,7 @@ package com.getgenieapp.android.Fragments;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,7 +17,9 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.getgenieapp.android.Activities.MainActivity;
 import com.getgenieapp.android.Activities.RegisterActivity;
+import com.getgenieapp.android.Activities.SplashScreenActivity;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
@@ -90,7 +93,7 @@ public class VerifyFragment extends GenieFragment {
         ButterKnife.inject(this, rootView);
         moveToNextMech();
         uiHelpers = new UIHelpers();
-        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.verifycodetext), uiHelpers.getXYPixels(getActivity()).x / 4));
+//        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.verifycodetext), uiHelpers.getXYPixels(getActivity()).x / 4));
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
@@ -226,6 +229,12 @@ public class VerifyFragment extends GenieFragment {
         }
     }
 
+    @OnClick(R.id.redoRegistration)
+    public void RedoRegistration() {
+        sharedPreferences.edit().clear().apply();
+        startActivity(new Intent(getActivity(), SplashScreenActivity.class));
+        getActivity().finish();
+    }
     @OnClick(R.id.tapToResend)
     public void topToResend() {
         JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.RESENDURL, null,
@@ -275,11 +284,20 @@ public class VerifyFragment extends GenieFragment {
             in.hideSoftInputFromWindow(char4.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             parentLoadingView.setLoading(true);
             parentLoadingView.setText("Verifying...");
-            String code = char1.getText().toString().trim() +
+            final String code = char1.getText().toString().trim() +
                     char2.getText().toString().trim() +
                     char3.getText().toString().trim() +
                     char4.getText().toString().trim();
-            goNext(code);
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(DataFields.VerifyTimeOut);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    goNext(code);
+                }
+            }).start();
         }
     }
 }

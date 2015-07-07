@@ -8,13 +8,25 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.view.ViewGroup;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Fragments.RegisterFragment;
 import com.getgenieapp.android.Fragments.VerifyFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends GenieBaseActivity implements RegisterFragment.onRegister, VerifyFragment.onVerify {
 
@@ -86,8 +98,44 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Verify verify) {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(final JSONArray response) {
+                        System.out.println(response.toString());
+                        if (response.length() > 0) {
+                            ArrayList<String> categoriesList = new ArrayList<String>();
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    categoriesList.add(response.getJSONObject(i).toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            logging.LogI("Start Main Activity");
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            intent.putStringArrayListExtra("category", categoriesList);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Intent intent = new Intent(RegisterActivity.this, SplashScreenActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                return params;
+            }
+        };
+
+        genieApplication.addToRequestQueue(req);
     }
 
     @Override

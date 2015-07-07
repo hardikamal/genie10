@@ -47,4 +47,5 @@
     <string name="wrongverificationcode">Wrong Verification code.</string>
     <string name="servererrortryagain">Server Error. Try Again</string>
     <string name="error_toast">Unfortunately Genie Crashed.\\nSending crash reports to Genie</string>
+    <string name="redoregistration">Redo Registration</string>
 </resources>

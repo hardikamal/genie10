@@ -17,6 +17,9 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -27,7 +30,7 @@ public class MainActivity extends GenieBaseActivity {
     LoadingView loadingView;
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
-
+    static ArrayList<Categories> categoriesList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,23 +45,22 @@ public class MainActivity extends GenieBaseActivity {
 
     private void loadCategories() {
         logging.LogV("Get Categories");
-//        if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-
-        // ToDo add volley
-        ArrayList<Categories> categoriesList = new ArrayList<>();
-        categoriesList.add(new Categories(1, 1, "#0088CC", "food", "Eat More, Eat Faster, Eat Healthier.", "Food", 1433985369));
-        categoriesList.add(new Categories(2, 0, "#444444", "cake", "Ordering a cake is now a piece of cake.", "Cake", 1433985369));
-        categoriesList.add(new Categories(3, 0, "#f44336", "groceries", "Fresh supplies for you refrigerator.", "Groceries", 1433985369));
-        categoriesList.add(new Categories(4, 1, "#3f5185", "hotel", "Need a place to stay, it's a chat away.", "Hotel", 1433985369));
-        categoriesList.add(new Categories(5, 0, "#ff9800", "mobile", "Ran out of Balance? Balance is very important in life.", "Recharge", 1433985369));
-        categoriesList.add(new Categories(6, 1, "#ff5722", "movies", "Best price, Seat and Timing make for a great movie experience.", "Movies", 1433985369));
-        categoriesList.add(new Categories(7, 0, "#4caf50", "shopping", "We get you what you want, no hassle, no clutter and best prices.", "Shopping", 1433985369));
-        categoriesList.add(new Categories(8, 0, "#ec407a", "travel", "It's a flight, it's a bus, it's a train.", "Travel", 1433985369));
+        if (getIntent().getExtras() != null && getIntent().hasExtra("category")) {
+            ArrayList<String> rawList = getIntent().getStringArrayListExtra("category");
+            if(rawList.size()>0)
+                categoriesList.clear();
+            for (String raw : rawList) {
+                try {
+                    JSONObject jsonObject = new JSONObject(raw);
+                    categoriesList.add(new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
+                            jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
+                            jsonObject.getLong("hide_chats_time")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         setupCategories(categoriesList);
-//        } else {
-//            startActivity(new Intent(this, RegisterActivity.class));
-//            finish();
-//        }
     }
 
     /**

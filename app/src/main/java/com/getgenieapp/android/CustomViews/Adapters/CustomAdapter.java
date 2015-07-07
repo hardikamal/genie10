@@ -17,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Activities.ChatActivity;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.GenieApplication;
@@ -35,11 +37,13 @@ public class CustomAdapter extends RecyclerView.Adapter {
     private ArrayList<Categories> categories;
     private Context context;
     private Logging logging;
+    private ImageLoader imageLoader;
 
     public CustomAdapter(ArrayList<Categories> categories, Context context) {
         this.categories = categories;
         this.context = context;
         this.logging = GenieApplication.getInstance().getLoggingBuilder().setUp();
+        this.imageLoader = GenieApplication.getInstance().getImageLoader();
     }
 
     @Override
@@ -63,7 +67,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.title)
         TextView title;
         @InjectView(R.id.image)
-        ImageView image;
+        NetworkImageView image;
         @InjectView(R.id.notification_count)
         Button notification_count;
         ViewTreeObserver vto;
@@ -148,8 +152,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
             viewHolderMain.notification_count.setTextColor(Color.parseColor(category.getBg_color()));
             viewHolderMain.notification_count.setBackgroundResource(android.R.color.transparent);
         }
-        int id = context.getResources().getIdentifier(category.getImage_url(), "drawable", context.getPackageName());
-        viewHolderMain.image.setBackgroundResource(id);
+        viewHolderMain.image.setImageUrl(category.getImage_url(), imageLoader);
         viewHolderMain.showText(category.getDescription());
     }
 
