@@ -109,6 +109,8 @@
         <activity
             android:name=".Activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
+            android:screenOrientation="sensorPortrait"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Activities.MainActivity"
             android:theme="@style/MyMaterialThemeWithToolBar">
             <meta-data
@@ -118,6 +120,7 @@
         <activity
             android:name=".Activities.OrderDetailsActivity"
             android:label="@string/title_activity_order_details"
+            android:screenOrientation="sensorPortrait"
             android:parentActivityName=".Activities.UserProfileActivity"
             android:theme="@style/MyMaterialThemeWithToolBar">
             <meta-data

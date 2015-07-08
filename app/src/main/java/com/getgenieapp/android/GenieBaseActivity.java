@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
+import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 
@@ -22,6 +23,7 @@ public class GenieBaseActivity extends AppCompatActivity {
     public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
+    public Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstance)
@@ -35,6 +37,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         sharedPreferences = genieApplication.getSecurePrefs();
         mBus = genieApplication.getBus();
         gson = new Gson();
+        utils = new Utils(this);
     }
 
     public void startFragment(int container, Fragment fragment)

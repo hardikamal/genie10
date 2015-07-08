@@ -48,4 +48,10 @@
     <string name="servererrortryagain">Server Error. Try Again</string>
     <string name="error_toast">Unfortunately Genie Crashed.\\nSending crash reports to Genie</string>
     <string name="redoregistration">Redo Registration</string>
+    <string name="gettinglocation">Getting Location</string>
+    <string name="updatinguserinformation">Updating User information..</string>
+    <string name="gettinglocationinfo">Getting Location..</string>
+    <string name="entervalidinformation">Enter Name</string>
+    <string name="errorwhileupdatinguserinformation">Error while updating user information.</string>
+    <string name="entervalidemail">Enter valid Email</string>
 </resources>

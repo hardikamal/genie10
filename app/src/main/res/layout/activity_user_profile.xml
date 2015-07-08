@@ -15,28 +15,19 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/generalTextColor" />
 
-            <LinearLayout
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
+            <com.getgenieapp.android.CustomViews.Button.CircularButton
+                android:id="@+id/userIcon"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/_30sdp"
-                android:layout_marginStart="@dimen/_30sdp"
-                android:background="@drawable/bluecircle"
-                android:gravity="center">
-
-                <ImageButton
-                    android:id="@+id/userPicture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/_10sdp"
-                    android:background="@drawable/ic_person_white_48dp" />
-
-            </LinearLayout>
-
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:gravity="center"
+                android:src="@drawable/ic_person_white_48dp" />
 
         </RelativeLayout>
     </LinearLayout>
@@ -85,12 +76,6 @@
             android:layout_weight="5"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Contact Details"
-                android:textColor="@color/colorPrimary"
-                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -243,14 +228,18 @@
                         android:background="@android:color/transparent"
                         android:hint="@string/address"
                         android:inputType="textPostalAddress"
-                        android:maxLines="1"
-                        android:singleLine="true"
+                        android:maxLines="5"
+                        android:scrollbars="none"
                         android:textColor="@color/text_color"
                         android:textColorHint="@color/colorPrimaryDark"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
                         android:textSize="@dimen/_15sdp" />
 
-                    <Button
-                        android:layout_width="@dimen/_40sdp"
+
+                    <TextView
+                        android:id="@+id/locationButton"
+                        android:layout_width="@dimen/_20sdp"
                         android:layout_height="match_parent"
                         android:alpha="0.5"
                         android:background="@android:color/transparent"
@@ -272,6 +261,7 @@
                 android:gravity="end">
 
                 <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                    android:id="@+id/update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

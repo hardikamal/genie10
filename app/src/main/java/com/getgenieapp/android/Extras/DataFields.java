@@ -11,6 +11,7 @@ public class DataFields {
 
     public static final File root = Environment.getExternalStorageDirectory();
     public static final File mainFolder = new File(root.getAbsolutePath() + "/GetGenie");
+    public static final String profilePicturePath = mainFolder.getAbsolutePath()+"/me.jpg";
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
 
@@ -27,6 +28,7 @@ public class DataFields {
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";
+    public static final String UPDATEUSER = "/updateuser";
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

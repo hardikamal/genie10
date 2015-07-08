@@ -24,6 +24,7 @@ import com.getgenieapp.android.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,6 +78,8 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(new File(DataFields.profilePicturePath).exists())
+            new File(DataFields.profilePicturePath).delete();
         setContentView(R.layout.activity_register);
         if (getIntent().getStringExtra("page").equals("Register"))
             startFragment(R.id.body, new RegisterFragment());
