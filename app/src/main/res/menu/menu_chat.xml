@@ -1,7 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.getgenieapp.android.Activities.ChatActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    tools:context="com.shehabic.droppy_samples.DefaultExampleActivity">
+    <group android:enabled="true">
+        <item
+            android:id="@+id/picture"
+            android:title="Send Picture"
+            android:icon="@drawable/ic_camera_alt_black_24dp"
+            />
+
+        <item
+            android:id="@+id/location"
+            android:title="Send Location"
+            android:icon="@drawable/ic_location_on_black_24dp"
+            />
+    </group>
 </menu>

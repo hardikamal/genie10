@@ -9,10 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.RotateAnimation;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,6 +28,8 @@ import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.shehabic.droppy.DroppyClickCallbackInterface;
+import com.shehabic.droppy.DroppyMenuPopup;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -45,7 +49,7 @@ public class ChatActivity extends GenieBaseActivity {
     String color = "#1976d2";
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
-
+    DroppyMenuPopup droppyMenu;
     @InjectView(R.id.message)
     EditText message;
 
@@ -94,6 +98,16 @@ public class ChatActivity extends GenieBaseActivity {
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
 
+        droppyMenu = new DroppyMenuPopup.Builder(this, send).fromMenu(R.menu.menu_chat)
+                .triggerOnAnchorClick(false)
+                .setOnClick(new DroppyClickCallbackInterface() {
+                    @Override
+                    public void call(View v, int id) {
+                        Log.d("Id:", String.valueOf(id));
+                    }
+                })
+                .build();
+
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         try {
             getSupportActionBar().setTitle(title);
@@ -110,16 +124,13 @@ public class ChatActivity extends GenieBaseActivity {
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (message.getText().toString().trim().length() > 0)
-                {
+                if (message.getText().toString().trim().length() > 0) {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                         send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp, ChatActivity.this.getTheme()));
                     } else {
                         send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp));
                     }
-                }
-                else
-                {
+                } else {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                         send.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_white_48dp, ChatActivity.this.getTheme()));
                     } else {
@@ -142,6 +153,9 @@ public class ChatActivity extends GenieBaseActivity {
 
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
+
+        droppyMenu.show();
+        buttonSend.setRotation(180f);
 
 //        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
 //        buttonSend.startAnimation(animTranslate);
