@@ -1,5 +1,6 @@
 package com.getgenieapp.android.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,9 +13,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ public class ChatActivity extends GenieBaseActivity {
     DroppyMenuPopup droppyMenu;
     @InjectView(R.id.message)
     EditText message;
+    boolean imageResource = true;
 
     private ChatHelper chatHelper;
 
@@ -125,16 +128,18 @@ public class ChatActivity extends GenieBaseActivity {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (message.getText().toString().trim().length() > 0) {
+                    imageResource = false;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                         send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp, ChatActivity.this.getTheme()));
                     } else {
                         send.setImageDrawable(getResources().getDrawable(R.drawable.ic_send_white_24dp));
                     }
                 } else {
+                    imageResource = true;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_white_48dp, ChatActivity.this.getTheme()));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_white_24dp, ChatActivity.this.getTheme()));
                     } else {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_expand_more_white_48dp));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
                     }
                 }
             }
@@ -153,12 +158,24 @@ public class ChatActivity extends GenieBaseActivity {
 
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
-
-        droppyMenu.show();
-        buttonSend.setRotation(180f);
-
-//        final Animation animTranslate = AnimationUtils.loadAnimation(this, R.anim.anim_translate);
-//        buttonSend.startAnimation(animTranslate);
+        if (imageResource) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(200);
+                    } catch (Exception err) { }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            droppyMenu.show();
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     @Override
