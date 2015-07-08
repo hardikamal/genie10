@@ -9,11 +9,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="droppyPopupStyle">@style/Custom.DroppyPopup</item>-->
-        <!--<item name="droppyMenuStyle">@style/Custom.DroppyMenu</item>-->
-        <!--<item name="droppyMenuItemStyle">@style/Custom.DroppyMenuItem</item>-->
-        <!--<item name="droppyMenuItemTitleStyle">@style/Custom.DroppyMenuItemTitle</item>-->
-        <!--<item name="droppyMenuItemIconStyle">@style/Custom.DroppyMenuItemIcon</item>-->
     </style>
 
     <style name="MyMaterialThemeWithToolBar" parent="MyMaterialThemeWithToolBar.Base"></style>
@@ -24,33 +19,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="droppyPopupStyle">@style/Custom.DroppyPopup</item>-->
-        <!--<item name="droppyMenuStyle">@style/Custom.DroppyMenu</item>-->
-        <!--<item name="droppyMenuItemStyle">@style/Custom.DroppyMenuItem</item>-->
-        <!--<item name="droppyMenuItemTitleStyle">@style/Custom.DroppyMenuItemTitle</item>-->
-        <!--<item name="droppyMenuItemIconStyle">@style/Custom.DroppyMenuItemIcon</item>-->
-    </style>
-
-    <style name="Custom.DroppyPopup" parent="Droppy.DroppyPopup">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="Custom.DroppyMenu" parent="Droppy.DroppyMenu">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="Custom.DroppyMenuItem" parent="Droppy.DroppyMenuItem">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="Custom.DroppyMenuItemTitle" parent="Droppy.DroppyMenuItemTitle">
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-
-    <style name="Custom.DroppyMenuItemIcon" parent="Droppy.DroppyMenuItemIcon">
-        <item name="android:layout_weight">0</item>
     </style>
 
 

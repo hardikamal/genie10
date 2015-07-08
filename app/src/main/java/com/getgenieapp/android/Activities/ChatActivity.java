@@ -30,9 +30,6 @@ import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.shehabic.droppy.DroppyClickCallbackInterface;
-import com.shehabic.droppy.DroppyMenuPopup;
-
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -51,7 +48,6 @@ public class ChatActivity extends GenieBaseActivity {
     String color = "#1976d2";
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
-    DroppyMenuPopup droppyMenu;
     @InjectView(R.id.message)
     EditText message;
     boolean imageResource = true;
@@ -101,16 +97,6 @@ public class ChatActivity extends GenieBaseActivity {
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
 
-        droppyMenu = new DroppyMenuPopup.Builder(this, send).fromMenu(R.menu.menu_chat)
-                .triggerOnAnchorClick(false)
-                .setOnClick(new DroppyClickCallbackInterface() {
-                    @Override
-                    public void call(View v, int id) {
-                        Log.d("Id:", String.valueOf(id));
-                    }
-                })
-                .build();
-
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         try {
             getSupportActionBar().setTitle(title);
@@ -137,9 +123,9 @@ public class ChatActivity extends GenieBaseActivity {
                 } else {
                     imageResource = true;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_white_24dp, ChatActivity.this.getTheme()));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_white_24dp, ChatActivity.this.getTheme()));
                     } else {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_white_24dp));
                     }
                 }
             }
@@ -159,22 +145,7 @@ public class ChatActivity extends GenieBaseActivity {
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
         if (imageResource) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(200);
-                    } catch (Exception err) { }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            droppyMenu.show();
-                        }
-                    });
-                }
-            }).start();
+
         }
     }
 
@@ -266,7 +237,7 @@ public class ChatActivity extends GenieBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_chat, menu);
         return true;
     }
 

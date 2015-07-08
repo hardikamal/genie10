@@ -54,4 +54,5 @@
     <string name="entervalidinformation">Enter Name</string>
     <string name="errorwhileupdatinguserinformation">Error while updating user information.</string>
     <string name="entervalidemail">Enter valid Email</string>
+    <string name="previousorders">Previous Orders</string>
 </resources>

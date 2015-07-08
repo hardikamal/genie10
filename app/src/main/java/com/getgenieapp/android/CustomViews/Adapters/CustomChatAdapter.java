@@ -197,15 +197,15 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             Utils utils = new Utils(context);
             int colorCode = Color.parseColor(color);
             Drawable sourceDrawable;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main, context.getTheme());
-            } else {
-                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main);
-            }
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main, context.getTheme());
+//            } else {
+//                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main);
+//            }
 
-            Bitmap sourceBitmap =utils.convertDrawableToBitmap(sourceDrawable);
-
-            layout.setBackground(new BitmapDrawable(context.getResources(), utils.changeImageColor(sourceBitmap, colorCode)));
+//            Bitmap sourceBitmap =utils.convertDrawableToBitmap(sourceDrawable);
+//
+//            layout.setBackground(new BitmapDrawable(context.getResources(), utils.changeImageColor(sourceBitmap, colorCode)));
         }
     }
 }

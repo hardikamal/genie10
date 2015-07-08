@@ -1,17 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.shehabic.droppy_samples.DefaultExampleActivity">
-    <group android:enabled="true">
-        <item
-            android:id="@+id/picture"
-            android:title="Send Picture"
-            android:icon="@drawable/ic_camera_alt_black_24dp"
-            />
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_previous_orders"
+        android:icon="@drawable/ic_list_white_24dp"
+        android:title="@string/previousorders"
+        yourapp:showAsAction="ifRoom|collapseActionView" />
 
-        <item
-            android:id="@+id/location"
-            android:title="Send Location"
-            android:icon="@drawable/ic_location_on_black_24dp"
-            />
-    </group>
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/ic_person_white_24dp"
+        android:title="@string/profile"
+        yourapp:showAsAction="ifRoom|collapseActionView" />
 </menu>
