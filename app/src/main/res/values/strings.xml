@@ -55,4 +55,8 @@
     <string name="errorwhileupdatinguserinformation">Error while updating user information.</string>
     <string name="entervalidemail">Enter valid Email</string>
     <string name="previousorders">Previous Orders</string>
+    <string name="notabletoaccesslocation">Not able to access Location</string>
+    <string name="foiledtogetthumbnails">Failed to get thumbnail for our image.</string>
+    <string name="devicenotsupporttocroppicture">Whoops - your device doesn\'t support the crop action!</string>
+    <string name="title_activity_user_profile_from_chat">UserProfileFromChatActivity</string>
 </resources>

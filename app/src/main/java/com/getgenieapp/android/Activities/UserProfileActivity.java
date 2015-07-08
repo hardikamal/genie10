@@ -42,6 +42,7 @@ import com.getgenieapp.android.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,12 +65,12 @@ public class UserProfileActivity extends GenieBaseActivity {
     EditText address;
     @InjectView(R.id.userIcon)
     CircularButton userIcon;
-
+    int radius;
     final int CAMERA_CAPTURE = 1;
     final int PICK_IMAGE = 1;
     final int PIC_CROP = 2;
     private Uri picUri;
-    private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+    private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         name.setText("Genie Admin");
         email.setText("admin@getgenieapp.com");
         address.setText("India");
+        radius = userIcon.getLayoutParams().width;
         getPicture();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -109,7 +111,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 // display the returned cropped image
                 GraphicsUtil graphicUtil = new GraphicsUtil();
                 //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
-                userIcon.setImageBitmap(graphicUtil.getCircleBitmap(thePic, 16));
+                userIcon.setImageBitmap(graphicUtil.getCircleBitmap(thePic, radius));
                 setPicture();
             } else if (requestCode == PICK_IMAGE) {
                 try {
@@ -134,7 +136,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                         GraphicsUtil graphicUtil = new GraphicsUtil();
                         //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
                         userIcon.setImageBitmap(graphicUtil.getCircleBitmap(this.createImageThumbnail(imageFilePath,
-                                255, 255), 16));
+                                255, 255), radius));
                         setPicture();
                     }
                     //We got the thumb-nail from gallery, rotate if needed else use on ImageView
@@ -164,7 +166,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                                 thumb = null;
                             }
                             GraphicsUtil graphicUtil = new GraphicsUtil();
-                            userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, 16));
+                            userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, radius));
                             setPicture();
                         } catch (Exception e) {
                         }
@@ -189,11 +191,13 @@ public class UserProfileActivity extends GenieBaseActivity {
     }
 
     private void getPicture() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
-        GraphicsUtil graphicUtil = new GraphicsUtil();
-        userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, 16));
+        if (new File(DataFields.profilePicturePath).exists()) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
+            GraphicsUtil graphicUtil = new GraphicsUtil();
+            userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, radius));
+        }
     }
 
     @OnClick(R.id.locationButton)
@@ -324,6 +328,14 @@ public class UserProfileActivity extends GenieBaseActivity {
                     Intent pickIntent = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickIntent, PICK_IMAGE);
+                } else if (options[item].equals("Remove Picture")) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp, UserProfileActivity.this.getTheme()));
+                    } else {
+                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp));
+                    }
+                    if (new File(DataFields.profilePicturePath).exists())
+                        new File(DataFields.profilePicturePath).delete();
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -346,9 +358,8 @@ public class UserProfileActivity extends GenieBaseActivity {
 
     @OnClick(R.id.update)
     public void onClickUpdate() {
-        if (name.getText().toString().trim().length() > 0 ) {
-            if(email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString()))
-            {
+        if (name.getText().toString().trim().length() > 0) {
+            if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
                 SnackBar snackBar = new SnackBar(this, getString(R.string.entervalidemail));
                 snackBar.show();
                 return;

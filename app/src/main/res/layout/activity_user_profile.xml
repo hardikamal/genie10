@@ -15,17 +15,17 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/generalTextColor" />
 
             <com.getgenieapp.android.CustomViews.Button.CircularButton
                 android:id="@+id/userIcon"
-                android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_100sdp"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/_20sdp"
-                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_30sdp"
                 android:gravity="center"
                 android:src="@drawable/ic_person_white_48dp" />
 
