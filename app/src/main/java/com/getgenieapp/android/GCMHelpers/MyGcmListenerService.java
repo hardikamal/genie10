@@ -45,7 +45,7 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        Log.d(TAG, "Messages: " + message);
 
         /**
          * Production applications would usually process the message here.
@@ -76,7 +76,7 @@ public class MyGcmListenerService extends GcmListenerService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.genie_android_icons_97x97)
-                .setContentTitle("GCM Message")
+                .setContentTitle("GCM Messages")
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

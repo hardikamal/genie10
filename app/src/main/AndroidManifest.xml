@@ -128,4 +128,5 @@
                 android:value="com.getgenieapp.android.Activities.UserProfileActivity" />
         </activity>
     </application>
+
 </manifest>

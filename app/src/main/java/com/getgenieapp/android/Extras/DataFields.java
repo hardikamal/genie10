@@ -29,6 +29,8 @@ public class DataFields {
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";
     public static final String UPDATEUSER = "/updateuser";
+    public static final String DBName = "getgenieapp";
+    public static final int DBVersion = 1;
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

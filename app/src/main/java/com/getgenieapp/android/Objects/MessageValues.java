@@ -1,27 +1,46 @@
 package com.getgenieapp.android.Objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by Raviteja on 6/16/2015.
  */
 public class MessageValues {
+    private int _id;
     private String text;
     private String url;
     private String caption;
     private double lng;
     private double lat;
 
-    public MessageValues(String text) {
+    public MessageValues() {
+    }
+
+    public MessageValues(int _id, String text) {
+        this._id = _id;
         this.text = text;
     }
 
-    public MessageValues(String url, String caption) {
+    public MessageValues(int _id, String url, String caption) {
+        this._id = _id;
         this.url = url;
         this.caption = caption;
     }
 
-    public MessageValues(double lat, double lng) {
+    public MessageValues(int _id, String caption, double lng, double lat) {
+        this._id = _id;
+        this.caption = caption;
         this.lng = lng;
         this.lat = lat;
+    }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getText() {
@@ -62,5 +81,27 @@ public class MessageValues {
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    @Override
+    public String toString() {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put("id", get_id());
+            if (getText() != null)
+                jsonObject.put("text", getText());
+            if (getUrl() != null)
+                jsonObject.put("url", getUrl());
+            if (getCaption() != null)
+                jsonObject.put("caption", getCaption());
+            if (getLat() != 0f)
+                jsonObject.put("lat", getLat());
+            if (getLng() != 0f)
+                jsonObject.put("lng", getLng());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
     }
 }

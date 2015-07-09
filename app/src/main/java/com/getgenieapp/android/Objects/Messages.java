@@ -5,36 +5,26 @@ package com.getgenieapp.android.Objects;
  */
 public class Messages {
     private String _id;
-    private int agent_id;
-    private int sender_id;
-    private String category;
-    private String category_type;
-    private String[] category_keys;
-    private MessageValues category_value;
-    private MessageStatus status;
-    private long created_at;
-    private long updated_at;
+    private int agentId;
+    private int senderId;
+    private int messageType;
+    private int category;
+    private MessageValues messageValues;
+    private int status;
+    private long createdAt;
+    private long updatedAt;
     private int direction;
 
-    public Messages(String _id, int agent_id, int sender_id, String category, String category_type, String[] category_keys, MessageValues category_value, MessageStatus status, long created_at, long updated_at, int direction) {
+    public Messages(String _id, int agentId, int senderId, int messageType, int category, MessageValues messageValues, int status, long createdAt, long updatedAt, int direction) {
         this._id = _id;
-        this.agent_id = agent_id;
-        this.sender_id = sender_id;
+        this.agentId = agentId;
+        this.senderId = senderId;
+        this.messageType = messageType;
         this.category = category;
-        this.category_type = category_type;
-        this.category_keys = category_keys;
-        this.category_value = category_value;
+        this.messageValues = messageValues;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.direction = direction;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.direction = direction;
     }
 
@@ -46,75 +36,75 @@ public class Messages {
         this._id = _id;
     }
 
-    public int getAgent_id() {
-        return agent_id;
+    public int getAgentId() {
+        return agentId;
     }
 
-    public void setAgent_id(int agent_id) {
-        this.agent_id = agent_id;
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
     }
 
-    public int getSender_id() {
-        return sender_id;
+    public int getSenderId() {
+        return senderId;
     }
 
-    public void setSender_id(int sender_id) {
-        this.sender_id = sender_id;
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
     }
 
-    public String getCategory() {
+    public int getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(int messageType) {
+        this.messageType = messageType;
+    }
+
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
-    public String getCategory_type() {
-        return category_type;
+    public MessageValues getMessageValues() {
+        return messageValues;
     }
 
-    public void setCategory_type(String category_type) {
-        this.category_type = category_type;
+    public void setMessageValues(MessageValues messageValues) {
+        this.messageValues = messageValues;
     }
 
-    public String[] getCategory_keys() {
-        return category_keys;
-    }
-
-    public void setCategory_keys(String[] category_keys) {
-        this.category_keys = category_keys;
-    }
-
-    public MessageValues getCategory_value() {
-        return category_value;
-    }
-
-    public void setCategory_value(MessageValues category_value) {
-        this.category_value = category_value;
-    }
-
-    public MessageStatus getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(MessageStatus status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public long getCreated_at() {
-        return created_at;
+    public long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(long created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public long getUpdated_at() {
-        return updated_at;
+    public long getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(long updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 }
