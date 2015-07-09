@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
 
-    <LinearLayout
+    <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />
@@ -18,8 +18,7 @@
         android:orientation="vertical">
 
 
-        <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/parentLoadingView"
@@ -69,8 +68,10 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:layout_marginLeft="@dimen/_minus5sdp"
                     android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_minus5sdp"
                     android:hint="@string/name"
                     android:imeOptions="actionNext"
                     android:inputType="textCapWords"
@@ -89,8 +90,10 @@
                     android:id="@+id/number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_5sdp"
                     android:layout_marginLeft="@dimen/_minus5sdp"
                     android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginStart="@dimen/_minus5sdp"
                     android:hint="@string/number"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
@@ -110,10 +113,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
-                    android:layout_gravity="right"
-                    android:textSize="@dimen/_6sdp"
                     android:background="@color/colorPrimary"
-                    android:text="@string/getstarted" />
+                    android:text="@string/getstarted"
+                    android:textSize="@dimen/_6sdp" />
 
             </LinearLayout>
 
@@ -121,7 +123,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />

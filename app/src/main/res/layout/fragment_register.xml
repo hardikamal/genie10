@@ -1,11 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:baselineAligned="false"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
 
-    <LinearLayout
+    <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />
@@ -16,12 +17,13 @@
         android:layout_weight="8"
         android:orientation="vertical">
 
-        <LinearLayout
+        <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
         <LinearLayout
+            android:baselineAligned="false"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
@@ -29,27 +31,18 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!--<LinearLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@android:color/transparent" />-->
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:orientation="vertical">
 
                 <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     xmlns:tools="http://schemas.android.com/tools"
                     android:id="@+id/parentLoadingView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     app:lv_color="@android:color/holo_red_dark"
                     app:lv_loading="false"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:gravity="center"
+                    android:orientation="vertical"
                     app:lv_title="@string/loading">
 
                     <LinearLayout
@@ -93,7 +86,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_minus5sdp"
+                            android:layout_marginStart="@dimen/_minus5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
                             android:hint="@string/name"
                             android:imeOptions="actionNext"
                             android:inputType="textCapWords"
@@ -109,7 +104,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_minus5sdp"
+                            android:layout_marginStart="@dimen/_minus5sdp"
                             android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
                             android:hint="@string/number"
                             android:imeOptions="actionDone"
                             android:inputType="phone"
@@ -124,7 +121,6 @@
                             android:id="@+id/getStarted"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
                             android:text="@string/getstartedcaps" />
                     </LinearLayout>
 
@@ -132,20 +128,13 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@android:color/transparent" />-->
-        </LinearLayout>
-
-        <LinearLayout
+        <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3" />
     </LinearLayout>
 
-    <LinearLayout
+    <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />

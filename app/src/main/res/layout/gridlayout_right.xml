@@ -7,6 +7,8 @@
     android:paddingBottom="@dimen/_1sdp"
     android:paddingLeft="@dimen/_1sdp"
     android:paddingStart="@dimen/_1sdp"
+    android:paddingRight="0dp"
+    android:paddingEnd="0dp"
     android:paddingTop="@dimen/_1sdp">
 
     <RelativeLayout

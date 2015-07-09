@@ -6,53 +6,33 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.getgenieapp.android.CustomViews.Misc.GifMovieView;
-import com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
 import com.getgenieapp.android.GenieActivity;
-import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class SplashScreenActivity extends GenieActivity {
-
-    @InjectView(R.id.version)
-    TextView version;
-    @InjectView(R.id.companyname)
-    AutoResizeTextView companyName;
-    @InjectView(R.id.copyrights)
-    TextView copyrights;
-    @InjectView(R.id.welcomemsg)
-    TextView welcomemsg;
 
 //    UIHelpers uiHelpers;
     long start = 0;
@@ -71,12 +51,6 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
-
-        copyrights.setVisibility(View.GONE);
-
-//        uiHelpers = new UIHelpers();
-//        welcomemsg.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.welcomeMessage), uiHelpers.getXYPixels(this).x / 4));
-//        companyName.setTextSize(uiHelpers.determineMaxTextSize(getString(R.string.companyName), uiHelpers.getXYPixels(this).x / 4));
 
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -98,16 +72,6 @@ public class SplashScreenActivity extends GenieActivity {
             }
         };
 
-        try {
-            logging.LogD("Set Version Before", version.getText().toString());
-            // Version number is set here based on app build if it throws exception it will disappear.
-            // Better to hide instead of showing some weird text
-            version.setText(this.getPackageManager()
-                    .getPackageInfo(this.getPackageName(), 0).versionName);
-            logging.LogD("Set Version After", version.getText().toString());
-        } catch (PackageManager.NameNotFoundException e) {
-            version.setVisibility(View.GONE);
-        }
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
             logging.LogD("Internet", "Available");
@@ -161,6 +125,7 @@ public class SplashScreenActivity extends GenieActivity {
                         logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                         Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                     } catch (Exception err) {
+                        err.printStackTrace();
                     }
                     logging.LogI("Start Register Activity");
                     Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
@@ -181,6 +146,7 @@ public class SplashScreenActivity extends GenieActivity {
                     logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                     Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                 } catch (Exception err) {
+                    err.printStackTrace();
                 }
                 logging.LogI("Start Verify Activity");
                 Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
@@ -208,11 +174,12 @@ public class SplashScreenActivity extends GenieActivity {
                         if (response.length() > 0) {
                             new Thread(new Runnable() {
                                 public void run() {
-                                    ArrayList<String> categoriesList = new ArrayList<String>();
+                                    ArrayList<String> categoriesList = new ArrayList<>();
                                     try {
                                         logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                                         Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                                     } catch (Exception err) {
+                                        err.printStackTrace();
                                     }
                                     for (int i = 0; i < response.length(); i++) {
                                         try {
@@ -233,12 +200,12 @@ public class SplashScreenActivity extends GenieActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                System.out.print(error);
+                error.printStackTrace();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
                 return params;
             }

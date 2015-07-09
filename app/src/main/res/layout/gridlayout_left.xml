@@ -5,8 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/_1sdp"
-    android:paddingEnd="@dimen/_1sdp"
     android:paddingRight="@dimen/_1sdp"
+    android:paddingEnd="@dimen/_1sdp"
+    android:paddingLeft="0dp"
+    android:paddingStart="0dp"
     android:paddingTop="@dimen/_1sdp">
 
     <RelativeLayout

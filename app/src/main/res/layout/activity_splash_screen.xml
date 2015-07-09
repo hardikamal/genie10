@@ -1,89 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:circleprogress="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/splashcreenbackgroundcolor"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
-            android:id="@+id/welcomemsg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/_30sdp"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="@string/welcomeMessage"
-            android:textColor="@color/generalTextColor"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+    <com.getgenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android"
+        android:id="@+id/splash_image"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:gravity="center"
-        xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android">
-
-        <com.getgenieapp.android.CustomViews.Misc.GifMovieView
-            android:id="@+id/splash_image"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:padding="50dp"
-            custom:gif="@drawable/genie_splash"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
-            android:id="@+id/companyname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_120sdp"
-            android:layout_marginLeft="@dimen/_120sdp"
-            android:layout_marginRight="@dimen/_120sdp"
-            android:layout_marginStart="@dimen/_120sdp"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="@string/companyName"
-            android:textColor="@color/generalTextColor"
-            android:textSize="@dimen/_25sdp" />
-
-        <TextView
-            android:id="@+id/version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/version"
-            android:textColor="@color/generalTextColor"
-            android:textSize="@dimen/_12sdp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/copyrights"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/copyrights"
-            android:textColor="@color/generalTextColor"
-            android:textSize="@dimen/_12sdp"
-            android:visibility="gone" />
-
-    </LinearLayout>
-
+        android:padding="50dp"
+        custom:gif="@drawable/genie_splash" />
 </LinearLayout>
