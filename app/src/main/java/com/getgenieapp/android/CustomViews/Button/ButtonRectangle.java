@@ -85,7 +85,7 @@ public class ButtonRectangle extends Button {
         if (text != null) {
             textButton = new TextView(getContext());
             textButton.setText(text);
-            textButton.setTextColor(Color.WHITE);
+            textButton.setTextColor(getResources().getColor(R.color.e3f2fd));
             textButton.setTypeface(null, Typeface.BOLD);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             params.addRule(CENTER_IN_PARENT, TRUE);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +107,21 @@ public class VerifyFragment extends GenieFragment {
                 if (char1.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 1", "Text length 1");
-                    char2.requestFocus();
+
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                Thread.sleep(DataFields.smallTimeOut);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    char2.requestFocus();
+                                }
+                            });
+                        }
+                    }).start();
                 }
                 checkFields();
             }
@@ -127,7 +142,20 @@ public class VerifyFragment extends GenieFragment {
                 if (char2.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 2", "Text length 1");
-                    char3.requestFocus();
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                Thread.sleep(DataFields.smallTimeOut);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    char3.requestFocus();
+                                }
+                            });
+                        }
+                    }).start();
                 }
                 checkFields();
             }
@@ -148,7 +176,20 @@ public class VerifyFragment extends GenieFragment {
                 if (char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 3", "Text length 1");
-                    char4.requestFocus();
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                Thread.sleep(DataFields.smallTimeOut);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    char4.requestFocus();
+                                }
+                            });
+                        }
+                    }).start();
                 }
                 checkFields();
             }
@@ -169,7 +210,21 @@ public class VerifyFragment extends GenieFragment {
                 if (char4.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 1", "Text length 1");
-                    char1.requestFocus();
+
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                Thread.sleep(DataFields.smallTimeOut);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    char1.requestFocus();
+                                }
+                            });
+                        }
+                    }).start();
                 }
                 checkFields();
             }
@@ -235,6 +290,7 @@ public class VerifyFragment extends GenieFragment {
         startActivity(new Intent(getActivity(), SplashScreenActivity.class));
         getActivity().finish();
     }
+
     @OnClick(R.id.tapToResend)
     public void topToResend() {
         JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.RESENDURL, null,
@@ -242,6 +298,8 @@ public class VerifyFragment extends GenieFragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response.toString());
+                        SnackBar snackBar = new SnackBar(getActivity(), genieApplication.getString(R.string.smsrequestresend));
+                        snackBar.show();
                         if (response.has("token")) {
                             try {
                                 sharedPreferences.edit().putString(DataFields.TOKEN, response.getString("token")).apply();

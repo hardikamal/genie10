@@ -1,0 +1,128 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="13"
+        android:orientation="vertical">
+
+
+        <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/parentLoadingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lv_color="@android:color/holo_red_dark"
+            app:lv_loading="false"
+            app:lv_title="@string/loading">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+                    android:id="@+id/topText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/topText"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textIsSelectable="false"
+                    android:textSize="@dimen/_36sdp"
+                    android:visibility="gone" />
+
+                <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+                    android:id="@+id/subText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/subText"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textIsSelectable="false"
+                    android:textSize="@dimen/_16sdp"
+                    android:visibility="gone" />
+
+                <Space
+                    android:layout_width="@dimen/_1sdp"
+                    android:layout_height="@dimen/_20sdp" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_minus5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:hint="@string/name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:maxLength="50"
+                    android:singleLine="true"
+                    android:textColorHighlight="@color/colorPrimaryDark"
+                    app:met_baseColor="@color/color444"
+                    app:met_floatingLabel="highlight"
+                    app:met_iconLeft="@drawable/ic_person_white_24dp"
+                    app:met_iconPadding="0dp"
+                    app:met_maxCharacters="50"
+                    app:met_primaryColor="@color/color444"
+                    app:met_textColorHint="@color/colorPrimaryDark" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_minus5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:hint="@string/number"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:singleLine="true"
+                    android:textColorHighlight="@color/colorPrimaryDark"
+                    app:met_baseColor="@color/color444"
+                    app:met_floatingLabel="highlight"
+                    app:met_iconLeft="@drawable/ic_phone_white_24dp"
+                    app:met_iconPadding="0dp"
+                    app:met_maxCharacters="10"
+                    app:met_primaryColor="@color/color444"
+                    app:met_textColorHint="@color/colorPrimaryDark" />
+
+                <com.getgenieapp.android.CustomViews.Button.ButtonRectangle
+                    android:id="@+id/getStarted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_gravity="right"
+                    android:textSize="@dimen/_6sdp"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/getstarted" />
+
+            </LinearLayout>
+
+        </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>

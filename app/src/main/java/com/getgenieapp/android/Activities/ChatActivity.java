@@ -85,7 +85,6 @@ public class ChatActivity extends GenieBaseActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         mToolbar.setTitle(title);
         mToolbar.setSubtitle(description);
         mToolbar.setSubtitleTextAppearance(this, R.style.subText);

@@ -81,7 +81,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
 
-        getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper_small);
+        getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
 
         logging.LogV("User Profile Activity");
         name.setText("Genie Admin");

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -69,7 +70,7 @@ public class RegisterFragment extends GenieFragment {
             fragmentManager.popBackStack();
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_register, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
         utils = new Utils(getActivity());
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {

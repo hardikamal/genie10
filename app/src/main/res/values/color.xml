@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1976D2</color>
+    <color name="colorPrimary">#26ACEC</color>
     <color name="colorPrimaryDark">#B2B2B2</color>
+    <color name="colorPrimaryFooter">#B2B2B2</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#3399FF</color>
     <color name="generalTextColor">#FAFAFA</color>
     <color name="loadearliermsgcolor">#E1F3FD</color>
     <color name="lineColor">#ccc</color>
+    <color name="ececec">#ececec</color>
+    <color name="e3f2fd">#E3F2FD</color>
+    <color name="splashcreenbackgroundcolor">#2196F3</color>
+    <color name="color444">#444</color>
 </resources>

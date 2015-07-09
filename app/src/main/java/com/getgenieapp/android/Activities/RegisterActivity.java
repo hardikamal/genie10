@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.telephony.SmsMessage;
 import android.view.ViewGroup;
 
@@ -81,10 +82,19 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         if(new File(DataFields.profilePicturePath).exists())
             new File(DataFields.profilePicturePath).delete();
         setContentView(R.layout.activity_register);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.genie_logo);
+        actionBar.setTitle("");
+
         if (getIntent().getStringExtra("page").equals("Register"))
             startFragment(R.id.body, new RegisterFragment());
         else
             startFragment(R.id.body, new VerifyFragment());
+
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @Override

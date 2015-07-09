@@ -2,27 +2,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ececec"
     android:orientation="vertical"
-    android:background="@color/colorPrimary"
     tools:context="com.getgenieapp.android.Activities.RegisterActivity">
 
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"/>
+        android:layout_weight="0"
+        android:orientation="vertical" />
 
     <FrameLayout
         android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"/>
+        android:layout_weight="10" />
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0"
-        android:orientation="vertical"/>
+        android:layout_weight="1"
+        android:background="@color/e3f2fd"
+        android:orientation="vertical">
+
+        <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+            android:id="@+id/personalassistant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/personalassistant"
+            android:textColor="@color/colorPrimary"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/_20sdp" />
+
+    </LinearLayout>
 </LinearLayout>

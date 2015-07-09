@@ -33,6 +33,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
         ButterKnife.inject(this);
+
         getUserOrders();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }

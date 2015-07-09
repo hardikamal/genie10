@@ -2,6 +2,7 @@ package com.getgenieapp.android.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -36,6 +37,13 @@ public class MainActivity extends GenieBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.genie_logo);
+        actionBar.setTitle("");
+
         logging.LogV("Main Activity");
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);

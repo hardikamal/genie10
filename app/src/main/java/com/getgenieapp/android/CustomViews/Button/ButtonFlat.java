@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,8 +45,8 @@ public class ButtonFlat extends Button {
         if(text != null){
             textButton = new TextView(getContext());
             textButton.setText(text.toUpperCase());
+            textButton.setInputType(InputType.TYPE_CLASS_TEXT);
             textButton.setTextColor(backgroundColor);
-            textButton.setTypeface(null, Typeface.BOLD);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
             textButton.setLayoutParams(params);

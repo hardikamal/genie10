@@ -45,7 +45,7 @@
     <string name="code91">+91</string>
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
-    <string name="servererrortryagain">Server Error. Try Again</string>
+    <string name="servererrortryagain">Error. Try Again</string>
     <string name="error_toast">Unfortunately Genie Crashed.\\nSending crash reports to Genie</string>
     <string name="redoregistration">Redo Registration</string>
     <string name="gettinglocation">Getting Location</string>
@@ -59,4 +59,8 @@
     <string name="foiledtogetthumbnails">Failed to get thumbnail for our image.</string>
     <string name="devicenotsupporttocroppicture">Whoops - your device doesn\'t support the crop action!</string>
     <string name="title_activity_user_profile_from_chat">UserProfileFromChatActivity</string>
+    <string name="personalassistant">Your Personal Assistant</string>
+    <string name="faq">FAQ</string>
+    <string name="terms"><![CDATA[Terms & Services]]></string>
+    <string name="smsrequestresend">Request Sent. Please check you SMS.</string>
 </resources>
