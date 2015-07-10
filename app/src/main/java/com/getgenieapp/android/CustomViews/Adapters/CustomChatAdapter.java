@@ -1,11 +1,15 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -15,13 +19,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Cache;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
@@ -42,6 +49,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     private ArrayList<Messages> messagesList;
     private Context context;
     private ImageLoader imageLoader;
+    private String color;
     Messages messages;
 
     public Messages getMessages() {
@@ -52,9 +60,10 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         this.messages = messages;
     }
 
-    public CustomChatAdapter(ArrayList<Messages> messagesList, Context context) {
+    public CustomChatAdapter(ArrayList<Messages> messagesList, String color, Context context) {
         this.messagesList = messagesList;
         this.context = context;
+        this.color = color;
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
     }
 
@@ -63,99 +72,92 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         return position;
     }
 
-    class ViewHolderChat extends RecyclerView.ViewHolder {
-        @InjectView(R.id.textTop)
-        TextView textTop;
-        @InjectView(R.id.textBottom)
-        TextView textBottom;
-        @InjectView(R.id.textTime)
-        TextView textTime;
-        public ViewTreeObserver vto;
+    static class ViewHolderMain extends RecyclerView.ViewHolder {
+        @InjectView(R.id.text)
+        TextView text;
+        @InjectView(R.id.time)
+        TextView time;
+        @InjectView(R.id.tick)
+        ImageView tick;
 
-        public ViewHolderChat(View itemView) {
+        public ViewHolderMain(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
-            vto = itemView.getViewTreeObserver();
-        }
-
-        void showText(final String lastmessage) {
-            if (vto.isAlive()) {
-                vto.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged() {
-                        textTop.setText(lastmessage + " 23:59");
-                        Layout layout = textTop.getLayout();
-                        int lastLine = layout.getLineCount();
-                        if (lastLine > 1) {
-                            int lastLineIndex = layout.getLineStart(lastLine - 1);
-                            if (lastLineIndex <= lastmessage.length())
-                                textTop.setText(lastmessage.substring(0, lastLineIndex));
-                            else
-                                textTop.setText(lastmessage);
-                            if (lastLineIndex > lastmessage.length())
-                                textBottom.setText("");
-                            else
-                                textBottom.setText(lastmessage.substring(lastLineIndex, lastmessage.length()));
-                        } else {
-                            textTop.setText("");
-                            textTop.setVisibility(View.GONE);
-                            textBottom.setText(lastmessage);
-                        }
-                    }
-                });
-            }
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Messages currentMessage = messagesList.get(viewType);
-        if (currentMessage.getDirection() == 1) {
-            return new ViewHolderChat(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false));
-        } else {
-            return new ViewHolderChat(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false));
-        }
+        ViewHolderMain viewHolderMain;
+//        if (messagesList.get(viewType).getDirection() == 1)
+        if (viewType % 2 == 0)
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false));
+        else
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false));
+        return viewHolderMain;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Messages messages = messagesList.get(position);
-        final ViewHolderChat viewHolderMain = (ViewHolderChat) holder;
+        final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
         final MessageValues messageValues = messages.getMessageValues();
-        viewHolderMain.textTop.setText(messageValues.getText());
-        viewHolderMain.showText(messageValues.getText());
+
+//        if (messagesList.get(position).getDirection() == 1) {
+        if (position % 2 == 0) {
+            viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.parseColor(color), Color.parseColor(color)});
+            gd.setCornerRadius(10f);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                viewHolderMain.text.setBackground(gd);
+            } else {
+                viewHolderMain.text.setBackgroundDrawable(gd);
+            }
+        } else {
+            viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space12char));
+            viewHolderMain.text.setTextColor(Color.parseColor(color));
+            viewHolderMain.time.setTextColor(Color.parseColor(color));
+            if (messages.getStatus() == 1) {
+                viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_black_24dp);
+            } else if (messages.getStatus() == 2) {
+                viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_all_black_24dp);
+            } else if (messages.getStatus() == 3) {
+                viewHolderMain.tick.setBackgroundResource(R.drawable.check_all);
+            }
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
+            gd.setCornerRadius(10f);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                viewHolderMain.text.setBackground(gd);
+            } else {
+                viewHolderMain.text.setBackgroundDrawable(gd);
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void TextMeasure(String text,
+                             TextView tvl, TextView tvr) {
+
+        int linesPerScreen = tvl.getHeight() / (tvl.getLineHeight() + (int) tvl.getLineSpacingExtra());
+
+        Paint paint = tvl.getPaint();
+        int textWidth = paint.breakText(text, 0, text.length(),
+                true, tvl.getWidth(), null);
+
+        int totalText = textWidth * linesPerScreen;
+        String leftText = text.substring(0, totalText);
+        String rightText = text.substring(totalText,
+                text.length());
+        tvl.setText(leftText);
+        tvr.setText(rightText);
     }
 
     @Override
     public int getItemCount() {
         return messagesList.size();
-    }
-
-    public Bitmap StringToBitMap(String encodedString) {
-        try {
-            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-
-    public void setBackGround(LinearLayout layout, String color) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            Utils utils = new Utils(context);
-            int colorCode = Color.parseColor(color);
-            Drawable sourceDrawable;
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main, context.getTheme());
-//            } else {
-//                sourceDrawable = context.getResources().getDrawable(R.drawable.money_genie_ticket_main);
-//            }
-
-//            Bitmap sourceBitmap =utils.convertDrawableToBitmap(sourceDrawable);
-//
-//            layout.setBackground(new BitmapDrawable(context.getResources(), utils.changeImageColor(sourceBitmap, colorCode)));
-        }
     }
 }

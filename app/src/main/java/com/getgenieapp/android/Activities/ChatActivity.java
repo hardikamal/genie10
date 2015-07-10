@@ -1,5 +1,6 @@
 package com.getgenieapp.android.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,11 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
@@ -40,6 +48,8 @@ public class ChatActivity extends GenieBaseActivity {
     RecyclerView recyclerView;
     @InjectView(R.id.send)
     CircularButton send;
+    @InjectView(R.id.messageLayout)
+    LinearLayout messageLayout;
 
     String title = "SuperGenie";
     String description = "Super Genie Chat Window";
@@ -112,12 +122,17 @@ public class ChatActivity extends GenieBaseActivity {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new CustomChatAdapter(messages, this);
+        chatAdapter = new CustomChatAdapter(messages, color, this);
         recyclerView.setAdapter(chatAdapter);
+        recyclerView.scrollToPosition(messages.size() - 1);
+        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_100);
+        recyclerView.setAnimation(anim);
+        anim.start();
 
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                recyclerView.scrollToPosition(messages.size() - 1);
                 if (message.getText().toString().trim().length() > 0) {
                     imageResource = false;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -144,25 +159,54 @@ public class ChatActivity extends GenieBaseActivity {
 
         });
 
+        message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    send.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @OnClick(R.id.send)
-    public void onClickSend(View buttonSend) {
+    public void onClickSend() {
         if (imageResource) {
 
-        }
-        else
-        {
+        } else {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
-            MessageValues messageValues = new MessageValues(1,typedMessage);
-            Messages messageObject = new Messages("1",1,1,1,id,messageValues,1,0,0,0);
+            MessageValues messageValues = new MessageValues(1, typedMessage);
+            Messages messageObject = new Messages("1", 1, 1, 1, id, messageValues, 1, 0, 0, 0);
             messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();
             recyclerView.scrollToPosition(messages.size() - 1);
         }
+    }
+
+    @OnClick(R.id.messageLayout)
+    public void onClickMessageBox() {
+        message.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(message, InputMethodManager.SHOW_IMPLICIT);
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(DataFields.smallTimeOut);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        recyclerView.scrollToPosition(messages.size() - 1);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override

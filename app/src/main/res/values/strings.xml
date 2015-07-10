@@ -63,4 +63,6 @@
     <string name="faq">FAQ</string>
     <string name="terms"><![CDATA[Terms & Services]]></string>
     <string name="smsrequestresend">Request Sent. Please check you SMS.</string>
+    <string name="space10char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
 </resources>
