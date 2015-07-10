@@ -287,7 +287,6 @@ public class VerifyFragment extends GenieFragment {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            parentLoadingView.setLoading(false);
                             System.out.println(response.toString());
                             if (response != null) {
                                 try {

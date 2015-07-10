@@ -1,8 +1,14 @@
 package com.getgenieapp.android.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +19,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,6 +31,7 @@ import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.ChatHelper;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
@@ -36,8 +42,11 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -63,8 +72,6 @@ public class ChatActivity extends GenieBaseActivity {
     boolean imageResource = true;
     private CustomChatAdapter chatAdapter;
     private ArrayList<Messages> messages = new ArrayList<>();
-
-    private ChatHelper chatHelper;
 
     private Socket mSocket;
 
@@ -175,7 +182,11 @@ public class ChatActivity extends GenieBaseActivity {
     @OnClick(R.id.send)
     public void onClickSend() {
         if (imageResource) {
-
+            Messages messageObject = new Messages("1", 1, 1, 2, id, getLocation(), 1, 0, 0, 0);
+            messages.add(messageObject);
+            dbDataSource.addNormal(messageObject);
+            chatAdapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(messages.size() - 1);
         } else {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
@@ -212,7 +223,6 @@ public class ChatActivity extends GenieBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        chatHelper = new ChatHelper();
         mSocket.on("init", onInit);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
@@ -323,4 +333,38 @@ public class ChatActivity extends GenieBaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public MessageValues getLocation() {
+        double longitude = 0.00;
+        double latitude = 0.00;
+        String _Location = "";
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(new Criteria(), true);
+
+        Location locations = locationManager.getLastKnownLocation(provider);
+        List<String> providerList = locationManager.getAllProviders();
+        if (null != locations && null != providerList && providerList.size() > 0) {
+            longitude = locations.getLongitude();
+            latitude = locations.getLatitude();
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
+                if (null != listAddresses && listAddresses.size() > 0) {
+                    Address adrs = listAddresses.get(0);
+
+                    for (int i = 0; i < adrs.getMaxAddressLineIndex(); i++) {
+                        _Location += adrs.getAddressLine(i) + " ";
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            SnackBar snackBar = new SnackBar(this, "Not able to access Location");
+            snackBar.show();
+        }
+        return new MessageValues(3, _Location, longitude, latitude);
+    }
+
 }

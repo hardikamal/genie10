@@ -10,14 +10,23 @@
     android:paddingStart="@dimen/_100sdp"
     android:paddingTop="@dimen/_2sdp">
 
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_120sdp"
+        android:scaleType="fitXY"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_minus10sdp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="right"
+        android:layout_below="@+id/mapView"
+        android:layout_gravity="end"
         android:padding="@dimen/_5sdp"
         android:textSize="@dimen/_15sdp" />
 
@@ -42,9 +51,9 @@
             android:id="@+id/tick"
             android:layout_width="@dimen/_10sdp"
             android:layout_height="@dimen/_10sdp"
+            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_2sdp"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_gravity="center" />
+            android:layout_marginStart="@dimen/_2sdp" />
 
     </LinearLayout>
 </RelativeLayout>

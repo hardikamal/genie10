@@ -1,6 +1,7 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,17 +25,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -79,8 +90,10 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         TextView time;
         @InjectView(R.id.tick)
         ImageView tick;
+        @InjectView(R.id.mapView)
+        NetworkImageView mapView;
 
-        public ViewHolderMain(View itemView) {
+        public ViewHolderMain(View itemView, Context context) {
             super(itemView);
             ButterKnife.inject(this, itemView);
         }
@@ -91,9 +104,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         ViewHolderMain viewHolderMain;
 //        if (messagesList.get(viewType).getDirection() == 1)
         if (viewType % 2 == 0)
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false));
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
         else
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false));
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
         return viewHolderMain;
     }
 
@@ -103,7 +116,40 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
         final MessageValues messageValues = messages.getMessageValues();
 
-//        if (messagesList.get(position).getDirection() == 1) {
+        if (messages.getMessageType() == 2) {
+            String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
+                    + messageValues.getLat()
+                    + ","
+                    + messageValues.getLng()
+                    + "&sensor=false";
+            viewHolderMain.mapView.setVisibility(View.VISIBLE);
+            viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
+
+//        if (messages.getDirection() == 1) {
+            if (position % 2 == 0) {
+                GradientDrawable gd = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{Color.parseColor(color), Color.parseColor(color)});
+                gd.setCornerRadius(5f);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolderMain.mapView.setBackground(gd);
+                } else {
+                    viewHolderMain.mapView.setBackgroundDrawable(gd);
+                }
+            } else {
+                GradientDrawable gd = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
+                gd.setCornerRadius(5f);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolderMain.mapView.setBackground(gd);
+                } else {
+                    viewHolderMain.mapView.setBackgroundDrawable(gd);
+                }
+            }
+        }
+
+//        if (messages.getDirection() == 1) {
         if (position % 2 == 0) {
             viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));
             GradientDrawable gd = new GradientDrawable(
@@ -136,24 +182,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.text.setBackgroundDrawable(gd);
             }
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void TextMeasure(String text,
-                             TextView tvl, TextView tvr) {
-
-        int linesPerScreen = tvl.getHeight() / (tvl.getLineHeight() + (int) tvl.getLineSpacingExtra());
-
-        Paint paint = tvl.getPaint();
-        int textWidth = paint.breakText(text, 0, text.length(),
-                true, tvl.getWidth(), null);
-
-        int totalText = textWidth * linesPerScreen;
-        String leftText = text.substring(0, totalText);
-        String rightText = text.substring(totalText,
-                text.length());
-        tvl.setText(leftText);
-        tvr.setText(rightText);
     }
 
     @Override

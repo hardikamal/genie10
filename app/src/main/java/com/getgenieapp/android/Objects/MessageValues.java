@@ -10,7 +10,6 @@ public class MessageValues {
     private int _id;
     private String text;
     private String url;
-    private String caption;
     private double lng;
     private double lat;
 
@@ -22,15 +21,15 @@ public class MessageValues {
         this.text = text;
     }
 
-    public MessageValues(int _id, String url, String caption) {
+    public MessageValues(int _id, String url, String text) {
         this._id = _id;
         this.url = url;
-        this.caption = caption;
+        this.text = text;
     }
 
-    public MessageValues(int _id, String caption, double lng, double lat) {
+    public MessageValues(int _id, String text, double lng, double lat) {
         this._id = _id;
-        this.caption = caption;
+        this.text = text;
         this.lng = lng;
         this.lat = lat;
     }
@@ -59,14 +58,6 @@ public class MessageValues {
         this.url = url;
     }
 
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
     public double getLng() {
         return lng;
     }
@@ -93,8 +84,6 @@ public class MessageValues {
                 jsonObject.put("text", getText());
             if (getUrl() != null)
                 jsonObject.put("url", getUrl());
-            if (getCaption() != null)
-                jsonObject.put("caption", getCaption());
             if (getLat() != 0f)
                 jsonObject.put("lat", getLat());
             if (getLng() != 0f)

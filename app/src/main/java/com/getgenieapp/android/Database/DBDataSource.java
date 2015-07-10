@@ -125,10 +125,10 @@ public class DBDataSource {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
                         }
                         if (jsonObject.getInt("id") == 2) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("caption"));
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         }
                         if (jsonObject.getInt("id") == 3) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("caption"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         }
                     }
                 } catch (JSONException e) {

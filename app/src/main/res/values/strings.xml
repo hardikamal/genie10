@@ -65,4 +65,6 @@
     <string name="smsrequestresend">Request Sent. Please check you SMS.</string>
     <string name="space10char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="mapservicemissing">MAP SERVICE MISSING</string>
+    <string name="mapupdate">MAP UPDATE REQUIRED</string>
 </resources>
