@@ -24,12 +24,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
+import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 import com.google.android.gms.maps.MapView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by Raviteja on 6/16/2015.
@@ -60,23 +64,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     }
 
     class ViewHolderChat extends RecyclerView.ViewHolder {
-        public TextView textTop;
-        public TextView textBottom;
-        public TextView textTime;
-        public ImageView image;
-        public MapView mapView;
-        public LinearLayout linearLayout;
+        @InjectView(R.id.textTop)
+        TextView textTop;
+        @InjectView(R.id.textBottom)
+        TextView textBottom;
+        @InjectView(R.id.textTime)
+        TextView textTime;
         public ViewTreeObserver vto;
 
         public ViewHolderChat(View itemView) {
             super(itemView);
-            mapView = (MapView) itemView.findViewById(R.id.mapview);
-            image = (ImageView) itemView.findViewById(R.id.imageview);
-            textTop = (TextView) itemView.findViewById(R.id.textTop);
-            textBottom = (TextView) itemView.findViewById(R.id.textBottom);
-            textTime = (TextView) itemView.findViewById(R.id.textTime);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.color_layout);
-
+            ButterKnife.inject(this, itemView);
             vto = itemView.getViewTreeObserver();
         }
 
@@ -121,59 +119,11 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-//        final Values value = values.get(position);
-//        final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
-//        viewHolderMain.text3.setText(value.getDate());
-//        setBackGround(viewHolderMain.linearLayout, value.getColor());
-//
-//        if (value.getUrl() != null) {
-//
-//            viewHolderMain.image.setVisibility(View.VISIBLE);
-//            viewHolderMain.image.setAlpha(0.25f);
-//
-//            Cache cache = AppController.getInstance().getRequestQueue().getCache();
-//            Cache.Entry entry = cache.get(value.getUrl());
-//            if (entry != null) {
-//                try {
-//                    String data = new String(entry.data, "UTF-8");
-//                    if (StringToBitMap(data) != null)
-//                        viewHolderMain.image.setImageBitmap(StringToBitMap(data));
-//                    else {
-//                        imageLoader.get(value.getUrl(), new ImageLoader.ImageListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                Log.e("", "Image Load Error: " + error.getMessage());
-//                            }
-//
-//                            @Override
-//                            public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-//                                if (response.getBitmap() != null) {
-//                                    viewHolderMain.image.setImageBitmap(response.getBitmap());
-//                                }
-//                            }
-//                        });
-//                    }
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                imageLoader.get(value.getUrl(), new ImageLoader.ImageListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.e("", "Image Load Error: " + error.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onResponse(ImageLoader.ImageContainer response, boolean arg1) {
-//                        if (response.getBitmap() != null) {
-//                            viewHolderMain.image.setImageBitmap(response.getBitmap());
-//                        }
-//                    }
-//                });
-//            }
-//        }
-//        viewHolderMain.showText(value.getValue());
+        final Messages messages = messagesList.get(position);
+        final ViewHolderChat viewHolderMain = (ViewHolderChat) holder;
+        final MessageValues messageValues = messages.getMessageValues();
+        viewHolderMain.textTop.setText(messageValues.getText());
+        viewHolderMain.showText(messageValues.getText());
     }
 
     @Override

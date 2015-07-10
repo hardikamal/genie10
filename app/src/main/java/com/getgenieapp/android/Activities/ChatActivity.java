@@ -21,6 +21,7 @@ import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.ChatHelper;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
+import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
@@ -40,14 +41,18 @@ public class ChatActivity extends GenieBaseActivity {
     @InjectView(R.id.send)
     CircularButton send;
 
-    String title = "Chat";
-    String description = "Chat Window";
-    String color = "#1976d2";
+    String title = "SuperGenie";
+    String description = "Super Genie Chat Window";
+    String color = "#26ACEC";
+    int id = 0;
+    long hide_time = 0;
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
     @InjectView(R.id.message)
     EditText message;
     boolean imageResource = true;
+    private CustomChatAdapter chatAdapter;
+    private ArrayList<Messages> messages = new ArrayList<>();
 
     private ChatHelper chatHelper;
 
@@ -72,6 +77,8 @@ public class ChatActivity extends GenieBaseActivity {
             title = getIntent().getStringExtra("title");
             description = getIntent().getStringExtra("description");
             color = getIntent().getStringExtra("color");
+            id = getIntent().getIntExtra("id", 0);
+            hide_time = getIntent().getLongExtra("hide_chat", 0);
         }
 
         setContentView(R.layout.activity_chat);
@@ -92,6 +99,7 @@ public class ChatActivity extends GenieBaseActivity {
         mToolbar.setBackgroundColor(Color.parseColor(color));
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
+        message.setTextColor(Color.parseColor(color));
 
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         try {
@@ -100,11 +108,12 @@ public class ChatActivity extends GenieBaseActivity {
             e.printStackTrace();
         }
 
+        messages = dbDataSource.getAllMessages();
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        ArrayList<Messages> messages = new ArrayList<>();
-        recyclerView.setAdapter(new CustomChatAdapter(messages, this));
+        chatAdapter = new CustomChatAdapter(messages, this);
+        recyclerView.setAdapter(chatAdapter);
 
         message.addTextChangedListener(new TextWatcher() {
 
@@ -142,6 +151,17 @@ public class ChatActivity extends GenieBaseActivity {
     public void onClickSend(View buttonSend) {
         if (imageResource) {
 
+        }
+        else
+        {
+            String typedMessage = message.getText().toString().trim();
+            message.setText("");
+            MessageValues messageValues = new MessageValues(1,typedMessage);
+            Messages messageObject = new Messages("1",1,1,1,id,messageValues,1,0,0,0);
+            messages.add(messageObject);
+            dbDataSource.addNormal(messageObject);
+            chatAdapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(messages.size() - 1);
         }
     }
 
@@ -253,7 +273,10 @@ public class ChatActivity extends GenieBaseActivity {
             startActivity(new Intent(this, UserProfileActivity.class));
             return true;
         }
-
+        if (id == R.id.action_previous_orders) {
+            startActivity(new Intent(this, OrderDetailsActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

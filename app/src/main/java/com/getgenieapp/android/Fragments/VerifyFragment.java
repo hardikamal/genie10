@@ -73,13 +73,53 @@ public class VerifyFragment extends GenieFragment {
     }
 
     @Subscribe
-    public void onSMSReceived(String code) {
+    public void onSMSReceived(final String code) {
         logging.LogV("SMS Received Code", code);
         if (char1 != null && char2 != null && char3 != null && char4 != null) {
-            char1.setText(code.substring(0, 1));
-            char2.setText(code.substring(1, 2));
-            char3.setText(code.substring(2, 3));
-            char4.setText(code.substring(3, 4));
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(DataFields.smallTimeOut);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            char1.setText(code.substring(0, 1));
+                        }
+                    });
+                    try {
+                        Thread.sleep(DataFields.smallTimeOut);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            char2.setText(code.substring(1, 2));
+                        }
+                    });
+                    try {
+                        Thread.sleep(DataFields.smallTimeOut);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            char3.setText(code.substring(2, 3));
+                        }
+                    });
+                    try {
+                        Thread.sleep(DataFields.smallTimeOut);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            char4.setText(code.substring(3, 4));
+                        }
+                    });
+                }
+            }).start();
         }
     }
 
@@ -340,7 +380,6 @@ public class VerifyFragment extends GenieFragment {
             logging.LogV("Char", "Texts length 1");
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(char4.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            parentLoadingView.setLoading(true);
             parentLoadingView.setText("Verifying...");
             final String code = char1.getText().toString().trim() +
                     char2.getText().toString().trim() +
@@ -353,6 +392,11 @@ public class VerifyFragment extends GenieFragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            parentLoadingView.setLoading(true);
+                        }
+                    });
                     goNext(code);
                 }
             }).start();

@@ -11,11 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -30,9 +28,6 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-/**
- * Created by Manny on 6/16/2015.
- */
 public class CustomAdapter extends RecyclerView.Adapter {
     private ArrayList<Categories> categories;
     private Context context;
@@ -161,7 +156,9 @@ public class CustomAdapter extends RecyclerView.Adapter {
         intent.putExtra("title", category.getName());
         intent.putExtra("description", category.getDescription());
         intent.putExtra("color", category.getBg_color());
-        ((Activity) context).startActivity(intent);
+        intent.putExtra("hide_chat", category.getHide_chats_time());
+        intent.putExtra("id", category.getId());
+        context.startActivity(intent);
     }
 
     @Override

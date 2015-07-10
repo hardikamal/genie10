@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Criteria;
@@ -22,9 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -32,11 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
-import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GraphicsUtil;
 import com.getgenieapp.android.GenieBaseActivity;
-import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 
 import org.json.JSONException;
@@ -55,8 +50,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class UserProfileActivity extends GenieBaseActivity {
-    @InjectView(R.id.orderdetails)
-    Button orderdetails;
     @InjectView(R.id.name)
     EditText name;
     @InjectView(R.id.email)
@@ -295,8 +288,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     }
 
     private String getFilePath(Uri data) {
-        String path = "";
-        path = data.getPath();
+        String path = data.getPath();
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(data, filePathColumn, null,
                 null, null);
@@ -394,7 +386,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 }) {
                     @Override
                     public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<String, String>();
+                        Map<String, String> params = new HashMap<>();
                         params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
                         return params;
                     }

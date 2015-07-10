@@ -14,6 +14,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.getgenieapp.android.Database.DBHandler;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
@@ -51,7 +52,8 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
-
+        // Start Database
+        new DBHandler(this);
         start = System.currentTimeMillis();
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override

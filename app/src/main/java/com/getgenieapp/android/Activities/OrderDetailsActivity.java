@@ -15,7 +15,6 @@ import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,8 +24,6 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     LoadingView loadingView;
     @InjectView(R.id.orderList)
     RecyclerView orderList;
-
-    List<Order> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

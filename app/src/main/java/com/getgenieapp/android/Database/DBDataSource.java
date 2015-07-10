@@ -46,6 +46,7 @@ public class DBDataSource {
     }
 
     public void addNormal(Messages message) {
+        open();
         ContentValues values = new ContentValues();
 
         values.put(DBHandler.message_id, String.valueOf(message.get_id()));
@@ -59,9 +60,10 @@ public class DBDataSource {
         values.put(DBHandler.updated_at, String.valueOf(message.getUpdatedAt()));
         values.put(DBHandler.direction, String.valueOf(message.getDirection()));
         database.insert(DBHandler.TABLE, null, values);
+        close();
     }
 
-    public void addFast(List<Messages> data) {
+    public void addFast(ArrayList<Messages> data) {
         open();
         String sql = "INSERT OR REPLACE INTO " + DBHandler.TABLE + " ( " + DBHandler.message_id + ", "
                 + DBHandler.agent_id + ", " + DBHandler.sender_id + " , " + DBHandler.message_type +
@@ -95,15 +97,8 @@ public class DBDataSource {
         close();
     }
 
-    public static final String message_type = "message_type";
-    public static final String category_id = "category_id";
-    public static final String message_values = "message_values";
-    public static final String status = "status";
-    public static final String created_at = "created_at";
-    public static final String updated_at = "updated_at";
-    public static final String direction = "direction";
-
-    public List<Messages> getAllMessages() {
+    public ArrayList<Messages> getAllMessages() {
+        open();
         Cursor cursor = database.query(DBHandler.TABLE,
                 new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
                         , DBHandler.message_type, DBHandler.category_id
@@ -111,13 +106,14 @@ public class DBDataSource {
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
                 null, null, null, null, null);
-        List<Messages> labels = parseCursor(cursor);
+        ArrayList<Messages> labels = parseCursor(cursor);
         cursor.close();
+        close();
         return labels;
     }
 
-    private List<Messages> parseCursor(Cursor cursor) {
-        List<Messages> labels = new ArrayList<Messages>();
+    private ArrayList<Messages> parseCursor(Cursor cursor) {
+        ArrayList<Messages> labels = new ArrayList<Messages>();
         if (cursor.moveToFirst()) {
             do {
                 JSONObject jsonObject;
@@ -147,7 +143,8 @@ public class DBDataSource {
         return labels;
     }
 
-    public List<Messages> getAllListBasedOnCategory(String category_id) {
+    public ArrayList<Messages> getAllListBasedOnCategory(String category_id) {
+        open();
         Cursor cursor = database.query(DBHandler.TABLE,
                 new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
                         , DBHandler.message_type, DBHandler.category_id
@@ -155,8 +152,9 @@ public class DBDataSource {
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
                 DBHandler.category_id + "== " + category_id, null, null, null, null);
-        List<Messages> labels = parseCursor(cursor);
+        ArrayList<Messages> labels = parseCursor(cursor);
         cursor.close();
+        close();
         return labels;
     }
 }

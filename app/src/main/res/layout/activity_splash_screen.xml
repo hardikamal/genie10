@@ -1,14 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/splashcreenbackgroundcolor"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:orientation="vertical">
 
     <com.getgenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android"
         android:id="@+id/splash_image"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center"
-        android:padding="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/_50sdp"
         custom:gif="@drawable/genie_splash" />
-</LinearLayout>
+</RelativeLayout>

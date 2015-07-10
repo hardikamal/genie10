@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
@@ -24,6 +25,7 @@ public class GenieBaseActivity extends AppCompatActivity {
     public Logging logging;
     public TinyBus mBus;
     public Utils utils;
+    public DBDataSource dbDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstance)
@@ -38,6 +40,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         mBus = genieApplication.getBus();
         gson = new Gson();
         utils = new Utils(this);
+        dbDataSource = new DBDataSource(this);
     }
 
     public void startFragment(int container, Fragment fragment)

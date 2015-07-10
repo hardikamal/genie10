@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Genie</string>
-    <string name="companyName">GENIE</string>
+    <string name="app_name">SuperGenie</string>
+    <string name="companyName">SuperGenie</string>
     <string name="version">0.0.0.0</string>
     <string name="copyrights">© 2015 Genie</string>
-    <string name="welcomeMessage">Welcome to Genie</string>
+    <string name="welcomeMessage">Welcome to SuperGenie</string>
     <string name="title_activity_main">Chat</string>
     <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
     <string name="openSettings">Open Settings</string>
@@ -46,7 +46,7 @@
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
     <string name="servererrortryagain">Error. Try Again</string>
-    <string name="error_toast">Unfortunately Genie Crashed.\\nSending crash reports to Genie</string>
+    <string name="error_toast">Unfortunately Genie Crashed. Sending crash reports to Genie</string>
     <string name="redoregistration">Redo Registration</string>
     <string name="gettinglocation">Getting Location</string>
     <string name="updatinguserinformation">Updating User information..</string>

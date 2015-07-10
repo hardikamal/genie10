@@ -50,8 +50,9 @@
                 android:hint="@string/typeamessage"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimaryDark" />
+                android:textColor="@color/colorPrimaryDark"
+                android:textColorHint="@color/colorPrimaryDark"
+                android:textCursorDrawable="@null" />
         </LinearLayout>
 
         <com.getgenieapp.android.CustomViews.Button.CircularButton
