@@ -37,6 +37,7 @@
     <string name="address">Address</string>
     <string name="defaultnumber">9999999999</string>
     <string name="title_activity_order_details">Orders</string>
+    <string name="title_activity_location">Share Location</string>
     <string name="repeatorder">REPEAT ORDER</string>
     <string name="loadearliermessages">load earlier messages</string>
     <string name="buynow">Buy Now</string>
@@ -67,4 +68,7 @@
     <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="mapservicemissing">MAP SERVICE MISSING</string>
     <string name="mapupdate">MAP UPDATE REQUIRED</string>
+    <string name="sendcurrentlocation">Send your current location</string>
+    <string name="favorites">My Favorites</string>
+    <string name="mapapikey">AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM</string>
 </resources>

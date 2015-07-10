@@ -8,6 +8,7 @@ public class DataFields {
     public static final int SplashScreenGeneralTimeOut = 3000;
     public static final int VerifyTimeOut = 2000;
     public static final int smallTimeOut = 500;
+    public static final int small1000TimeOut = 1000;
     public static final String TAG = "Get Genie App";
 
     public static final File root = Environment.getExternalStorageDirectory();

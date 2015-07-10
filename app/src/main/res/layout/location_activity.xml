@@ -1,0 +1,142 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.getgenieapp.android.Activities.LocationActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_180sdp">
+
+        <!--<com.google.android.gms.maps.MapView-->
+            <!--android:id="@+id/mapView"-->
+            <!--android:apiKey="@string/mapapikey"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.google.android.gms.maps.MapFragment" />
+
+        <com.getgenieapp.android.CustomViews.Button.CircularButton
+            android:id="@+id/refreshLocation"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_my_location_white_24dp"
+            app:buttonColor="@color/colorPrimaryDark"
+            app:shadowColor="@color/colorPrimaryDark" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.getgenieapp.android.CustomViews.Button.CircularButton
+                android:id="@+id/location"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:src="@drawable/ic_my_location_white_24dp"
+                app:buttonColor="@color/colorPrimary"
+                app:shadowColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/locationButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="@string/sendcurrentlocation"
+                android:textSize="@dimen/_15sdp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimaryDark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.getgenieapp.android.CustomViews.Button.CircularButton
+                android:id="@+id/pickplaces"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:src="@drawable/ic_location_on_white_24dp"
+                app:buttonColor="@color/colorPrimary"
+                app:shadowColor="@color/colorPrimary" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="Pick Places"
+                android:textSize="@dimen/_15sdp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/favorites"
+                android:textColor="#000"
+                android:textSize="@dimen/_12sdp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:divider="@null"
+                android:transcriptMode="alwaysScroll" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

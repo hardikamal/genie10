@@ -10,6 +10,7 @@
     <color name="lineColor">#ccc</color>
     <color name="ececec">#ececec</color>
     <color name="e3f2fd">#E3F2FD</color>
+    <color name="textColorPrimary">#E3F2FD</color>
     <color name="splashcreenbackgroundcolor">#2196F3</color>
     <color name="color444">#444</color>
     <color name="white">#ffffff</color>

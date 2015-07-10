@@ -41,6 +41,10 @@ import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -59,7 +63,7 @@ public class ChatActivity extends GenieBaseActivity {
     CircularButton send;
     @InjectView(R.id.messageLayout)
     LinearLayout messageLayout;
-
+    int PLACE_PICKER_REQUEST = 1;
     String title = "SuperGenie";
     String description = "Super Genie Chat Window";
     String color = "#26ACEC";
@@ -131,7 +135,7 @@ public class ChatActivity extends GenieBaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatAdapter = new CustomChatAdapter(messages, color, this);
         recyclerView.setAdapter(chatAdapter);
-        recyclerView.scrollToPosition(messages.size() - 1);
+        recyclerView.smoothScrollToPosition(messages.size() - 1);
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_100);
         recyclerView.setAnimation(anim);
         anim.start();
@@ -139,7 +143,7 @@ public class ChatActivity extends GenieBaseActivity {
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                recyclerView.scrollToPosition(messages.size() - 1);
+                recyclerView.smoothScrollToPosition(messages.size() - 1);
                 if (message.getText().toString().trim().length() > 0) {
                     imageResource = false;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -179,14 +183,36 @@ public class ChatActivity extends GenieBaseActivity {
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     @OnClick(R.id.send)
     public void onClickSend() {
         if (imageResource) {
-            Messages messageObject = new Messages("1", 1, 1, 2, id, getLocation(), 1, 0, 0, 0);
-            messages.add(messageObject);
-            dbDataSource.addNormal(messageObject);
-            chatAdapter.notifyDataSetChanged();
-            recyclerView.scrollToPosition(messages.size() - 1);
+//            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//            Context context = getApplicationContext();
+//            try {
+//                startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+//            } catch (GooglePlayServicesRepairableException e) {
+//                e.printStackTrace();
+//            } catch (GooglePlayServicesNotAvailableException e) {
+//                e.printStackTrace();
+//            }
+
+            startActivity(new Intent(this, LocationActivity.class));
+//            Messages messageObject = new Messages("1", 1, 1, 2, id, getLocation(), 1, 0, 0, 0);
+//            messages.add(messageObject);
+//            dbDataSource.addNormal(messageObject);
+//            chatAdapter.notifyDataSetChanged();
+//            recyclerView.smoothScrollToPosition(messages.size() - 1);
         } else {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
@@ -195,7 +221,7 @@ public class ChatActivity extends GenieBaseActivity {
             messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();
-            recyclerView.scrollToPosition(messages.size() - 1);
+            recyclerView.smoothScrollToPosition(messages.size() - 1);
         }
     }
 
@@ -213,7 +239,7 @@ public class ChatActivity extends GenieBaseActivity {
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        recyclerView.scrollToPosition(messages.size() - 1);
+                        recyclerView.smoothScrollToPosition(messages.size() - 1);
                     }
                 });
             }
@@ -334,7 +360,7 @@ public class ChatActivity extends GenieBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public MessageValues getLocation() {
+    private MessageValues getLocation() {
         double longitude = 0.00;
         double latitude = 0.00;
         String _Location = "";
