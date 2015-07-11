@@ -71,10 +71,36 @@ public class LocationActivity extends GenieBaseActivity {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
-                showSaveLaterBox(messageValues);
+                if (String.valueOf(place.getAddress()).length() > 0) {
+                    MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+                    showSaveLaterBox(messageValues);
+                } else {
+                    MessageValues messageValues = new MessageValues(3, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
+                    showSaveLaterBox(messageValues);
+                }
             }
         }
+    }
+
+    private String getPlace(Place place) {
+        String _Location = "";
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+            if (null != listAddresses && listAddresses.size() > 0) {
+                Address adrs = listAddresses.get(0);
+
+                for (int i = 0; i < adrs.getMaxAddressLineIndex(); i++) {
+                    _Location += adrs.getAddressLine(i) + " ";
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (_Location.length() == 0) {
+            _Location = "Latitude : " + place.getLatLng().latitude + " Longitude : " + place.getLatLng().longitude;
+        }
+        return _Location;
     }
 
     @Override
