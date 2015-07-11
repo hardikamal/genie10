@@ -14,8 +14,8 @@
 
         <com.getgenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate
             android:id="@+id/progressBar"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
             android:layout_gravity="center"
             android:background="#1E88E5" />
 

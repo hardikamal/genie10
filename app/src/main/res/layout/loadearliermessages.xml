@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_50sdp"
+    android:layout_height="@dimen/_40sdp"
+    android:gravity="center"
     android:orientation="vertical">
-<com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/loadearliermsgcolor"
-    android:id="@+id/loadingview">
-<com.getgenieapp.android.CustomViews.Button.ButtonFlat
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="@string/loadearliermessages"/>
-</com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat>
+
+    <com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/loadingview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:lv_loading="false"
+        app:lv_title="">
+
+        <Button
+            android:id="@+id/loadmessages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:text="@string/loadearliermessages" />
+    </com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat>
+
 </LinearLayout>

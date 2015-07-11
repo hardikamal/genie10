@@ -121,7 +121,6 @@ public class RegisterFragment extends GenieFragment {
     private void RegisterUser() {
         JSONObject json = new JSONObject();
         try {
-            String enteredNumber = number.getText().toString();
             json.put("name", name.getText().toString());
             json.put("phone", "+" + utils.GetCountryZipCode() + number.getText().toString());
             json.put("device_serial_number", utils.getDeviceSerialNumber());

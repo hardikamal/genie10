@@ -79,9 +79,10 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(new File(DataFields.profilePicturePath).exists())
+        if (new File(DataFields.profilePicturePath).exists())
             new File(DataFields.profilePicturePath).delete();
         setContentView(R.layout.activity_register);
+        getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayUseLogoEnabled(true);
