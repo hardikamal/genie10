@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.telephony.TelephonyManager;
 import android.view.ViewGroup;
 
 import com.android.volley.AuthFailureError;
@@ -30,14 +29,13 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends GenieActivity {
 
-//    UIHelpers uiHelpers;
+    //    UIHelpers uiHelpers;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 

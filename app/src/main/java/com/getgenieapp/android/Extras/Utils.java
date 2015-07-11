@@ -20,6 +20,10 @@ import android.view.View;
 
 import com.getgenieapp.android.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Utils {
     Context context;
 
@@ -148,5 +152,15 @@ public class Utils {
 
     public boolean isValidEmail(String target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
+
+    public String convertLongToDate(long date, SimpleDateFormat simpleDateFormat) {
+        Date convertedDate = new Date(date);
+        if (date < 86400000 * 1000L) {
+            convertedDate = new Date(date * 1000L);
+        }
+        System.out.print(TimeZone.getDefault().toString());
+        simpleDateFormat.setTimeZone(TimeZone.getDefault());
+        return simpleDateFormat.format(convertedDate);
     }
 }
