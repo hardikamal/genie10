@@ -32,7 +32,7 @@ public class Utils {
 
     public String GetCountryZipCode() {
         String CountryID = "";
-        String CountryZipCode = "";
+        String CountryZipCode = "91";
 
         TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         //getNetworkCountryIso
