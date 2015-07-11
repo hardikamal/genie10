@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.GridView;
+import android.widget.ShareActionProvider;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomAdapter;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
@@ -32,6 +33,7 @@ public class MainActivity extends GenieBaseActivity {
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
     static ArrayList<Categories> categoriesList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +57,7 @@ public class MainActivity extends GenieBaseActivity {
         logging.LogV("Get Categories");
         if (getIntent().getExtras() != null && getIntent().hasExtra("category")) {
             ArrayList<String> rawList = getIntent().getStringArrayListExtra("category");
-            if(rawList.size()>0)
+            if (rawList.size() > 0)
                 categoriesList.clear();
             for (String raw : rawList) {
                 try {
@@ -113,9 +115,16 @@ public class MainActivity extends GenieBaseActivity {
         if (id == R.id.action_profile) {
             startActivity(new Intent(this, UserProfileActivity.class));
             return true;
+        } else if (id == R.id.action_share) {
+            String shareBody = getString(R.string.bodytext);
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 }

@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +44,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-
 public class RegisterFragment extends GenieFragment {
 
     UIHelpers uiHelpers;
@@ -58,7 +59,6 @@ public class RegisterFragment extends GenieFragment {
     LoadingView parentLoadingView;
     @InjectView(R.id.getStarted)
     ButtonRectangle getStarted;
-    Utils utils;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -72,7 +72,9 @@ public class RegisterFragment extends GenieFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
-        utils = new Utils(getActivity());
+
+        number.setHint("+" + utils.GetCountryZipCode() + " Number");
+        number.setFloatingLabelText("+" + utils.GetCountryZipCode() + " Number");
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -111,6 +113,7 @@ public class RegisterFragment extends GenieFragment {
                 return false;
             }
         });
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
@@ -118,6 +121,7 @@ public class RegisterFragment extends GenieFragment {
     private void RegisterUser() {
         JSONObject json = new JSONObject();
         try {
+            String enteredNumber = number.getText().toString();
             json.put("name", name.getText().toString());
             json.put("phone", "+" + utils.GetCountryZipCode() + number.getText().toString());
             json.put("device_serial_number", utils.getDeviceSerialNumber());
@@ -165,15 +169,6 @@ public class RegisterFragment extends GenieFragment {
 
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
-//        if (name.getText().toString().trim().length() == 0) {
-//            name.setErrorColor(getResources().getColor(R.color.colorPrimary));
-//            name.setError(getResources().getString(R.string.pleaseentername));
-//        }
-//        if (number.getText().toString().trim().length() < 10) {
-//            number.setErrorColor(getResources().getColor(R.color.colorPrimary));
-//            number.setError(getResources().getString(R.string.pleaseentervalidnumber));
-//        }
-
         if (name.getText().toString().trim().length() == 0) {
             SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentername));
             snackbar.show();
