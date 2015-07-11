@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.TelephonyManager;
 import android.view.ViewGroup;
 
 import com.android.volley.AuthFailureError;
@@ -29,6 +30,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -49,7 +51,7 @@ public class SplashScreenActivity extends GenieActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        logging.LogD("Splash Screen", "Entered");
+        logging.LogD("Splash Screen", "Entered ");
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
         // Start Database

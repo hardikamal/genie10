@@ -18,6 +18,8 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.getgenieapp.android.R;
+
 public class Utils {
     Context context;
 
@@ -27,6 +29,24 @@ public class Utils {
 
     NetworkInfo info;
     ConnectivityManager cm;
+
+    public String GetCountryZipCode() {
+        String CountryID = "";
+        String CountryZipCode = "";
+
+        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        //getNetworkCountryIso
+        CountryID = manager.getSimCountryIso().toUpperCase();
+        String[] rl = context.getResources().getStringArray(R.array.CountryCodes);
+        for (int i = 0; i < rl.length; i++) {
+            String[] g = rl[i].split(",");
+            if (g[1].trim().equals(CountryID.trim())) {
+                CountryZipCode = g[0];
+                break;
+            }
+        }
+        return CountryZipCode;
+    }
 
     public boolean isConnectedMobile() {
         if (isPhone()) {
@@ -109,9 +129,8 @@ public class Utils {
         return bitmap;
     }
 
-    public String getDeviceSerialNumber()
-    {
-        TelephonyManager tManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    public String getDeviceSerialNumber() {
+        TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         return tManager.getDeviceId();
     }
 
@@ -121,8 +140,7 @@ public class Utils {
 //        return tManager.getLine1Number();
 //    }
 
-    public String getMacId()
-    {
+    public String getMacId() {
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         return info.getMacAddress();

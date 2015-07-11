@@ -26,7 +26,6 @@ public class DataFields {
     private static final String StagingServer = "http://staging0.getgenieapp.com";
     private static final String API = "/api";
     private static final String Version = "/v1";
-    public static final String CountryCode = "+1";
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";

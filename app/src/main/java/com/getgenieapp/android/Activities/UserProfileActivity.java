@@ -56,6 +56,8 @@ public class UserProfileActivity extends GenieBaseActivity {
     EditText email;
     @InjectView(R.id.address)
     EditText address;
+    @InjectView(R.id.countrycode)
+    EditText countrycode;
     @InjectView(R.id.userIcon)
     CircularButton userIcon;
     int radius;
@@ -71,6 +73,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
 
+        countrycode.setText(utils.GetCountryZipCode());
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
 
