@@ -12,6 +12,7 @@ public class MessageValues {
     private String url;
     private double lng;
     private double lat;
+    private String name;
 
     public MessageValues() {
     }
@@ -32,6 +33,22 @@ public class MessageValues {
         this.text = text;
         this.lng = lng;
         this.lat = lat;
+    }
+
+    public MessageValues(int _id, String text, double lng, double lat, String name) {
+        this._id = _id;
+        this.text = text;
+        this.lng = lng;
+        this.lat = lat;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int get_id() {

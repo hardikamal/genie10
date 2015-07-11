@@ -72,4 +72,7 @@
     <string name="favorites">My Favorites</string>
     <string name="mapapikey">AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM</string>
     <string name="errorinaccessinglocation">Error in accessing location</string>
+    <string name="alerttopmessage">You can save this location as favorites. Helps you to use it in future.</string>
+    <string name="gaveanametoplace">Give an unique name to your place</string>
+    <string name="saveas">Save As</string>
 </resources>

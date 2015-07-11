@@ -23,7 +23,14 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String created_at = "created_at";
     public static final String updated_at = "updated_at";
     public static final String direction = "direction";
-    
+
+    public static final String fav_id = "fav_id";
+    public static final String name = "name";
+    public static final String lng = "lng";
+    public static final String lat = "lat";
+    public static final String address = "address";
+
+    public static final String FAVTABLE = "favstable";
     public static final String TABLE = "getgenietable";
 
     private static final String DATABASE_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE +
@@ -32,6 +39,10 @@ public class DBHandler extends SQLiteOpenHelper {
             + category_id + " TEXT," + message_values + " TEXT," + status + " TEXT,"
             + created_at + " TEXT," + updated_at + " TEXT," + direction + " TEXT)";
 
+    private static final String DATABASE_CREATE_TABLE_FAVS = "CREATE TABLE IF NOT EXISTS " + FAVTABLE +
+            "(" + fav_id + " INTEGER PRIMARY KEY autoincrement," + name + " TEXT," + lng + " TEXT,"
+            + lat + " TEXT," + address + " TEXT)";
+
     public DBHandler(Context context) {
         super(context, DataFields.DBName, null, DataFields.DBVersion);
     }
@@ -39,12 +50,14 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_TABLE);
+        db.execSQL(DATABASE_CREATE_TABLE_FAVS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // toast
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + FAVTABLE);
         onCreate(db);
     }
 }

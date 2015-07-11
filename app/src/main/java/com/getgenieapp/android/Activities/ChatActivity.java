@@ -134,7 +134,7 @@ public class ChatActivity extends GenieBaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatAdapter = new CustomChatAdapter(messages, color, this);
         recyclerView.setAdapter(chatAdapter);
-        recyclerView.smoothScrollToPosition(messages.size() - 1);
+        scroll();
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_100);
         recyclerView.setAnimation(anim);
         anim.start();
@@ -142,7 +142,7 @@ public class ChatActivity extends GenieBaseActivity {
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                recyclerView.smoothScrollToPosition(messages.size() - 1);
+                scroll();
                 if (message.getText().toString().trim().length() > 0) {
                     imageResource = false;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -182,18 +182,26 @@ public class ChatActivity extends GenieBaseActivity {
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
+    private void scroll() {
+        if (messages.size() > 1) {
+            recyclerView.smoothScrollToPosition(messages.size() - 1);
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOCATIONRESULT) {
-            if (data.getExtras() != null) {
-                MessageValues messageValues = new MessageValues(2, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-                Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, 0, 0, 0);
-                messages.add(messageObject);
-                dbDataSource.addNormal(messageObject);
-                chatAdapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(messages.size() - 1);
-            } else {
-                SnackBar snackBar = new SnackBar(this, getString(R.string.errorinaccessinglocation));
-                snackBar.show();
+            if (resultCode == 1) {
+                if (data.getExtras() != null) {
+                    MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+                    Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, 0, 0, 0);
+                    messages.add(messageObject);
+                    dbDataSource.addNormal(messageObject);
+                    chatAdapter.notifyDataSetChanged();
+                    scroll();
+                } else {
+                    SnackBar snackBar = new SnackBar(this, getString(R.string.errorinaccessinglocation));
+                    snackBar.show();
+                }
             }
         }
     }
@@ -210,7 +218,7 @@ public class ChatActivity extends GenieBaseActivity {
             messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();
-            recyclerView.smoothScrollToPosition(messages.size() - 1);
+            scroll();
         }
     }
 
@@ -228,7 +236,7 @@ public class ChatActivity extends GenieBaseActivity {
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        recyclerView.smoothScrollToPosition(messages.size() - 1);
+                        scroll();
                     }
                 });
             }

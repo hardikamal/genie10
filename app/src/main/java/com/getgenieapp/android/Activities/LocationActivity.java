@@ -1,6 +1,8 @@
 package com.getgenieapp.android.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
@@ -8,13 +10,21 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
+import com.getgenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
@@ -31,6 +41,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,8 +71,8 @@ public class LocationActivity extends GenieBaseActivity {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-
-                //todo
+                MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+                showSaveLaterBox(messageValues);
             }
         }
     }
@@ -74,6 +85,13 @@ public class LocationActivity extends GenieBaseActivity {
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
+
+        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
+        recyclerView.setAdapter(chatAdapter);
 
         new Thread(new Runnable() {
             public void run() {
@@ -133,10 +151,11 @@ public class LocationActivity extends GenieBaseActivity {
 
     @OnClick(R.id.locationButton)
     public void onClickLocationButton() {
-        // todo alert box
         MessageValues messageValues = getLocation();
-        showSaveLaertBox(messageValues);
+        showSaveLaterBox(messageValues);
+    }
 
+    private void setResultBackToActivity(MessageValues messageValues) {
         Intent intent = new Intent();
         intent.putExtra("lat", messageValues.getLat());
         intent.putExtra("lng", messageValues.getLng());
@@ -145,8 +164,38 @@ public class LocationActivity extends GenieBaseActivity {
         finish();
     }
 
-    private void showSaveLaertBox(MessageValues messageValues) {
+    private void showSaveLaterBox(final MessageValues messageValues) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View promptsView = inflater.inflate(R.layout.saveaddresslayout, null);
+        final EditText saveas = (EditText) promptsView.findViewById(R.id.saveas);
 
+        ((TextView) promptsView.findViewById(R.id.address)).setText("Address : " + messageValues.getText());
+        ((TextView) promptsView.findViewById(R.id.lat)).setText("Latitude : " + String.valueOf(messageValues.getLat()));
+        ((TextView) promptsView.findViewById(R.id.lng)).setText("Longitude : " + String.valueOf(messageValues.getLng()));
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(promptsView)
+                .setTitle("Save As")
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
+                            dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
+                                    , messageValues.getLat(), saveas.getText().toString().trim()));
+                            setResultBackToActivity(messageValues);
+                        } else {
+                            SnackBar snackBar = new SnackBar(LocationActivity.this, getString(R.string.gaveanametoplace));
+                            snackBar.show();
+                            showSaveLaterBox(messageValues);
+                        }
+                    }
+                })
+                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        setResultBackToActivity(messageValues);
+                    }
+                });
+        alert.show();
     }
 
     private MessageValues getLocation() {

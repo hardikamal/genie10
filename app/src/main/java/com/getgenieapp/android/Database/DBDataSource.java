@@ -157,4 +157,51 @@ public class DBDataSource {
         close();
         return labels;
     }
+
+    public void addFavNormal(MessageValues messageValues) {
+        open();
+        ContentValues values = new ContentValues();
+        values.put(DBHandler.address, messageValues.getText());
+        values.put(DBHandler.lat, String.valueOf(messageValues.getLat()));
+        values.put(DBHandler.lng, String.valueOf(messageValues.getLng()));
+        values.put(DBHandler.name, messageValues.getName());
+        database.insert(DBHandler.FAVTABLE, null, values);
+        close();
+    }
+
+    public ArrayList<MessageValues> getAllFav() {
+        open();
+        Cursor cursor = database.query(DBHandler.FAVTABLE,
+                new String[]{DBHandler.name, DBHandler.address, DBHandler.lat
+                        , DBHandler.lng},
+                null, null, null, null, null);
+        ArrayList<MessageValues> labels = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                labels.add(new MessageValues(3, cursor.getString(1), Double.parseDouble(cursor.getString(3)),
+                        Double.parseDouble(cursor.getString(2)), cursor.getString(0)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        close();
+        return labels;
+    }
+
+    public boolean CheckIfExists(String name) {
+        open();
+        Cursor cursor = database.query(DBHandler.FAVTABLE,
+                new String[]{DBHandler.name},
+                null, null, null, null, null);
+        ArrayList<String> namesList = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                namesList.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        boolean status = namesList.contains(name);
+        cursor.close();
+        close();
+        return status;
+    }
 }
