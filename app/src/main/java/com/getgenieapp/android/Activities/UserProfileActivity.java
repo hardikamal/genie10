@@ -82,6 +82,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         address.setText("India");
         radius = userIcon.getLayoutParams().width;
         getPicture();
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 

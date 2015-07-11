@@ -71,4 +71,5 @@
     <string name="sendcurrentlocation">Send your current location</string>
     <string name="favorites">My Favorites</string>
     <string name="mapapikey">AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM</string>
+    <string name="errorinaccessinglocation">Error in accessing location</string>
 </resources>

@@ -1,17 +1,17 @@
 package com.getgenieapp.android.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
@@ -20,15 +20,14 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.R;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -48,7 +47,24 @@ public class LocationActivity extends GenieBaseActivity {
     Button locationButton;
     @InjectView(R.id.list)
     RecyclerView recyclerView;
+    @InjectView(R.id.pickplaces)
+    CircularButton pickPlaces;
+    @InjectView(R.id.pickplacebutton)
+    Button pickplacebutton;
+
+    private int LOCATIONRESULT = 1;
+    int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(data, this);
+
+                //todo
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,22 +89,64 @@ public class LocationActivity extends GenieBaseActivity {
                 });
             }
         }).start();
+
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @OnClick(R.id.refreshLocation)
-    public void onClickRefresh()
-    {
+    public void onClickRefresh() {
         MessageValues messageValues = getLocation();
         LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
 
         map.addMarker(new MarkerOptions().position(currentLocation)
-                .title("Your Current Location:\n"+messageValues.getText()));
+                .title("Your Current Location:\n" + messageValues.getText()));
 
         // Move the camera instantly to hamburg with a zoom of 15.
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
 
         // Zoom in, animating the camera.
         map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
+    }
+
+    @OnClick(R.id.pickplaces)
+    public void onClickPickPlaces() {
+        pickplacebutton.performClick();
+    }
+
+    @OnClick(R.id.pickplacebutton)
+    public void onClickPickPlaceButton() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        Context context = getApplicationContext();
+        try {
+            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.location)
+    public void onClickLocation() {
+        locationButton.performClick();
+    }
+
+    @OnClick(R.id.locationButton)
+    public void onClickLocationButton() {
+        // todo alert box
+        MessageValues messageValues = getLocation();
+        showSaveLaertBox(messageValues);
+
+        Intent intent = new Intent();
+        intent.putExtra("lat", messageValues.getLat());
+        intent.putExtra("lng", messageValues.getLng());
+        intent.putExtra("address", messageValues.getText());
+        setResult(LOCATIONRESULT, intent);
+        finish();
+    }
+
+    private void showSaveLaertBox(MessageValues messageValues) {
+
     }
 
     private MessageValues getLocation() {

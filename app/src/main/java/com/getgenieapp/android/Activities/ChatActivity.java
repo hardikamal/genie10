@@ -63,7 +63,6 @@ public class ChatActivity extends GenieBaseActivity {
     CircularButton send;
     @InjectView(R.id.messageLayout)
     LinearLayout messageLayout;
-    int PLACE_PICKER_REQUEST = 1;
     String title = "SuperGenie";
     String description = "Super Genie Chat Window";
     String color = "#26ACEC";
@@ -76,7 +75,7 @@ public class ChatActivity extends GenieBaseActivity {
     boolean imageResource = true;
     private CustomChatAdapter chatAdapter;
     private ArrayList<Messages> messages = new ArrayList<>();
-
+    private int LOCATIONRESULT = 1;
     private Socket mSocket;
 
     {
@@ -184,11 +183,17 @@ public class ChatActivity extends GenieBaseActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+        if (requestCode == LOCATIONRESULT) {
+            if (data.getExtras() != null) {
+                MessageValues messageValues = new MessageValues(2, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+                Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, 0, 0, 0);
+                messages.add(messageObject);
+                dbDataSource.addNormal(messageObject);
+                chatAdapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(messages.size() - 1);
+            } else {
+                SnackBar snackBar = new SnackBar(this, getString(R.string.errorinaccessinglocation));
+                snackBar.show();
             }
         }
     }
@@ -196,23 +201,7 @@ public class ChatActivity extends GenieBaseActivity {
     @OnClick(R.id.send)
     public void onClickSend() {
         if (imageResource) {
-//            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//
-//            Context context = getApplicationContext();
-//            try {
-//                startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
-//            } catch (GooglePlayServicesRepairableException e) {
-//                e.printStackTrace();
-//            } catch (GooglePlayServicesNotAvailableException e) {
-//                e.printStackTrace();
-//            }
-
-            startActivity(new Intent(this, LocationActivity.class));
-//            Messages messageObject = new Messages("1", 1, 1, 2, id, getLocation(), 1, 0, 0, 0);
-//            messages.add(messageObject);
-//            dbDataSource.addNormal(messageObject);
-//            chatAdapter.notifyDataSetChanged();
-//            recyclerView.smoothScrollToPosition(messages.size() - 1);
+            startActivityForResult(new Intent(this, LocationActivity.class), LOCATIONRESULT);
         } else {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
@@ -359,38 +348,4 @@ public class ChatActivity extends GenieBaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private MessageValues getLocation() {
-        double longitude = 0.00;
-        double latitude = 0.00;
-        String _Location = "";
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), true);
-
-        Location locations = locationManager.getLastKnownLocation(provider);
-        List<String> providerList = locationManager.getAllProviders();
-        if (null != locations && null != providerList && providerList.size() > 0) {
-            longitude = locations.getLongitude();
-            latitude = locations.getLatitude();
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-            try {
-                List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
-                if (null != listAddresses && listAddresses.size() > 0) {
-                    Address adrs = listAddresses.get(0);
-
-                    for (int i = 0; i < adrs.getMaxAddressLineIndex(); i++) {
-                        _Location += adrs.getAddressLine(i) + " ";
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            SnackBar snackBar = new SnackBar(this, "Not able to access Location");
-            snackBar.show();
-        }
-        return new MessageValues(3, _Location, longitude, latitude);
-    }
-
 }

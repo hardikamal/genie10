@@ -11,24 +11,24 @@
         android:layout_height="@dimen/_180sdp">
 
         <!--<com.google.android.gms.maps.MapView-->
-            <!--android:id="@+id/mapView"-->
-            <!--android:apiKey="@string/mapapikey"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+        <!--android:id="@+id/mapView"-->
+        <!--android:apiKey="@string/mapapikey"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 
         <fragment
             android:id="@+id/map"
+            class="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            class="com.google.android.gms.maps.MapFragment" />
+            android:layout_height="match_parent" />
 
         <com.getgenieapp.android.CustomViews.Button.CircularButton
             android:id="@+id/refreshLocation"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
             android:layout_margin="20dp"
             android:src="@drawable/ic_my_location_white_24dp"
             app:buttonColor="@color/colorPrimaryDark"
@@ -72,6 +72,7 @@
                 android:inputType="text"
                 android:singleLine="true"
                 android:text="@string/sendcurrentlocation"
+                android:textIsSelectable="false"
                 android:textSize="@dimen/_15sdp" />
         </LinearLayout>
 
@@ -97,6 +98,7 @@
                 app:shadowColor="@color/colorPrimary" />
 
             <Button
+                android:id="@+id/pickplacebutton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_10sdp"
@@ -105,6 +107,7 @@
                 android:inputType="text"
                 android:singleLine="true"
                 android:text="Pick Places"
+                android:textIsSelectable="false"
                 android:textSize="@dimen/_15sdp" />
         </LinearLayout>
 
@@ -126,6 +129,7 @@
                 android:padding="@dimen/_5sdp"
                 android:text="@string/favorites"
                 android:textColor="#000"
+                android:textIsSelectable="false"
                 android:textSize="@dimen/_12sdp" />
 
             <android.support.v7.widget.RecyclerView
