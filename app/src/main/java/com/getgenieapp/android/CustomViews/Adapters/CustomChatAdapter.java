@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -190,7 +191,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         + messageValues.getLng()
                         + "&sensor=false";
                 viewHolderMain.mapView.setVisibility(View.VISIBLE);
+//                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
                 viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
+                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri gmmIntentUri = Uri.parse("geo:" + messageValues.getLat() + "," + messageValues.getLng() + "?z=15");
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                            context.startActivity(mapIntent);
+                        }
+                    }
+                });
 
 //        if (messages.getDirection() == 1) {
                 if (position % 2 == 0) {
