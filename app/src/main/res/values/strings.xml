@@ -80,6 +80,10 @@
     <string name="bodytext">Share About Genie Here</string>
     <string name="shareus">Share Us</string>
     <string name="today">Today</string>
+    <string name="paynow">Pay Now</string>
+    <string name="paycod">Pay as COD</string>
+    <string name="price999">Rs. 999.00</string>
+    <string name="paynowrandomtext">Your order from Super Genie is Rs. 999.00. You will receive your order soon.</string>
 
     <string-array name="CountryCodes" >
         <item>93,AF</item>
@@ -289,4 +293,6 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+    <string name="title_activity_payment">Make Payment</string>
+    <string name="finishordertext">Please make payment to finish order</string>
 </resources>

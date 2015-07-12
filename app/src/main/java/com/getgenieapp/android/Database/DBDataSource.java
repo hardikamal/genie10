@@ -130,6 +130,9 @@ public class DBDataSource {
                         if (jsonObject.getInt("id") == 3) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         }
+                        if (jsonObject.getInt("id") == 5) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

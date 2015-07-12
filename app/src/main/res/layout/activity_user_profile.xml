@@ -48,8 +48,8 @@
                 android:layout_height="match_parent"
                 android:alpha="0.5"
                 android:background="@android:color/transparent"
-                android:drawableStart="@drawable/ic_list_black_24dp"
-                android:drawableLeft="@drawable/ic_list_black_24dp" />
+                android:drawableLeft="@drawable/ic_list_black_24dp"
+                android:drawableStart="@drawable/ic_list_black_24dp" />
 
             <Button
                 android:id="@+id/orderdetails"

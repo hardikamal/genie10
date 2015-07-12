@@ -1,6 +1,8 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -14,12 +16,17 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.getgenieapp.android.Activities.PaymentActivity;
+import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,6 +87,21 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.date)
         Button date;
+        @Optional
+        @InjectView(R.id.companyname)
+        TextView companyName;
+        @Optional
+        @InjectView(R.id.rate)
+        TextView rate;
+        @Optional
+        @InjectView(R.id.orderdetails)
+        TextView orderdetails;
+        @Optional
+        @InjectView(R.id.payascod)
+        Button payascod;
+        @Optional
+        @InjectView(R.id.paynow)
+        Button paynow;
 
         public ViewHolderMain(View itemView, Context context) {
             super(itemView);
@@ -95,6 +117,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.loadearliermessages, parent, false), context);
         } else if (currentMessage.getMessageType() == 9) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.datelayout, parent, false), context);
+        } else if (currentMessage.getMessageType() == 5) {
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
         } else {
 //        if (messagesList.get(viewType).getDirection() == 1)
             if (viewType % 2 == 0)
@@ -133,6 +157,30 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
             viewHolderMain.date.setText(utils.getIfItsToday(utils.convertLongToDate(messages.getCreatedAt(), simpleDateFormat), simpleDateFormat));
             viewHolderMain.date.setTextColor(Color.parseColor(color));
+        } else if (messages.getMessageType() == 5) {
+            try {
+                JSONObject object = new JSONObject(messageValues.getText());
+                if (object.has("companyname"))
+                    viewHolderMain.companyName.setText(object.getString("companyname"));
+                if (object.has("rate"))
+                    viewHolderMain.rate.setText("Rs. " + String.valueOf(object.getDouble("rate")));
+                if (object.has("details"))
+                    viewHolderMain.orderdetails.setText(object.getString("details"));
+                if (object.has("cod") && object.getBoolean("cod"))
+                    viewHolderMain.payascod.setVisibility(View.VISIBLE);
+                viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SnackBar snackBar = new SnackBar((Activity) context, context.getString(R.string.finishordertext));
+                        snackBar.show();
+                        Intent intent = new Intent(context, PaymentActivity.class);
+                        intent.putExtra("url", messageValues.getUrl());
+                        ((Activity) context).startActivityForResult(intent, 1);
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
             if (messages.getMessageType() == 2) {
