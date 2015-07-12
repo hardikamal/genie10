@@ -202,7 +202,7 @@ public class LocationActivity extends GenieBaseActivity {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setView(promptsView)
                 .setTitle("Save As")
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
@@ -216,7 +216,7 @@ public class LocationActivity extends GenieBaseActivity {
                         }
                     }
                 })
-                .setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Skip", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         setResultBackToActivity(messageValues);
                     }

@@ -57,7 +57,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textColorHint="@color/colorPrimaryDark"
                 android:textCursorDrawable="@null"
-                android:textSize="@dimen/_14sdp" />
+                android:textSize="@dimen/_11sdp" />
         </LinearLayout>
 
         <com.getgenieapp.android.CustomViews.Button.CircularButton

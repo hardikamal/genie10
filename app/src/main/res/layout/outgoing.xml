@@ -28,7 +28,7 @@
         android:layout_below="@+id/mapView"
         android:layout_gravity="end"
         android:padding="@dimen/_5sdp"
-        android:textSize="@dimen/_15sdp" />
+        android:textSize="@dimen/_12sdp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="23:59"
-            android:textSize="@dimen/_10sdp" />
+            android:textSize="@dimen/_8sdp" />
 
         <ImageView
             android:id="@+id/tick"

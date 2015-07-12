@@ -48,7 +48,9 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -129,9 +131,30 @@ public class ChatActivity extends GenieBaseActivity {
         }
 
         messages = dbDataSource.getAllMessages();
+
+        String present = "";
+        String now = "";
+
+        ArrayList<Integer> messageTypes = new ArrayList<>();
+        messageTypes.add(1);
+        messageTypes.add(2);
+        messageTypes.add(3);
+
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
+            if (!present.equals("") && !present.equals(now)) {
+                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+            }
+            if (i == 0) {
+                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+            }
+            present = now;
+        }
+
         if (hide_time != 0) {
             messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
         }
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatAdapter = new CustomChatAdapter(messages, color, this);
@@ -195,7 +218,7 @@ public class ChatActivity extends GenieBaseActivity {
             if (resultCode == 1) {
                 if (data.getExtras() != null) {
                     MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-                    Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, 0, 0, 0);
+                    Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
                     messages.add(messageObject);
                     dbDataSource.addNormal(messageObject);
                     chatAdapter.notifyDataSetChanged();
@@ -216,7 +239,7 @@ public class ChatActivity extends GenieBaseActivity {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
-            Messages messageObject = new Messages("1", 1, 1, 1, id, messageValues, 1, 0, 0, 0);
+            Messages messageObject = new Messages("1", 1, 1, 1, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
             messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();

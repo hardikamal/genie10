@@ -159,8 +159,16 @@ public class Utils {
         if (date < 86400000 * 1000L) {
             convertedDate = new Date(date * 1000L);
         }
-        System.out.print(TimeZone.getDefault().toString());
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
         return simpleDateFormat.format(convertedDate);
+    }
+
+    public String getIfItsToday(String date, SimpleDateFormat simpleDateFormat) {
+        Date convertedDate = new Date(System.currentTimeMillis());
+        simpleDateFormat.setTimeZone(TimeZone.getDefault());
+        if (date.equals(simpleDateFormat.format(convertedDate))) {
+            return context.getString(R.string.today);
+        }
+        return date;
     }
 }

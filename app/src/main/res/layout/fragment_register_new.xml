@@ -27,7 +27,7 @@
             android:id="@+id/parentLoadingView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_button_rectangle"
+            android:background="@color/e3f2fd"
             android:padding="@dimen/_10sdp"
             app:lv_color="@android:color/holo_red_dark"
             app:lv_loading="false"

@@ -79,6 +79,7 @@
     <string name="trygenie">Try SuperGenie</string>
     <string name="bodytext">Share About Genie Here</string>
     <string name="shareus">Share Us</string>
+    <string name="today">Today</string>
 
     <string-array name="CountryCodes" >
         <item>93,AF</item>

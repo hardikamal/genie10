@@ -15,11 +15,13 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
+import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -75,6 +77,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.loadmessages)
         Button loadmessages;
+        @Optional
+        @InjectView(R.id.date)
+        Button date;
 
         public ViewHolderMain(View itemView, Context context) {
             super(itemView);
@@ -124,7 +129,12 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             });
         } else if (messages.getMessageType() == 9) {
+            Utils utils = new Utils(context);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+            viewHolderMain.date.setText(utils.getIfItsToday(utils.convertLongToDate(messages.getCreatedAt(), simpleDateFormat), simpleDateFormat));
+            viewHolderMain.date.setTextColor(Color.parseColor(color));
         } else {
+            viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
             if (messages.getMessageType() == 2) {
                 String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
                         + messageValues.getLat()
