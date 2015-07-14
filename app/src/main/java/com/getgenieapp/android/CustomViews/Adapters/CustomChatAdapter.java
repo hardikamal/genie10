@@ -229,6 +229,41 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             }
 
+            if (messages.getMessageType() == 3) {
+                viewHolderMain.mapView.setVisibility(View.VISIBLE);
+//                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
+                viewHolderMain.mapView.setImageUrl(messageValues.getUrl(), imageLoader);
+                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       // todo image view intent
+                    }
+                });
+
+//        if (messages.getDirection() == 1) {
+                if (position % 2 == 0) {
+                    GradientDrawable gd = new GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM,
+                            new int[]{Color.parseColor(color), Color.parseColor(color)});
+                    gd.setCornerRadius(5f);
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewHolderMain.mapView.setBackground(gd);
+                    } else {
+                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                    }
+                } else {
+                    GradientDrawable gd = new GradientDrawable(
+                            GradientDrawable.Orientation.TOP_BOTTOM,
+                            new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
+                    gd.setCornerRadius(5f);
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewHolderMain.mapView.setBackground(gd);
+                    } else {
+                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                    }
+                }
+            }
+
 //        if (messages.getDirection() == 1) {
             if (position % 2 == 0) {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));

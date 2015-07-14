@@ -18,13 +18,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
-import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
@@ -37,7 +34,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -48,6 +44,15 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+// Location Activity is used by user to share location to server and save fav locations for future usage.
+// Pick places API is used to pick places (this PAY per use api is developed by google). Pick places API gives option to share current location, But i did my own implementation to
+// cost associated with API.
+// Result sends back to Chat activity
+// Elements injected thru Butterknife.
+// Recycler view is used to show fav places
+// On click on fav place will share the location
+// Adapter is CustomPlaceAdapter
 
 public class LocationActivity extends GenieBaseActivity {
     @InjectView(R.id.refreshLocation)

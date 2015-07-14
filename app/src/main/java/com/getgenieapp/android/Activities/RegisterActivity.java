@@ -30,6 +30,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// Register activity will navigate the registration process to user.
+// This accepts the extra to check the user needs to register or verify
+// Display specific fragment based on option
+// This has the broadcastreceiver setted up to autofill the Verification code in verify fragment.
+// broadcast will start on on resume and stops when on pause.
+// Butterknife is used to inject view elements
+// GetCategories server api call implemented here
+// Callback listeners are implemented for both register and verify fragment
+// tinybus is used here to pass the data from activity to fragment.
+// Fragments Register fragment and verify fragment.
+
 public class RegisterActivity extends GenieBaseActivity implements RegisterFragment.onRegister, VerifyFragment.onVerify {
 
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";

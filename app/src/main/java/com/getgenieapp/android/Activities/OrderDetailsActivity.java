@@ -19,6 +19,12 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+// Order details activity
+// User can view their precious orders here.
+// If the user comes from Chat activity. It only show the orders from that specific category
+// Recycler view for showing the list of previous orders
+// Adapter is CustomOrderAdapter
+
 public class OrderDetailsActivity extends GenieBaseActivity {
     @InjectView(R.id.loadingview)
     LoadingView loadingView;

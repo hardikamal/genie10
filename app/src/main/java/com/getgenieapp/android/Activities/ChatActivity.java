@@ -1,14 +1,8 @@
 package com.getgenieapp.android.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,7 +26,6 @@ import android.widget.Toast;
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
-import com.getgenieapp.android.Extras.ChatHelper;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
@@ -41,30 +34,38 @@ import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-// categorys message types
+// This is chat activity. user can chat to servers in this activity.
+// Elements injecting thru butterknife.
+// Socket io is initialized here and connected on resume and disconnected on pause.
+// Activity connections
+// 1. Location Activity started for result.
+// Recycler view adapter view is used to display list view
+// Menu Options to Profile and orders
+// Events registered under socket io
+// EVENT_CONNECT_ERROR
+// EVENT_CONNECT_TIMEOUT
+// typing
+// server_error
+// init will move this to main activity if needed
+// Adapter is CustomChatAdapter
+// Toolbar is used instead of actionbar to make it customization more seamless
+
+// category message types
 // 1 text
-// 2 images
-// 3 location
+// 2 location
+// 3 images
 // 5 Pay now
 // 8 load more
 // 9 date

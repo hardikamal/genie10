@@ -27,6 +27,15 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+// Main Activity. this activity shows the user to pick categories to chat with server for required items.
+// Connected Activities
+// 1. Chat Activity with entras
+// 2. User profile
+// Share intent service is added for sharing info about app.
+// Butterknife is used for injecting elements
+// extras needed
+// Recycler view for displaying list of categories
+
 public class MainActivity extends GenieBaseActivity {
     @InjectView(R.id.loadingView)
     LoadingView loadingView;

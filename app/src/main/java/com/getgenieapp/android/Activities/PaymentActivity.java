@@ -16,6 +16,11 @@ import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
 
+// Payment activity is used to access the payment web view from application
+// Use TinyBus to send signal of payment received, so the activity can close.
+// Web view
+//
+
 public class PaymentActivity extends GenieBaseActivity {
 
     @Override
