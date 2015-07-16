@@ -182,8 +182,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.orderdetails.setText(object.getString("details"));
                 if (object.has("cod") && object.getBoolean("cod"))
                     viewHolderMain.payascod.setVisibility(View.VISIBLE);
-//                viewHolderMain.payascod.setTextColor(Color.parseColor(color));
-//                viewHolderMain.paynow.setTextColor(Color.parseColor(color));
+                viewHolderMain.payascod.setTextColor(Color.parseColor(color));
+                viewHolderMain.paynow.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

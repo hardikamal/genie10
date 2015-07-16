@@ -77,7 +77,6 @@ public class RegisterFragment extends GenieFragment {
         number.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean gainFocus) {
                 TextDrawable d = new TextDrawable(getActivity());
-                d.setText("   +" + utils.GetCountryZipCode() + "  ");
                 d.setTextAlign(Layout.Alignment.ALIGN_NORMAL);
 
                 number.setIconLeft(d);
@@ -171,7 +170,7 @@ public class RegisterFragment extends GenieFragment {
         JSONObject json = new JSONObject();
         try {
             json.put("name", name.getText().toString());
-            json.put("phone", "+" + utils.GetCountryZipCode() + number.getText().toString());
+            json.put("phone", "+91" + number.getText().toString());
             json.put("device_serial_number", utils.getDeviceSerialNumber());
             json.put("mac_id", utils.getMacId());
             json.put("gcm_token", sharedPreferences.getString(DataFields.GCM_TOKEN, null));

@@ -14,9 +14,6 @@ import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.R;
 
 public class ButtonFlat extends Button {
-
-    TextView textButton;
-
     public ButtonFlat(Context context, AttributeSet attrs) {
         super(context, attrs);
 

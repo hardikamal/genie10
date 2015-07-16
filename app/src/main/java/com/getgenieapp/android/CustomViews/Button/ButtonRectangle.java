@@ -14,9 +14,6 @@ import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.R;
 
 public class ButtonRectangle extends Button {
-    int paddingTop, paddingBottom, paddingLeft, paddingRight;
-
-
     public ButtonRectangle(Context context, AttributeSet attrs) {
         super(context, attrs);
         setDefaultProperties();

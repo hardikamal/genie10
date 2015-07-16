@@ -30,6 +30,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
@@ -64,6 +65,8 @@ public class UserProfileActivity extends GenieBaseActivity {
     EditText countrycode;
     @InjectView(R.id.userIcon)
     CircularButton userIcon;
+    @InjectView(R.id.update)
+    ButtonRectangle update;
     int radius;
     final int CAMERA_CAPTURE = 1;
     final int PICK_IMAGE = 1;
@@ -76,8 +79,8 @@ public class UserProfileActivity extends GenieBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-
-        countrycode.setText(utils.GetCountryZipCode());
+        update.setTextColor(getResources().getColor(R.color.white));
+//        countrycode.setText(utils.GetCountryZipCode());
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
 
@@ -409,7 +412,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_orders, menu);
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
         return true;
     }
 
@@ -423,8 +426,8 @@ public class UserProfileActivity extends GenieBaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_profile:
-                startActivity(new Intent(this, UserProfileActivity.class));
+            case R.id.action_previous_orders:
+                startActivity(new Intent(this, OrderDetailsActivity.class));
                 return true;
             case R.id.action_share:
                 String shareBody = getString(R.string.bodytext);
