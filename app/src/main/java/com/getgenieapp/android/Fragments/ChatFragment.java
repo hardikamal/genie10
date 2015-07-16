@@ -90,8 +90,10 @@ public class ChatFragment extends GenieFragment {
         ButterKnife.inject(this, rootView);
 
         Bundle bundle = this.getArguments();
-        color = bundle.getString("color", color);
-        hide_time = bundle.getLong("hide_time");
+        if (bundle != null) {
+            color = bundle.getString("color", color);
+            hide_time = bundle.getLong("hide_time");
+        }
 
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,6 +34,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,9 +55,11 @@ public class VerifyFragment extends GenieFragment {
     EditText char4;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
-
-    private UIHelpers uiHelpers;
+    @InjectView(R.id.tapToResend)
+    Button tapToResend;
+    static int time = 60;
     final int entryLength = 1;
+    Timer timer = new Timer();
 
     @Override
     public void onStart() {
@@ -66,8 +71,16 @@ public class VerifyFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
+        timer.cancel();
         logging.LogV("Showed", "on Stop");
         super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
+        tapToResend.setText(getResources().getString(R.string.taptoresend));
     }
 
     @Subscribe
@@ -130,9 +143,38 @@ public class VerifyFragment extends GenieFragment {
         }
         View rootView = inflater.inflate(R.layout.fragment_verify, container, false);
         ButterKnife.inject(this, rootView);
+        time = 60;
         moveToNextMech();
-        uiHelpers = new UIHelpers();
-//        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.verifycodetext), uiHelpers.getXYPixels(getActivity()).x / 4));
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null && bundle.getBoolean("runtimer", false)) {
+            timer.scheduleAtFixedRate(new TimerTask() {
+
+                                          public void run() {
+                                              //Called each time when 1000 milliseconds (1 second) (the period parameter)
+                                              getActivity().runOnUiThread(new Runnable() {
+
+                                                  public void run() {
+                                                      if (time != 0) {
+                                                          time -= 1;
+                                                          int seconds = time % 60;
+                                                          int minutes = time / 60;
+                                                          String stringTime = String.format("%02d:%02d", minutes, seconds);
+                                                          tapToResend.setText(stringTime);
+                                                      } else {
+                                                          tapToResend.setText(getResources().getString(R.string.taptoresend));
+                                                      }
+                                                  }
+                                              });
+                                          }
+
+                                      },
+                    //Set how long before to start calling the TimerTask (in milliseconds)
+                    0,
+                    //Set the amount of time between each execution (in milliseconds)
+                    1000);
+        }
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
@@ -324,8 +366,7 @@ public class VerifyFragment extends GenieFragment {
     @OnClick(R.id.redoRegistration)
     public void RedoRegistration() {
         sharedPreferences.edit().clear().apply();
-        startActivity(new Intent(getActivity(), SplashScreenActivity.class));
-        getActivity().finish();
+        ((RegisterActivity) getActivity()).onRedo(new Verify());
     }
 
     @OnClick(R.id.tapToResend)
@@ -364,6 +405,8 @@ public class VerifyFragment extends GenieFragment {
 
     public interface onVerify {
         public void onSuccess(Verify verify);
+
+        public void onRedo(Verify verify);
 
         public void onError(Verify verify);
     }

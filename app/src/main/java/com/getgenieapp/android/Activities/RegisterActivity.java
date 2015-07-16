@@ -29,6 +29,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // Register activity will navigate the registration process to user.
 // This accepts the extra to check the user needs to register or verify
@@ -44,6 +46,7 @@ import java.util.Map;
 public class RegisterActivity extends GenieBaseActivity implements RegisterFragment.onRegister, VerifyFragment.onVerify {
 
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+    static int time = 61;
 
     public void onResume() {
         super.onResume();
@@ -94,7 +97,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
             new File(DataFields.profilePicturePath).delete();
         setContentView(R.layout.activity_register);
         getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
-
+        time = 61;
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
@@ -112,7 +115,11 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     @Override
     public void onSuccess(Register register) {
         sharedPreferences.edit().putString("token", register.getToken());
-        startFragment(R.id.body, new VerifyFragment());
+        VerifyFragment verifyFragment = new VerifyFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("runtimer", true);
+        verifyFragment.setArguments(bundle);
+        startFragment(R.id.body, verifyFragment);
     }
 
     @Override
@@ -161,6 +168,11 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         };
 
         genieApplication.addToRequestQueue(req);
+    }
+
+    @Override
+    public void onRedo(Verify verify) {
+        startFragmentFromLeft(R.id.body, new RegisterFragment());
     }
 
     @Override
