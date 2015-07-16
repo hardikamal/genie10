@@ -3,6 +3,7 @@ package com.getgenieapp.android;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
@@ -12,6 +13,7 @@ import com.google.gson.Gson;
 import de.halfbit.tinybus.TinyBus;
 
 public class GenieFragment extends Fragment {
+    public DBDataSource dbDataSource;
     public Gson gson;
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawlerRegular;
@@ -23,8 +25,7 @@ public class GenieFragment extends Fragment {
     public Utils utils;
 
     @Override
-    public void onCreate(Bundle savedInstance)
-    {
+    public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         genieApplication = GenieApplication.getInstance();
         sharedPreferences = genieApplication.getSecurePrefs();
@@ -35,5 +36,6 @@ public class GenieFragment extends Fragment {
         mBus = genieApplication.getBus();
         gson = new Gson();
         utils = new Utils(getActivity());
+        dbDataSource = new DBDataSource(getActivity());
     }
 }

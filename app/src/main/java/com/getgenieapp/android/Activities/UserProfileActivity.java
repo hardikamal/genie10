@@ -340,18 +340,6 @@ public class UserProfileActivity extends GenieBaseActivity {
         builder.show();
     }
 
-    @OnClick(R.id.orderdetails)
-    public void onClickOrderDetails() {
-        logging.LogV("Open Order Details");
-        startActivity(new Intent(this, OrderDetailsActivity.class));
-    }
-
-    @OnClick(R.id.orderdetailsbutton)
-    public void onClickOrderDetailsButton() {
-        logging.LogV("Open Order Details");
-        startActivity(new Intent(this, OrderDetailsActivity.class));
-    }
-
     @OnClick(R.id.update)
     public void onClickUpdate() {
         if (name.getText().toString().trim().length() > 0) {

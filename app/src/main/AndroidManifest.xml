@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.getgenieapp.android" >
+    package="com.getgenieapp.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -34,7 +34,7 @@
         android:allowBackup="true"
         android:icon="@drawable/genie_android_icons_97x97"
         android:label="@string/app_name"
-        android:theme="@style/MyMaterialTheme" >
+        android:theme="@style/MyMaterialTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM" />
@@ -42,7 +42,7 @@
         <activity
             android:name=".Activities.SplashScreenActivity"
             android:label="@string/app_name"
-            android:screenOrientation="sensorPortrait" >
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,16 +50,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.MainActivity"
-            android:label="@string/title_activity_main"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/MyMaterialThemeWithToolBar" />
-        <activity
             android:name=".Activities.RegisterActivity"
             android:label="@string/title_activity_register"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/MyMaterialThemeWithToolBar"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -68,7 +63,7 @@
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -79,7 +74,7 @@
 
         <service
             android:name=".GCMHelpers.MyGcmListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
@@ -92,52 +87,41 @@
             android:exported="false" />
         <service
             android:name=".GCMHelpers.MyInstanceIDListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".Activities.ChatActivity"
-            android:label="@string/title_activity_chat"
-            android:parentActivityName=".Activities.MainActivity"
-            android:screenOrientation="sensorPortrait"
-            android:windowSoftInputMode="adjustResize" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.getgenieapp.android.Activities.MainActivity" />
-        </activity>
-        <activity
-            android:name=".Activities.UserProfileActivity"
-            android:label="@string/title_activity_user_profile"
-            android:parentActivityName=".Activities.MainActivity"
-            android:screenOrientation="sensorPortrait"
-            android:theme="@style/MyMaterialThemeWithToolBar"
-            android:windowSoftInputMode="adjustPan" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.getgenieapp.android.Activities.MainActivity" />
-        </activity>
-        <activity
             android:name=".Activities.OrderDetailsActivity"
             android:label="@string/title_activity_order_details"
-            android:parentActivityName=".Activities.UserProfileActivity"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/MyMaterialThemeWithToolBar" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.getgenieapp.android.Activities.UserProfileActivity" />
-        </activity>
+            android:theme="@style/MyMaterialThemeWithToolBar" />
         <activity
             android:name=".Activities.LocationActivity"
             android:label="@string/title_activity_location"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/MyMaterialThemeWithToolBar" />
         <activity
+            android:name=".Activities.UserProfileActivity"
+            android:label="@string/title_activity_user_profile"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/MyMaterialThemeWithToolBar" />
+        <activity
             android:name=".Activities.PaymentActivity"
             android:label="@string/title_activity_payment"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".Activities.BaseActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName=".Activities.BaseActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/MyMaterialTheme"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.getgenieapp.android.Activities.BaseActivity" />
         </activity>
     </application>
 

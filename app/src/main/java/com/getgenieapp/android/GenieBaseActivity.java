@@ -51,4 +51,13 @@ public class GenieBaseActivity extends AppCompatActivity {
         fragmentTransaction.replace(container, fragment);
         fragmentTransaction.commit();
     }
+
+    public void startFragmentFromLeft(int container, Fragment fragment)
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+        fragmentTransaction.replace(container, fragment);
+        fragmentTransaction.commit();
+    }
 }

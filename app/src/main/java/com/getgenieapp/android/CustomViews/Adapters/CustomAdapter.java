@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.getgenieapp.android.Activities.ChatActivity;
 import com.getgenieapp.android.Extras.Logging;
+import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
@@ -33,12 +33,14 @@ public class CustomAdapter extends RecyclerView.Adapter {
     private Context context;
     private Logging logging;
     private ImageLoader imageLoader;
+    private MainFragment.onSelect on_Select;
 
     public CustomAdapter(ArrayList<Categories> categories, Context context) {
         this.categories = categories;
         this.context = context;
         this.logging = GenieApplication.getInstance().getLoggingBuilder().setUp();
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
+        on_Select = (MainFragment.onSelect) context;
     }
 
     @Override
@@ -152,13 +154,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
     }
 
     private void goToChatActivity(Categories category) {
-        Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra("title", category.getName());
-        intent.putExtra("description", category.getDescription());
-        intent.putExtra("color", category.getBg_color());
-        intent.putExtra("hide_chat", category.getHide_chats_time());
-        intent.putExtra("id", category.getId());
-        context.startActivity(intent);
+        on_Select.onClick(category);
     }
 
     @Override

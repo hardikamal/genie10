@@ -73,8 +73,8 @@ public class RegisterFragment extends GenieFragment {
         View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
 
-        number.setHint("+" + utils.GetCountryZipCode() + " Number");
-        number.setFloatingLabelText("+" + utils.GetCountryZipCode() + " Number");
+        number.setHint("Enter Your +" + utils.GetCountryZipCode() + " Number");
+        number.setFloatingLabelText("Enter Your +" + utils.GetCountryZipCode() + " Number");
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

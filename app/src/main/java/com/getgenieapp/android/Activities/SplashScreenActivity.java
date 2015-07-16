@@ -191,7 +191,8 @@ public class SplashScreenActivity extends GenieActivity {
                                         }
                                     }
                                     logging.LogI("Start Main Activity");
-                                    Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(SplashScreenActivity.this, BaseActivity.class);
+                                    intent.putExtra("page","categories");
                                     intent.putStringArrayListExtra("category", categoriesList);
                                     startActivity(intent);
                                     finish();

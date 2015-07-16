@@ -32,14 +32,14 @@
     <string name="title_activity_user_profile">Profile</string>
     <string name="desc">Description</string>
     <string name="orderdetails">Order Details</string>
-    <string name="update">UPDATE</string>
+    <string name="update">Update</string>
     <string name="email">Email</string>
     <string name="address">Address</string>
     <string name="defaultnumber">9999999999</string>
     <string name="title_activity_order_details">Orders</string>
     <string name="title_activity_location">Share Location</string>
     <string name="repeatorder">REPEAT ORDER</string>
-    <string name="loadearliermessages">load earlier messages</string>
+    <string name="loadearliermessages">Load Earlier Messages</string>
     <string name="buynow">Buy Now</string>
     <string name="typeamessage">Type a message</string>
     <string name="resendcoderequest">Requesting Server to resend code</string>
@@ -85,7 +85,7 @@
     <string name="price999">Rs. 999.00</string>
     <string name="paynowrandomtext">Your order from Super Genie is Rs. 999.00. You will receive your order soon.</string>
 
-    <string-array name="CountryCodes" >
+    <string-array name="CountryCodes">
         <item>93,AF</item>
         <item>355,AL</item>
         <item>213,DZ</item>
@@ -295,4 +295,5 @@
     </string-array>
     <string name="title_activity_payment">Make Payment</string>
     <string name="finishordertext">Please make payment to finish order</string>
+    <string name="title_activity_base">BaseActivity</string>
 </resources>
