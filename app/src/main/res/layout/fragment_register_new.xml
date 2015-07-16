@@ -76,6 +76,7 @@
                     android:hint="@string/name"
                     android:imeOptions="actionNext"
                     android:inputType="textCapWords"
+                    android:textSize="@dimen/_18sdp"
                     android:maxLength="50"
                     android:singleLine="true"
                     android:textColorHighlight="@color/colorPrimaryDark"
@@ -102,6 +103,7 @@
                     android:inputType="phone"
                     android:maxLength="10"
                     android:singleLine="true"
+                    android:textSize="@dimen/_18sdp"
                     android:textColorHighlight="@color/colorPrimaryDark"
                     app:met_baseColor="@color/color444"
                     app:met_floatingLabel="highlight"
@@ -116,7 +118,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
-                    android:background="@color/colorPrimary"
+                    android:inputType="text"
+                    android:textColor="@color/color999"
                     android:text="@string/getstarted"
                     android:textSize="@dimen/_6sdp" />
             </LinearLayout>

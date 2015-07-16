@@ -83,7 +83,9 @@ public class VerifyFragment extends GenieFragment {
     @Subscribe
     public void onSMSReceived(final String code) {
         logging.LogV("SMS Received Code", code);
-        if (char1 != null && char2 != null && char3 != null && char4 != null) {
+        if (char1 != null && char2 != null && char3 != null && char4 != null
+                && char1.getText().toString().trim().length() == 0 && char2.getText().toString().trim().length() == 0
+                && char3.getText().toString().trim().length() == 0 && char4.getText().toString().trim().length() == 0) {
             new Thread(new Runnable() {
                 public void run() {
                     try {
@@ -97,7 +99,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut);
+                        Thread.sleep(DataFields.smallTimeOut * 2);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -107,7 +109,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut);
+                        Thread.sleep(DataFields.smallTimeOut * 3);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -117,7 +119,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut);
+                        Thread.sleep(DataFields.smallTimeOut * 4);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -184,21 +186,7 @@ public class VerifyFragment extends GenieFragment {
                 if (char1.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 1", "Text length 1");
-
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                Thread.sleep(DataFields.smallTimeOut);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
-                                public void run() {
-                                    char2.requestFocus();
-                                }
-                            });
-                        }
-                    }).start();
+                    char2.requestFocus();
                 }
                 checkFields();
             }
@@ -219,20 +207,7 @@ public class VerifyFragment extends GenieFragment {
                 if (char2.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 2", "Text length 1");
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                Thread.sleep(DataFields.smallTimeOut);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
-                                public void run() {
-                                    char3.requestFocus();
-                                }
-                            });
-                        }
-                    }).start();
+                    char3.requestFocus();
                 }
                 checkFields();
             }
@@ -253,20 +228,7 @@ public class VerifyFragment extends GenieFragment {
                 if (char3.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 3", "Text length 1");
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                Thread.sleep(DataFields.smallTimeOut);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
-                                public void run() {
-                                    char4.requestFocus();
-                                }
-                            });
-                        }
-                    }).start();
+                    char4.requestFocus();
                 }
                 checkFields();
             }
@@ -287,21 +249,7 @@ public class VerifyFragment extends GenieFragment {
                 if (char4.getText().toString().trim().length() == entryLength)     //size as per your requirement
                 {
                     logging.LogV("Char 1", "Text length 1");
-
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                Thread.sleep(DataFields.smallTimeOut);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
-                                public void run() {
-                                    char1.requestFocus();
-                                }
-                            });
-                        }
-                    }).start();
+                    char1.requestFocus();
                 }
                 checkFields();
             }
@@ -331,12 +279,14 @@ public class VerifyFragment extends GenieFragment {
                                         ((RegisterActivity) getActivity()).onSuccess(new Verify());
                                     } else {
                                         ((RegisterActivity) getActivity()).onError(new Verify());
+                                        parentLoadingView.setLoading(false);
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             } else {
                                 ((RegisterActivity) getActivity()).onError(new Verify());
+                                parentLoadingView.setLoading(false);
                             }
                         }
                     }, new Response.ErrorListener() {

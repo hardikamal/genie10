@@ -14,9 +14,6 @@ import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.R;
 
 public class ButtonRectangle extends Button {
-
-    TextView textButton;
-
     int paddingTop, paddingBottom, paddingLeft, paddingRight;
 
 
@@ -85,7 +82,7 @@ public class ButtonRectangle extends Button {
         if (text != null) {
             textButton = new TextView(getContext());
             textButton.setText(text);
-            textButton.setTextColor(getResources().getColor(R.color.e3f2fd));
+            textButton.setTextColor(Color.parseColor("#999999"));
             textButton.setTypeface(null, Typeface.BOLD);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             params.addRule(CENTER_IN_PARENT, TRUE);

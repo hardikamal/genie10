@@ -409,7 +409,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        getMenuInflater().inflate(R.menu.menu_orders, menu);
         return true;
     }
 
@@ -423,8 +423,8 @@ public class UserProfileActivity extends GenieBaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_previous_orders:
-                startActivity(new Intent(this, OrderDetailsActivity.class));
+            case R.id.action_profile:
+                startActivity(new Intent(this, UserProfileActivity.class));
                 return true;
             case R.id.action_share:
                 String shareBody = getString(R.string.bodytext);

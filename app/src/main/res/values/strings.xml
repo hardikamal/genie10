@@ -299,4 +299,9 @@
     <string name="title_activity_walk_through">WalkThroughActivity</string>
     <string name="skip">Skip</string>
     <string name="done">Done</string>
+    <string name="locationisoff">Location is OFF</string>
+    <string name="opensettings">Open Settings</string>
+    <string name="goback">Go Back</string>
+    <string name="notabletogetyourlocation">Not able to get your location</string>
+    <string name="home">Home</string>
 </resources>

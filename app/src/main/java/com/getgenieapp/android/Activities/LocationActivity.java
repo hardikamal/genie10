@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -71,6 +72,18 @@ public class LocationActivity extends GenieBaseActivity {
     private int LOCATIONRESULT = 1;
     int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
+    AlertDialog.Builder dialog;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkLocationStatus();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -123,6 +136,9 @@ public class LocationActivity extends GenieBaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
         recyclerView.setAdapter(chatAdapter);
+        dialog = new AlertDialog.Builder(this);
+
+        checkLocationStatus();
 
         new Thread(new Runnable() {
             public void run() {
@@ -140,6 +156,44 @@ public class LocationActivity extends GenieBaseActivity {
         }).start();
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    private void checkLocationStatus() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        if (!gps_enabled && !network_enabled) {
+            // notify user
+            dialog.setCancelable(false);
+            dialog.setMessage(getString(R.string.locationisoff));
+            dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getString(R.string.goback), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    paramDialogInterface.cancel();
+                    onBackPressed();
+                }
+            });
+            dialog.show();
+        }
     }
 
     @OnClick(R.id.refreshLocation)
@@ -187,46 +241,88 @@ public class LocationActivity extends GenieBaseActivity {
     }
 
     private void setResultBackToActivity(MessageValues messageValues) {
-        Intent intent = new Intent();
-        intent.putExtra("lat", messageValues.getLat());
-        intent.putExtra("lng", messageValues.getLng());
-        intent.putExtra("address", messageValues.getText());
-        setResult(LOCATIONRESULT, intent);
-        finish();
+        if (messageValues.getLat() != 0.00 || messageValues.getLng() != 0.00) {
+            Intent intent = new Intent();
+            intent.putExtra("lat", messageValues.getLat());
+            intent.putExtra("lng", messageValues.getLng());
+            intent.putExtra("address", messageValues.getText());
+            setResult(LOCATIONRESULT, intent);
+            finish();
+        } else {
+            dialog = new AlertDialog.Builder(this);
+            dialog.setCancelable(true);
+            dialog.setMessage(getString(R.string.notabletogetyourlocation));
+            dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getString(R.string.goback), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    paramDialogInterface.cancel();
+                    onBackPressed();
+                }
+            });
+            dialog.show();
+        }
     }
 
     private void showSaveLaterBox(final MessageValues messageValues) {
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View promptsView = inflater.inflate(R.layout.saveaddresslayout, null);
-        final EditText saveas = (EditText) promptsView.findViewById(R.id.saveas);
+        if (messageValues.getLat() != 0.0 || messageValues.getLng() != 0.0) {
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View promptsView = inflater.inflate(R.layout.saveaddresslayout, null);
+            final EditText saveas = (EditText) promptsView.findViewById(R.id.saveas);
 
-        ((TextView) promptsView.findViewById(R.id.address)).setText("Address : " + messageValues.getText());
-        ((TextView) promptsView.findViewById(R.id.lat)).setText("Latitude : " + String.valueOf(messageValues.getLat()));
-        ((TextView) promptsView.findViewById(R.id.lng)).setText("Longitude : " + String.valueOf(messageValues.getLng()));
+            ((TextView) promptsView.findViewById(R.id.address)).setText("Address : " + messageValues.getText());
+            ((TextView) promptsView.findViewById(R.id.lat)).setText("Latitude : " + String.valueOf(messageValues.getLat()));
+            ((TextView) promptsView.findViewById(R.id.lng)).setText("Longitude : " + String.valueOf(messageValues.getLng()));
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setView(promptsView)
-                .setTitle("Save As")
-                .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
-                            dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
-                                    , messageValues.getLat(), saveas.getText().toString().trim()));
-                            setResultBackToActivity(messageValues);
-                        } else {
-                            SnackBar snackBar = new SnackBar(LocationActivity.this, getString(R.string.gaveanametoplace));
-                            snackBar.show();
-                            showSaveLaterBox(messageValues);
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setView(promptsView)
+                    .setTitle("Save As")
+                    .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
+                                dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
+                                        , messageValues.getLat(), saveas.getText().toString().trim()));
+                                setResultBackToActivity(messageValues);
+                            } else {
+                                SnackBar snackBar = new SnackBar(LocationActivity.this, getString(R.string.gaveanametoplace));
+                                snackBar.show();
+                                showSaveLaterBox(messageValues);
+                            }
                         }
-                    }
-                })
-                .setPositiveButton("Skip", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        setResultBackToActivity(messageValues);
-                    }
-                });
-        alert.show();
+                    })
+                    .setPositiveButton("Skip", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            setResultBackToActivity(messageValues);
+                        }
+                    });
+            alert.show();
+        } else {
+            dialog = new AlertDialog.Builder(this);
+            dialog.setCancelable(true);
+            dialog.setMessage(getString(R.string.notabletogetyourlocation));
+            dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getString(R.string.goback), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    paramDialogInterface.cancel();
+                    onBackPressed();
+                }
+            });
+            dialog.show();
+        }
     }
 
     private MessageValues getLocation() {

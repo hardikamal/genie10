@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -106,8 +107,6 @@ public class RegisterFragment extends GenieFragment {
         };
 
         uiHelpers = new UIHelpers();
-//        topText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.topText), uiHelpers.getXYPixels(getActivity()).x));
-//        subText.setTextSize(uiHelpers.determineMaxTextSize(getActivity().getString(R.string.subText), uiHelpers.getXYPixels(getActivity()).x/4));
 
         number.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -127,8 +126,10 @@ public class RegisterFragment extends GenieFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (name.getText().toString().trim().length() > 0 && number.getText().toString().trim().length() == 10) {
                     getStarted.setEnabled(true);
+                    getStarted.setTextColor(getActivity().getResources().getColor(R.color.white));
                 } else {
                     getStarted.setEnabled(false);
+                    getStarted.setTextColor(getActivity().getResources().getColor(R.color.color999));
                 }
             }
 
@@ -146,8 +147,10 @@ public class RegisterFragment extends GenieFragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (name.getText().toString().trim().length() > 0 && number.getText().toString().trim().length() == 10) {
                     getStarted.setEnabled(true);
+                    getStarted.setTextColor(getActivity().getResources().getColor(R.color.white));
                 } else {
                     getStarted.setEnabled(false);
+                    getStarted.setTextColor(getActivity().getResources().getColor(R.color.color999));
                 }
             }
 

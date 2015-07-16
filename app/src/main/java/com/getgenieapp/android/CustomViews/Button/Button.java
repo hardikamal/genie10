@@ -39,6 +39,7 @@ public abstract class Button extends CustomView {
                 "animate", true);
         setAttributes(attrs);
         beforeBackground = backgroundColor;
+
         if (rippleColor == null)
             rippleColor = makePressColor();
     }
