@@ -32,6 +32,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="end"
+            android:textIsSelectable="false"
             android:padding="@dimen/_5sdp"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp" />

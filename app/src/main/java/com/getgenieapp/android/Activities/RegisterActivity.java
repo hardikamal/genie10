@@ -146,6 +146,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                             }
                             logging.LogI("Start Main Activity");
                             Intent intent = new Intent(RegisterActivity.this, BaseActivity.class);
+                            intent.putExtra("page", "categories");
                             intent.putStringArrayListExtra("category", categoriesList);
                             startActivity(intent);
                             finish();

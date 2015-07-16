@@ -13,11 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Activities.PaymentActivity;
+import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.Utils;
@@ -45,6 +47,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     private ImageLoader imageLoader;
     private String color;
     Messages messages;
+    private String catImageUrl;
 
     public Messages getMessages() {
         return messages;
@@ -54,11 +57,12 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         this.messages = messages;
     }
 
-    public CustomChatAdapter(ArrayList<Messages> messagesList, String color, Context context) {
+    public CustomChatAdapter(ArrayList<Messages> messagesList, String color, String catImageUrl, Context context) {
         this.messagesList = messagesList;
         this.context = context;
         this.color = color;
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
+        this.catImageUrl = catImageUrl;
     }
 
     @Override
@@ -99,10 +103,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         TextView orderdetails;
         @Optional
         @InjectView(R.id.payascod)
-        Button payascod;
+        ButtonFlat payascod;
         @Optional
         @InjectView(R.id.paynow)
-        Button paynow;
+        ButtonFlat paynow;
+        @Optional
+        @InjectView(R.id.catimage)
+        NetworkImageView catimage;
+        @Optional
+        @InjectView(R.id.paylayout)
+        LinearLayout paylayout;
+        @Optional
+        @InjectView(R.id.imageLayout)
+        LinearLayout imageLayout;
 
         public ViewHolderMain(View itemView, Context context) {
             super(itemView);
@@ -169,6 +182,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.orderdetails.setText(object.getString("details"));
                 if (object.has("cod") && object.getBoolean("cod"))
                     viewHolderMain.payascod.setVisibility(View.VISIBLE);
+//                viewHolderMain.payascod.setTextColor(Color.parseColor(color));
+//                viewHolderMain.paynow.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -179,6 +194,26 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         ((Activity) context).startActivityForResult(intent, 1);
                     }
                 });
+                viewHolderMain.catimage.setImageUrl(catImageUrl, imageLoader);
+                GradientDrawable gd = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{Color.parseColor(color), Color.parseColor(color)});
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolderMain.imageLayout.setBackground(gd);
+                } else {
+                    viewHolderMain.imageLayout.setBackgroundDrawable(gd);
+                }
+                GradientDrawable gdRound = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{Color.parseColor(color), Color.parseColor(color)});
+                gdRound.setCornerRadius(10f);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolderMain.paylayout.setBackground(gdRound);
+                } else {
+                    viewHolderMain.paylayout.setBackgroundDrawable(gdRound);
+                }
+                viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
+                viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -236,7 +271,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       // todo image view intent
+                        // todo image view intent
                     }
                 });
 

@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.getgenieapp.android.Extras.DataFields;
@@ -21,6 +24,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,6 +32,7 @@ import butterknife.InjectView;
 public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
+
     private Socket mSocket;
 
     {
@@ -35,6 +40,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket = IO.socket(DataFields.CHAT_SERVER_URL);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                goBack();
+            } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -68,16 +86,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                setSupportActionBar(mToolbar);
-                ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setHomeButtonEnabled(false);
-                    actionBar.setDisplayHomeAsUpEnabled(false);
-                }
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                mToolbar.setLogo(R.drawable.genie_logo);
-                mToolbar.setTitle("");
-                startFragmentFromLeft(R.id.body, new MainFragment());
+                goBack();
                 return true;
             case R.id.action_profile:
                 startActivity(new Intent(this, UserProfileActivity.class));
@@ -97,6 +106,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         return super.onOptionsItemSelected(item);
     }
 
+    private void goBack() {
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
+        mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        mToolbar.setLogo(R.drawable.genie_logo);
+        mToolbar.setTitle("");
+        startFragmentFromLeft(R.id.body, new MainFragment());
+    }
+
     @Override
     public void onClick(Categories categories) {
         System.out.println("Socket connection status : " + mSocket.connected());
@@ -104,6 +126,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         Bundle bundle = new Bundle();
         bundle.putString("color", categories.getBg_color());
         bundle.putLong("hide_time", categories.getHide_chats_time());
+        bundle.putString("url", categories.getImage_url());
         chatFragment.setArguments(bundle);
         startFragment(R.id.body, chatFragment);
 

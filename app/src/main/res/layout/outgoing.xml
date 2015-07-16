@@ -14,9 +14,9 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
-        android:scaleType="fitXY"
-        android:padding="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_minus10sdp"
+        android:padding="@dimen/_5sdp"
+        android:scaleType="fitXY"
         android:visibility="gone" />
 
     <TextView
@@ -28,6 +28,7 @@
         android:layout_below="@+id/mapView"
         android:layout_gravity="end"
         android:padding="@dimen/_5sdp"
+        android:textIsSelectable="false"
         android:textSize="@dimen/_12sdp" />
 
     <LinearLayout

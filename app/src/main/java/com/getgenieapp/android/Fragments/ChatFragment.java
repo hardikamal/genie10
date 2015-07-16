@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -63,8 +64,6 @@ public class ChatFragment extends GenieFragment {
     CircularButton send;
     @InjectView(R.id.messageLayout)
     LinearLayout messageLayout;
-    String title = "SuperGenie";
-    String description = "Super Genie Chat Window";
     String color = "#26ACEC";
     int id = 0;
     long hide_time = 0;
@@ -74,6 +73,7 @@ public class ChatFragment extends GenieFragment {
     private CustomChatAdapter chatAdapter;
     private ArrayList<Messages> messages = new ArrayList<>();
     private int LOCATIONRESULT = 1;
+    String url;
 
     /**
      * @param savedInstanceState
@@ -93,6 +93,7 @@ public class ChatFragment extends GenieFragment {
         if (bundle != null) {
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
+            url = bundle.getString("url");
         }
 
         send.setButtonColor(Color.parseColor(color));
@@ -127,7 +128,7 @@ public class ChatFragment extends GenieFragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        chatAdapter = new CustomChatAdapter(messages, color, getActivity());
+        chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
         recyclerView.setAdapter(chatAdapter);
         scroll();
         Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_100);
@@ -254,5 +255,10 @@ public class ChatFragment extends GenieFragment {
                 });
             }
         }).start();
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -2,7 +2,6 @@ package com.getgenieapp.android.Fragments;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,15 +18,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Activities.RegisterActivity;
-import com.getgenieapp.android.Activities.SplashScreenActivity;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.UIHelpers;
+import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
-import com.getgenieapp.android.GenieFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;

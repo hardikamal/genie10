@@ -55,14 +55,15 @@
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/image"
-            android:layout_width="@dimen/_90sdp"
-            android:layout_height="@dimen/_90sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="false"
             android:contentDescription="@string/desc"
             android:scaleType="fitXY" />
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/lowerBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"

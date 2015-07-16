@@ -1,95 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/paylayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/_10sdp"
-    android:background="@color/e3f2fd"
-    android:orientation="vertical">
+    android:paddingBottom="@dimen/_2sdp"
+    android:paddingEnd="@dimen/_10sdp"
+    android:paddingLeft="@dimen/_10sdp"
+    android:paddingRight="@dimen/_10sdp"
+    android:paddingStart="@dimen/_10sdp"
+    android:paddingTop="@dimen/_2sdp">
 
     <LinearLayout
+        android:id="@+id/paylayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_10sdp"
-        android:layout_weight="2"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/companyname"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:text="@string/app_name"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/_15sdp" />
-
-        <TextView
-            android:id="@+id/rate"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center|right"
-            android:singleLine="true"
-            android:text="@string/price999"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/_12sdp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_10sdp"
-        android:layout_weight="3">
-
-        <TextView
-            android:id="@+id/orderdetails"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:maxLines="10"
-            android:text="@string/paynowrandomtext"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/_12sdp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="@dimen/_10sdp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/payascod"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/_5sdp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:inputType="text"
-            android:text="@string/paycod"
-            android:textColor="@color/colorPrimary"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/_12sdp"
-            android:visibility="gone" />
+            android:background="@color/white"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/paynow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:inputType="text"
-            android:text="@string/paynow"
-            android:textColor="@color/colorPrimary"
-            android:textIsSelectable="false"
-            android:textSize="@dimen/_12sdp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/imageLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1">
+
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:id="@+id/catimage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:scaleType="fitXY" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="2"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/companyname"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="@string/app_name"
+                            android:textIsSelectable="true"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <TextView
+                            android:id="@+id/rate"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center|right"
+                            android:singleLine="true"
+                            android:text="@string/price999"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="@dimen/_2sdp"
+                        android:layout_weight="3">
+
+                        <TextView
+                            android:id="@+id/orderdetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:maxLines="4"
+                            android:text="@string/paynowrandomtext"
+                            android:textIsSelectable="true"
+                            android:textSize="@dimen/_10sdp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:orientation="horizontal">
+
+                        <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                            android:id="@+id/payascod"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:text="@string/paycod"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/_12sdp" />
+
+                        <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                            android:id="@+id/paynow"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:text="@string/paynow"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/_12sdp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="start"
+                android:padding="@dimen/_5sdp"
+                android:textIsSelectable="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/text"
+                android:layout_alignEnd="@+id/text"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@+id/text"
+                android:layout_gravity="end"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="23:59"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_8sdp" />
+
+                <ImageView
+                    android:id="@+id/tick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 </LinearLayout>

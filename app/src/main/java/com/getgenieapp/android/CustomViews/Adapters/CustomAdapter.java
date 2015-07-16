@@ -150,7 +150,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
             viewHolderMain.notification_count.setBackgroundResource(android.R.color.transparent);
         }
         viewHolderMain.image.setImageUrl(category.getImage_url(), imageLoader);
-        viewHolderMain.showText(category.getDescription());
+//        viewHolderMain.showText(category.getDescription());
     }
 
     private void goToChatActivity(Categories category) {
