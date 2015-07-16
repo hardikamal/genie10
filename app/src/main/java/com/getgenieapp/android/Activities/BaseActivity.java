@@ -99,6 +99,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public void onClick(Categories categories) {
+        System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putString("color", categories.getBg_color());
@@ -155,7 +156,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private Emitter.Listener onInit = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            System.out.println(args[0].toString());
+            System.out.println("Socket connection status : " + args[0].toString());
         }
     };
 

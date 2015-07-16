@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -27,9 +27,9 @@ import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
+import com.getgenieapp.android.CustomViews.TextView.TextDrawable;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.UIHelpers;
-import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.getgenieapp.android.GenieFragment;
@@ -72,9 +72,17 @@ public class RegisterFragment extends GenieFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
+        getStarted.setEnabled(false);
+        number.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean gainFocus) {
+                TextDrawable d = new TextDrawable(getActivity());
+                d.setText("   +" + utils.GetCountryZipCode() + "  ");
+                d.setTextAlign(Layout.Alignment.ALIGN_NORMAL);
 
-        number.setHint("Enter Your +" + utils.GetCountryZipCode() + " Number");
-        number.setFloatingLabelText("Enter Your +" + utils.GetCountryZipCode() + " Number");
+                number.setIconLeft(d);
+            }
+        });
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -112,6 +120,44 @@ public class RegisterFragment extends GenieFragment {
                 }
                 return false;
             }
+        });
+
+        name.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (name.getText().toString().trim().length() > 0 && number.getText().toString().trim().length() == 10) {
+                    getStarted.setEnabled(true);
+                } else {
+                    getStarted.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+
+        });
+
+        number.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (name.getText().toString().trim().length() > 0 && number.getText().toString().trim().length() == 10) {
+                    getStarted.setEnabled(true);
+                } else {
+                    getStarted.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+
         });
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
