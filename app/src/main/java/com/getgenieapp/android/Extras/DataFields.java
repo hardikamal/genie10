@@ -13,7 +13,7 @@ public class DataFields {
 
     public static final File root = Environment.getExternalStorageDirectory();
     public static final File mainFolder = new File(root.getAbsolutePath() + "/GetGenie");
-    public static final String profilePicturePath = mainFolder.getAbsolutePath()+"/me.jpg";
+    public static final String profilePicturePath = mainFolder.getAbsolutePath() + "/me.jpg";
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
 
@@ -24,6 +24,8 @@ public class DataFields {
     public static final String REGISTERURL = "/users";
     public static final String CHAT_SERVER_URL = "http://chat.socket.io";
     private static final String StagingServer = "http://staging0.getgenieapp.com";
+    private static final String localServer = "http://192.168.1.4:3000";
+    public static final String localSocket = "http://192.168.1.4:3004";
     private static final String API = "/api";
     private static final String Version = "/v1";
     public static final String VERIFYURL = "/verifyuser";
@@ -34,6 +36,6 @@ public class DataFields {
     public static final int DBVersion = 1;
 
     public static String getServerUrl() {
-        return StagingServer + API + Version;
+        return localServer + API + Version;
     }
 }

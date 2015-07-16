@@ -8,9 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.getgenieapp.android.Extras.DataFields;
@@ -37,10 +40,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     {
         try {
-            mSocket = IO.socket(DataFields.CHAT_SERVER_URL);
+            mSocket = IO.socket(DataFields.localSocket);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Socket getSocket() {
+        return mSocket;
     }
 
     @Override
@@ -117,6 +124,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setLogo(R.drawable.genie_logo);
         mToolbar.setTitle("");
         startFragmentFromLeft(R.id.body, new MainFragment());
+
+//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -155,9 +165,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     protected void onResume() {
         super.onResume();
-        mSocket.on("init", onInit);
+        mSocket.on("reset connection", reset_connection);
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("user message", sendUserMessage);
         mSocket.on("message_received", onMessageReceived);
         mSocket.on("typing", onTyping);
         mSocket.on("server_error", onServerError);
@@ -171,15 +182,16 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("message_received", onMessageReceived);
+        mSocket.off("user message", sendUserMessage);
         mSocket.off("typing", onTyping);
         mSocket.off("server_error", onServerError);
-        mSocket.off("init", onInit);
+        mSocket.off("reset connection", reset_connection);
     }
 
-    private Emitter.Listener onInit = new Emitter.Listener() {
+    private Emitter.Listener reset_connection = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            System.out.println("Socket connection status : " + args[0].toString());
+            mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
         }
     };
 
@@ -203,6 +215,18 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 @Override
                 public void run() {
                     System.out.println(args[0].toString());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener sendUserMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
                 }
             });
         }

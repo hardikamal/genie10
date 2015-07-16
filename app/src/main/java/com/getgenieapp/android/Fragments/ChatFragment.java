@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.Activities.LocationActivity;
 import com.getgenieapp.android.Activities.OrderDetailsActivity;
 import com.getgenieapp.android.Activities.UserProfileActivity;
@@ -232,6 +234,20 @@ public class ChatFragment extends GenieFragment {
                 dbDataSource.addNormal(messageObject2);
                 chatAdapter.notifyDataSetChanged();
                 scroll();
+            }
+            JSONObject jsonObject = new JSONObject();
+            try {
+                JSONObject valueJSON = new JSONObject();
+                valueJSON.put("text", typedMessage);
+                JSONObject subJson = new JSONObject();
+                subJson.put("category", 1);
+                subJson.put("category_value", valueJSON);
+                subJson.put("created_at", System.currentTimeMillis());
+                jsonObject.put("msg", subJson);
+                jsonObject.put("cid", 1);
+                ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

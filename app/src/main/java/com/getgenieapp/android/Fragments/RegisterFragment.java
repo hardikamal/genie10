@@ -74,14 +74,6 @@ public class RegisterFragment extends GenieFragment {
         View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
         getStarted.setEnabled(false);
-        number.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean gainFocus) {
-                TextDrawable d = new TextDrawable(getActivity());
-                d.setTextAlign(Layout.Alignment.ALIGN_NORMAL);
-
-                number.setIconLeft(d);
-            }
-        });
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -198,6 +190,7 @@ public class RegisterFragment extends GenieFragment {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        parentLoadingView.setLoading(false);
                         ((RegisterActivity) getActivity()).onError(new Register());
                     }
                 });

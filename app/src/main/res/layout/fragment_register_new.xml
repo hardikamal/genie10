@@ -107,7 +107,7 @@
                     android:textColorHighlight="@color/colorPrimaryDark"
                     app:met_baseColor="@color/color444"
                     app:met_floatingLabel="highlight"
-                    app:met_iconLeft="@drawable/ic_phone_white_24dp"
+                    app:met_iconLeft="@drawable/plus91"
                     app:met_iconPadding="0dp"
                     app:met_maxCharacters="10"
                     app:met_primaryColor="@color/color444"
