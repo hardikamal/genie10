@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/_1sdp"
-    android:paddingRight="@dimen/_1sdp"
     android:paddingEnd="@dimen/_1sdp"
     android:paddingLeft="0dp"
+    android:paddingRight="@dimen/_1sdp"
     android:paddingStart="0dp"
     android:paddingTop="@dimen/_1sdp">
 
@@ -55,20 +55,20 @@
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
             android:adjustViewBounds="false"
             android:contentDescription="@string/desc"
-            android:scaleType="fitXY" />
+            android:scaleType="fitCenter" />
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lowerBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/line1"
