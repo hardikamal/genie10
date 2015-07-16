@@ -1,5 +1,6 @@
 package com.getgenieapp.android.Activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,11 +10,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import java.net.URISyntaxException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,6 +28,15 @@ import butterknife.InjectView;
 public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
+    private Socket mSocket;
+
+    {
+        try {
+            mSocket = IO.socket(DataFields.CHAT_SERVER_URL);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +79,20 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mToolbar.setTitle("");
                 startFragmentFromLeft(R.id.body, new MainFragment());
                 return true;
+            case R.id.action_profile:
+                startActivity(new Intent(this, UserProfileActivity.class));
+                return true;
+            case R.id.action_previous_orders:
+                startActivity(new Intent(this, OrderDetailsActivity.class));
+                return true;
+            case R.id.action_share:
+                String shareBody = getString(R.string.bodytext);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -97,4 +127,84 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             e.printStackTrace();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSocket.on("init", onInit);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("message_received", onMessageReceived);
+        mSocket.on("typing", onTyping);
+        mSocket.on("server_error", onServerError);
+        mSocket.connect();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("message_received", onMessageReceived);
+        mSocket.off("typing", onTyping);
+        mSocket.off("server_error", onServerError);
+        mSocket.off("init", onInit);
+    }
+
+    private Emitter.Listener onInit = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            System.out.println(args[0].toString());
+        }
+    };
+
+    private Emitter.Listener onConnectError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),
+                            "On Connection Error", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onMessageReceived = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(args[0].toString());
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onTyping = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onServerError = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+    };
 }

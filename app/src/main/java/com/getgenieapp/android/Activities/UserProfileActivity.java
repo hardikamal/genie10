@@ -20,6 +20,9 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
@@ -31,6 +34,7 @@ import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GraphicsUtil;
+import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
 
@@ -78,6 +82,12 @@ public class UserProfileActivity extends GenieBaseActivity {
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
 
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         logging.LogV("User Profile Activity");
         name.setText("Genie Admin");
@@ -393,5 +403,38 @@ public class UserProfileActivity extends GenieBaseActivity {
             SnackBar snackBar = new SnackBar(this, getString(R.string.entervalidinformation));
             snackBar.show();
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_previous_orders:
+                startActivity(new Intent(this, OrderDetailsActivity.class));
+                return true;
+            case R.id.action_share:
+                String shareBody = getString(R.string.bodytext);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
