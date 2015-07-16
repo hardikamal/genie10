@@ -21,6 +21,7 @@ import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
 import com.getgenieapp.android.GenieActivity;
 import com.getgenieapp.android.R;
+import com.getgenieapp.android.Slides.WalkThroughActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -129,9 +130,8 @@ public class SplashScreenActivity extends GenieActivity {
                     } catch (Exception err) {
                         err.printStackTrace();
                     }
-                    logging.LogI("Start Register Activity");
-                    Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
-                    intent.putExtra("page", "Register");
+                    logging.LogI("Start Walk Thru Activity");
+                    Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
                     startActivity(intent);
                     finish();
                 }
