@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,8 +25,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
-import com.getgenieapp.android.CustomViews.TextView.TextDrawable;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
@@ -36,6 +32,7 @@ import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONException;
@@ -60,6 +57,7 @@ public class RegisterFragment extends GenieFragment {
     LoadingView parentLoadingView;
     @InjectView(R.id.getStarted)
     ButtonRectangle getStarted;
+    View rootView;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -71,8 +69,9 @@ public class RegisterFragment extends GenieFragment {
             fragmentManager.popBackStack();
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
+        rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
+
         getStarted.setEnabled(false);
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -199,8 +198,7 @@ public class RegisterFragment extends GenieFragment {
             } else {
                 logging.LogE("GCM Token not found");
                 parentLoadingView.setLoading(false);
-                SnackBar snackbar = new SnackBar(getActivity(), genieApplication.getString(R.string.errortryagain));
-                snackbar.show();
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -210,11 +208,9 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
         if (name.getText().toString().trim().length() == 0) {
-            SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentername));
-            snackbar.show();
+            ((RegisterActivity) getActivity()).showToast(getString(R.string.pleaseentername), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
         } else if (number.getText().toString().trim().length() < 10) {
-            SnackBar snackbar = new SnackBar(getActivity(), getResources().getString(R.string.pleaseentervalidnumber));
-            snackbar.show();
+            ((RegisterActivity) getActivity()).showToast(getString(R.string.pleaseentervalidnumber), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
         } else {
             parentLoadingView.setText(getResources().getString(R.string.registeringuser));
             parentLoadingView.setLoading(true);

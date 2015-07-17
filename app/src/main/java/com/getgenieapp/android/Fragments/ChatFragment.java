@@ -5,18 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -26,29 +20,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.Activities.LocationActivity;
-import com.getgenieapp.android.Activities.OrderDetailsActivity;
-import com.getgenieapp.android.Activities.UserProfileActivity;
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -76,6 +62,7 @@ public class ChatFragment extends GenieFragment {
     private ArrayList<Messages> messages = new ArrayList<>();
     private int LOCATIONRESULT = 1;
     String url;
+    View rootView;
 
     /**
      * @param savedInstanceState
@@ -88,7 +75,7 @@ public class ChatFragment extends GenieFragment {
             fragmentManager.popBackStack();
         }
 
-        View rootView = inflater.inflate(R.layout.activity_chat, container, false);
+        rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
 
         Bundle bundle = this.getArguments();
@@ -198,8 +185,7 @@ public class ChatFragment extends GenieFragment {
                     chatAdapter.notifyDataSetChanged();
                     scroll();
                 } else {
-                    SnackBar snackBar = new SnackBar(getActivity(), getString(R.string.errorinaccessinglocation));
-                    snackBar.show();
+                    ((BaseActivity) getActivity()).showToast(getString(R.string.errorinaccessinglocation), SnackBar.LONG_SNACK, SnackBar.Style.DEFAULT);
                 }
             }
         }
@@ -271,10 +257,5 @@ public class ChatFragment extends GenieFragment {
                 });
             }
         }).start();
-    }
-
-    public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

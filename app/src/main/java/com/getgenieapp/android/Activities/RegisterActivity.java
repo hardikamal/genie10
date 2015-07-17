@@ -13,7 +13,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Fragments.RegisterFragment;
 import com.getgenieapp.android.Fragments.VerifyFragment;
@@ -21,6 +20,7 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,8 +29,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 // Register activity will navigate the registration process to user.
 // This accepts the extra to check the user needs to register or verify
@@ -124,8 +122,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Register register) {
-        SnackBar snackBar = new SnackBar(this, getString(R.string.unexpectederror));
-        snackBar.show();
+        showToast(getString(R.string.unexpectederror), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
     }
 
     @Override
@@ -178,7 +175,6 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Verify verify) {
-        SnackBar snackBar = new SnackBar(this, getString(R.string.servererrortryagain));
-        snackBar.show();
+        showToast(getString(R.string.servererrortryagain), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
     }
 }

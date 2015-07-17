@@ -131,8 +131,9 @@ public class SplashScreenActivity extends GenieActivity {
                         err.printStackTrace();
                     }
                     logging.LogI("Start Walk Thru Activity");
-                    Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
+//                    startActivity(intent);
+
                     finish();
                 }
             }).start();

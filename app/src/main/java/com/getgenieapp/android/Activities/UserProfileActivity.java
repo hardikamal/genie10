@@ -32,10 +32,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GraphicsUtil;
-import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
 
@@ -132,8 +130,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                     Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, null);
                     //There is no thumb-nail with this Image
                     if (thumb == null) {
-                        SnackBar snackBar = new SnackBar(this, "Failed to get thumbnail for our image.");
-                        snackBar.show();
 
                         //so create thumb-nail from image itself
                         Cursor cursor = resolver
@@ -240,8 +236,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            SnackBar snackBar = new SnackBar(this, "Not able to access Location");
-            snackBar.show();
         }
         progressBar.dismiss();
         progressBar.cancel();
@@ -271,8 +265,6 @@ public class UserProfileActivity extends GenieBaseActivity {
         // respond to users whose devices do not support the crop action
         catch (ActivityNotFoundException anfe) {
             // display an error message
-            SnackBar snackBar = new SnackBar(this, "Whoops - your device doesn't support the crop action!");
-            snackBar.show();
         }
     }
 
@@ -330,8 +322,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(captureIntent, CAMERA_CAPTURE);
                     } catch (ActivityNotFoundException anfe) {
-                        SnackBar snackBar = new SnackBar(UserProfileActivity.this, "Whoops - your device doesn't support capturing images!");
-                        snackBar.show();
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickIntent = new Intent(Intent.ACTION_PICK,
@@ -357,8 +347,6 @@ public class UserProfileActivity extends GenieBaseActivity {
     public void onClickUpdate() {
         if (name.getText().toString().trim().length() > 0) {
             if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
-                SnackBar snackBar = new SnackBar(this, getString(R.string.entervalidemail));
-                snackBar.show();
                 return;
             }
             final ProgressDialog progressBar = new ProgressDialog(this);
@@ -385,8 +373,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        SnackBar snackBar = new SnackBar(UserProfileActivity.this, getString(R.string.errorwhileupdatinguserinformation));
-                        snackBar.show();
                     }
                 }) {
                     @Override
@@ -403,8 +389,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            SnackBar snackBar = new SnackBar(this, getString(R.string.entervalidinformation));
-            snackBar.show();
         }
     }
 

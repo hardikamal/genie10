@@ -3,26 +3,21 @@ package com.getgenieapp.android.CustomViews.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.GenieApplication;
-import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Order;
 import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -89,9 +84,17 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
         viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SnackBar((Activity) context, "Just Clicked Repeat Order").show();
+                showToast("Just Clicked Repeat Order", SnackBar.MED_SNACK, SnackBar.Style.INFO);
             }
         });
+    }
+
+    public void showToast(String message, Short duration, SnackBar.Style style) {
+        new SnackBar.Builder((Activity) context)
+                .withMessage(message)
+                .withStyle(style)
+                .withDuration(duration)
+                .show();
     }
 
     @Override

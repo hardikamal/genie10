@@ -18,13 +18,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.Activities.RegisterActivity;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +57,7 @@ public class VerifyFragment extends GenieFragment {
     static int time = 60;
     final int entryLength = 1;
     Timer timer = new Timer();
+    View rootView;
 
     @Override
     public void onStart() {
@@ -140,8 +141,9 @@ public class VerifyFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
-        View rootView = inflater.inflate(R.layout.fragment_verify, container, false);
+        rootView = inflater.inflate(R.layout.fragment_verify, container, false);
         ButterKnife.inject(this, rootView);
+
         time = 60;
         moveToNextMech();
 
@@ -323,8 +325,7 @@ public class VerifyFragment extends GenieFragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response.toString());
-                        SnackBar snackBar = new SnackBar(getActivity(), genieApplication.getString(R.string.smsrequestresend));
-                        snackBar.show();
+                        ((RegisterActivity) getActivity()).showToast(genieApplication.getString(R.string.smsrequestresend), SnackBar.MED_SNACK, SnackBar.Style.CONFIRM);
                         if (response.has("token")) {
                             try {
                                 sharedPreferences.edit().putString(DataFields.TOKEN, response.getString("token")).apply();

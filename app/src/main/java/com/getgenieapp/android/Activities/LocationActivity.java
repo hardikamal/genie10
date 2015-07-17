@@ -22,11 +22,11 @@ import android.widget.TextView;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -291,8 +291,7 @@ public class LocationActivity extends GenieBaseActivity {
                                         , messageValues.getLat(), saveas.getText().toString().trim()));
                                 setResultBackToActivity(messageValues);
                             } else {
-                                SnackBar snackBar = new SnackBar(LocationActivity.this, getString(R.string.gaveanametoplace));
-                                snackBar.show();
+                                showToast(getString(R.string.gaveanametoplace), SnackBar.LONG_SNACK, SnackBar.Style.INFO);
                                 showSaveLaterBox(messageValues);
                             }
                         }
@@ -352,8 +351,7 @@ public class LocationActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            SnackBar snackBar = new SnackBar(this, "Not able to access Location");
-            snackBar.show();
+            showToast(getString(R.string.notabletoacceslocation), SnackBar.LONG_SNACK, SnackBar.Style.ALERT);
         }
         return new MessageValues(3, _Location, longitude, latitude);
     }

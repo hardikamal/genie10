@@ -3,17 +3,15 @@ package com.getgenieapp.android.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.getgenieapp.android.Extras.DataFields;
@@ -35,12 +33,15 @@ import butterknife.InjectView;
 public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
+    @InjectView(R.id.screen)
+    LinearLayout screen;
+    private Uri picUri;
 
     private Socket mSocket;
 
     {
         try {
-            mSocket = IO.socket(DataFields.localSocket);
+            mSocket = IO.socket(DataFields.getChatUrl());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -68,6 +69,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         ButterKnife.inject(this);
+        setupUI(screen, this);
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         if (getIntent().getExtras() != null) {
             if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
@@ -76,6 +78,13 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mToolbar.setLogo(R.drawable.genie_logo);
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+
     }
 
     @Override
@@ -124,9 +133,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setLogo(R.drawable.genie_logo);
         mToolbar.setTitle("");
         startFragmentFromLeft(R.id.body, new MainFragment());
-
-//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-//        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override

@@ -20,13 +20,13 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Activities.PaymentActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +63,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         this.color = color;
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
         this.catImageUrl = catImageUrl;
+    }
+
+    public void showToast(String message, Short duration, SnackBar.Style style) {
+        new SnackBar.Builder((Activity) context)
+                .withMessage(message)
+                .withStyle(style)
+                .withDuration(duration)
+                .show();
     }
 
     @Override
@@ -187,8 +195,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SnackBar snackBar = new SnackBar((Activity) context, context.getString(R.string.finishordertext));
-                        snackBar.show();
+                        showToast(context.getString(R.string.finishordertext), SnackBar.MED_SNACK, SnackBar.Style.INFO);
                         Intent intent = new Intent(context, PaymentActivity.class);
                         intent.putExtra("url", messageValues.getUrl());
                         ((Activity) context).startActivityForResult(intent, 1);

@@ -1,20 +1,14 @@
 package com.getgenieapp.android.Activities;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.getgenieapp.android.CustomViews.Misc.SnackBar;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 // Payment activity is used to access the payment web view from application
 // Use TinyBus to send signal of payment received, so the activity can close.
@@ -43,8 +37,7 @@ public class PaymentActivity extends GenieBaseActivity {
         });
         webview.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                SnackBar snackBar = new SnackBar(activity, "Oh no! " + description);
-                snackBar.show();
+                showToast(getString(R.string.ohno) + description, SnackBar.LONG_SNACK, SnackBar.Style.INFO);
                 onBackPressed();
             }
         });

@@ -304,4 +304,9 @@
     <string name="goback">Go Back</string>
     <string name="notabletogetyourlocation">Not able to get your location</string>
     <string name="home">Home</string>
+    <string name="notabletoaccessthelocation">Not able to access Location</string>
+    <string name="failedtogetthumbnail">Failed to get thumbnail for our image.</string>
+    <string name="devicedoesnotsupportmessage">Whoops - your device doesn\'t support the crop action!</string>
+    <string name="notabletoacceslocation">Not able to access Location</string>
+    <string name="ohno">"Oh no! "</string>
 </resources>
