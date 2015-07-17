@@ -145,7 +145,6 @@ public class GenieApplication extends Application {
         }
     }
 
-
     @Override
     public void onTerminate() {
         super.onTerminate();
@@ -171,6 +170,7 @@ public class GenieApplication extends Application {
     }
 
     private static final class MyActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
+
         private int numRunningActivities = 0;
 
         public void onActivityCreated(Activity activity, Bundle bundle) {

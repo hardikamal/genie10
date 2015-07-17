@@ -1,6 +1,7 @@
 package com.getgenieapp.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -85,15 +86,11 @@ public class GenieActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);
-        // use this to save your snacks for later
-        //saveState.putBundle(SAVED_SNACKBAR, mSnackBar.onSaveInstanceState());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle loadState) {
         super.onRestoreInstanceState(loadState);
-        // use this to load your snacks for later
-        //mSnackBar.onRestoreInstanceState(loadState.getBundle(SAVED_SNACKBAR));
     }
     public void showToast(String message, Short duration, SnackBar.Style style) {
         new SnackBar.Builder(this)
@@ -101,5 +98,12 @@ public class GenieActivity extends Activity {
                 .withStyle(style)
                 .withDuration(duration)
                 .show();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 }

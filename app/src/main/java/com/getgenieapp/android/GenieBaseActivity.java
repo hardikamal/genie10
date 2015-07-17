@@ -1,6 +1,7 @@
 package com.getgenieapp.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -66,49 +67,14 @@ public class GenieBaseActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-//    public void setupUI(View view, final Activity activity) {
-//
-//        //Set up touch listener for non-text box views to hide keyboard.
-//        if (!(view instanceof EditText)) {
-//
-//            view.setOnTouchListener(new View.OnTouchListener() {
-//
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    hideSoftKeyboard(activity);
-//                    return false;
-//                }
-//
-//            });
-//        }
-//
-//        if (view instanceof ViewGroup) {
-//
-//            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-//
-//                View innerView = ((ViewGroup) view).getChildAt(i);
-//
-//                setupUI(innerView, activity);
-//            }
-//        }
-//    }
-//
-//    public static void hideSoftKeyboard(Activity activity) {
-//        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-//    }
-
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);
-        // use this to save your snacks for later
-        //saveState.putBundle(SAVED_SNACKBAR, mSnackBar.onSaveInstanceState());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle loadState) {
         super.onRestoreInstanceState(loadState);
-        // use this to load your snacks for later
-        //mSnackBar.onRestoreInstanceState(loadState.getBundle(SAVED_SNACKBAR));
     }
 
     public void showToast(String message, Short duration, SnackBar.Style style) {
@@ -117,5 +83,12 @@ public class GenieBaseActivity extends AppCompatActivity {
                 .withStyle(style)
                 .withDuration(duration)
                 .show();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 }

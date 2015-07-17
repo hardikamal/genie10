@@ -1,5 +1,7 @@
 package com.getgenieapp.android.Activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,9 +12,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.MainFragment;
@@ -48,18 +55,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mToolbar.setLogo(R.drawable.genie_logo);
             }
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     @Override
@@ -105,7 +100,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
-
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment && data != null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     @Override
@@ -158,6 +157,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setLogo(R.drawable.genie_logo);
         mToolbar.setTitle("");
         startFragmentFromLeft(R.id.body, new MainFragment());
+        hideKeyboard(this);
     }
 
     @Override
@@ -261,4 +261,30 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View v = getCurrentFocus();
+        CircularButton btn = (CircularButton) findViewById(R.id.send);
+
+        if (v != null &&
+                (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
+                v instanceof EditText &&
+                !v.getClass().getName().startsWith("android.webkit.")) {
+            int scrcoords[] = new int[2];
+            v.getLocationOnScreen(scrcoords);
+            float x = ev.getRawX() + v.getLeft() - scrcoords[0];
+            float y = ev.getRawY() + v.getTop() - scrcoords[1];
+            if (btn != null) {
+                int[] pos = new int[2];
+                btn.getLocationOnScreen(pos);
+                if (ev.getY() <= (pos[1] + btn.getHeight()) && ev.getX() > pos[0]) //location button event
+                    return super.dispatchTouchEvent(ev);
+            }
+            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
+                hideKeyboard(this);
+        }
+
+        return super.dispatchTouchEvent(ev);
+    }
 }

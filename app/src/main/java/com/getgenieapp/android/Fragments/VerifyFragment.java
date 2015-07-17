@@ -76,35 +76,29 @@ public class VerifyFragment extends GenieFragment {
         if (bundle != null && bundle.getBoolean("runtimer", false)) {
             timer.scheduleAtFixedRate(new TimerTask() {
 
-                                          public void run() {
-                                              //Called each time when 1000 milliseconds (1 second) (the period parameter)
-                                              getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    getActivity().runOnUiThread(new Runnable() {
 
-                                                  public void run() {
-                                                      if (time != 0) {
-                                                          time -= 1;
-                                                          int seconds = time % 60;
-                                                          int minutes = time / 60;
-                                                          String stringTime = String.format("%02d:%02d", minutes, seconds);
-                                                          tapToResend.setText(stringTime);
-                                                      } else {
-                                                          tapToResend.setText(getResources().getString(R.string.taptoresend));
-                                                      }
-                                                  }
-                                              });
-                                          }
+                        public void run() {
+                            if (time != 0) {
+                                time -= 1;
+                                int seconds = time % 60;
+                                int minutes = time / 60;
+                                String stringTime = String.format("%02d:%02d", minutes, seconds);
+                                tapToResend.setText(stringTime);
+                            } else {
+                                tapToResend.setText(getResources().getString(R.string.taptoresend));
+                            }
+                        }
+                    });
+                }
 
-                                      },
-                    //Set how long before to start calling the TimerTask (in milliseconds)
-                    0,
-                    //Set the amount of time between each execution (in milliseconds)
-                    1000);
+            }, 0, 1000);
         }
-
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();

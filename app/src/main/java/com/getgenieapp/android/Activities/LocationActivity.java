@@ -1,5 +1,6 @@
 package com.getgenieapp.android.Activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,8 +15,10 @@ import android.provider.Settings;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -79,7 +82,7 @@ public class LocationActivity extends GenieBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_activity);
         ButterKnife.inject(this);
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+        hideKeyboard(this);
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
 
@@ -109,19 +112,6 @@ public class LocationActivity extends GenieBaseActivity {
         }).start();
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        checkLocationStatus();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -159,7 +149,6 @@ public class LocationActivity extends GenieBaseActivity {
         }
         return _Location;
     }
-
 
 
     private void checkLocationStatus() {
@@ -358,5 +347,30 @@ public class LocationActivity extends GenieBaseActivity {
             showToast(getString(R.string.notabletoacceslocation), SnackBar.LONG_SNACK, SnackBar.Style.ALERT);
         }
         return new MessageValues(3, _Location, longitude, latitude);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View v = getCurrentFocus();
+        if (v != null &&
+                (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
+                v instanceof EditText &&
+                !v.getClass().getName().startsWith("android.webkit.")) {
+            int scrcoords[] = new int[2];
+            v.getLocationOnScreen(scrcoords);
+            float x = ev.getRawX() + v.getLeft() - scrcoords[0];
+            float y = ev.getRawY() + v.getTop() - scrcoords[1];
+            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
+                hideKeyboard(this);
+        }
+
+        return super.dispatchTouchEvent(ev);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 }

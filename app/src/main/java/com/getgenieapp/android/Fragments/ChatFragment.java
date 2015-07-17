@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -114,7 +115,7 @@ public class ChatFragment extends GenieFragment {
         if (hide_time != 0) {
             messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
         }
-
+        
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
@@ -169,25 +170,22 @@ public class ChatFragment extends GenieFragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOCATIONRESULT) {
-            if (resultCode == 1) {
-                if (data.getExtras() != null) {
-                    MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-                    Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
-                    messages.add(messageObject);
-                    dbDataSource.addNormal(messageObject);
-                    chatAdapter.notifyDataSetChanged();
-                    scroll();
-                } else {
-                    ((BaseActivity) getActivity()).showToast(getString(R.string.errorinaccessinglocation), SnackBar.LONG_SNACK, SnackBar.Style.DEFAULT);
-                }
-            }
+        if (data.getExtras() != null) {
+            MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+            Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
+            messages.add(messageObject);
+            dbDataSource.addNormal(messageObject);
+            chatAdapter.notifyDataSetChanged();
+            scroll();
+        } else {
+            ((BaseActivity) getActivity()).showToast(getString(R.string.errorinaccessinglocation), SnackBar.LONG_SNACK, SnackBar.Style.DEFAULT);
         }
     }
 
     @OnClick(R.id.send)
     public void onClickSend() {
         if (imageResource) {
+            hideKeyboard(getActivity());
             startActivityForResult(new Intent(getActivity(), LocationActivity.class), LOCATIONRESULT);
         } else {
             String typedMessage = message.getText().toString().trim();
@@ -236,7 +234,7 @@ public class ChatFragment extends GenieFragment {
     public void onClickMessageBox() {
         message.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(message, InputMethodManager.SHOW_IMPLICIT);
+        imm.showSoftInput(message, InputMethodManager.SHOW_FORCED);
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -255,7 +253,7 @@ public class ChatFragment extends GenieFragment {
 
     private void scroll() {
         if (messages.size() > 1) {
-            recyclerView.smoothScrollToPosition(messages.size() - 1);
+            recyclerView.scrollToPosition(messages.size() - 1);
         }
     }
 }

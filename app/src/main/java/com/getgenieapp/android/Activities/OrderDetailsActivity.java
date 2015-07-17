@@ -50,18 +50,6 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
-    }
-
     private void getUserOrders() {
         loadingView.setLoading(true);
         ArrayList<Order> orders = new ArrayList<>();
