@@ -62,6 +62,21 @@ public class RegisterFragment extends GenieFragment {
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        logging.LogI("On Resume");
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.SENT_TOKEN_TO_SERVER));
+    }
+
+    @Override
+    public void onPause() {
+        logging.LogI("On Pause");
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         FragmentManager fragmentManager = getActivity().getFragmentManager();
@@ -219,21 +234,6 @@ public class RegisterFragment extends GenieFragment {
             Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
             getActivity().startService(intent);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        logging.LogI("On Resume");
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.SENT_TOKEN_TO_SERVER));
-    }
-
-    @Override
-    public void onPause() {
-        logging.LogI("On Pause");
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onPause();
     }
 
     public interface onRegister {

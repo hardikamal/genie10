@@ -45,13 +45,17 @@ public class MainFragment extends GenieFragment {
 
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
         ButterKnife.inject(this, rootView);
-
+        refreshData();
         logging.LogV("Main Activity");
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);
         loadCategories();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
+    }
+
+    private void refreshData() {
+        // todo refresh data
     }
 
     private void loadCategories() {

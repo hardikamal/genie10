@@ -36,6 +36,7 @@ import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GraphicsUtil;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
+import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,10 +76,12 @@ public class UserProfileActivity extends GenieBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
+
         update.setTextColor(getResources().getColor(R.color.white));
-//        countrycode.setText(utils.GetCountryZipCode());
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
 
@@ -98,6 +101,50 @@ public class UserProfileActivity extends GenieBaseActivity {
         getPicture();
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_previous_orders:
+                startActivity(new Intent(this, OrderDetailsActivity.class));
+                return true;
+            case R.id.action_share:
+                String shareBody = getString(R.string.bodytext);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -121,7 +168,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
                 userIcon.setImageBitmap(graphicUtil.getCircleBitmap(thePic, radius));
                 setPicture();
-            } else if (requestCode == PICK_IMAGE) {
+            } else if (requestCode == DataFields.PICK_IMAGE) {
                 try {
                     ContentResolver resolver = getContentResolver();
                     Uri actualUri = data.getData();
@@ -130,7 +177,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                     Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, null);
                     //There is no thumb-nail with this Image
                     if (thumb == null) {
-
+                        showToast(getString(R.string.failedtogetthumbnail), SnackBar.MED_SNACK, SnackBar.Style.INFO);
                         //so create thumb-nail from image itself
                         Cursor cursor = resolver
                                 .query(actualUri,
@@ -181,6 +228,119 @@ public class UserProfileActivity extends GenieBaseActivity {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+
+    private void performCrop() {
+        // take care of exceptions
+        try {
+            // call the standard crop action intent (the user device may not
+            // support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            // set crop properties
+            cropIntent.putExtra("crop", "true");
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            // start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, DataFields.PIC_CROP);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            showToast(getString(R.string.devicedoesnotsupportmessage), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+        }
+    }
+
+    @OnClick(R.id.userIcon)
+    public void onClickUserIcon() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Change Profile Picture");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo")) {
+                    try {
+                        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(captureIntent, DataFields.CAMERA_CAPTURE);
+                    } catch (ActivityNotFoundException anfe) {
+                        showToast(getString(R.string.devicedoesnotsupportmessage), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                    }
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickIntent, DataFields.PICK_IMAGE);
+                } else if (options[item].equals("Remove Picture")) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp, UserProfileActivity.this.getTheme()));
+                    } else {
+                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp));
+                    }
+                    if (new File(DataFields.profilePicturePath).exists())
+                        new File(DataFields.profilePicturePath).delete();
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @OnClick(R.id.update)
+    public void onClickUpdate() {
+        if (name.getText().toString().trim().length() > 0) {
+            if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
+                showToast(getString(R.string.entervalidemail), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                return;
+            }
+            final ProgressDialog progressBar = new ProgressDialog(this);
+            progressBar.setCancelable(true);
+            progressBar.setMessage(getString(R.string.updatinguserinformation));
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.show();
+            JSONObject json = new JSONObject();
+            try {
+                json.put("name", name.getText().toString());
+                json.put("email", email.getText().toString());
+                json.put("address", address.getText().toString());
+                JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.UPDATEUSER, json,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                progressBar.dismiss();
+                                progressBar.cancel();
+                                if (response != null) {
+                                    logging.LogV("Response ", response.toString());
+                                    // todo implement response
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showToast(getString(R.string.errorwhileupdatinguserinformation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                        return params;
+                    }
+                };
+                genieApplication.addToRequestQueue(req);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            showToast(getString(R.string.entervalidinformation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
         }
     }
 
@@ -236,36 +396,10 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
+            showToast(getString(R.string.notabletoaccessthelocation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
         }
         progressBar.dismiss();
         progressBar.cancel();
-    }
-
-    private void performCrop() {
-        // take care of exceptions
-        try {
-            // call the standard crop action intent (the user device may not
-            // support it)
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
-            cropIntent.setDataAndType(picUri, "image/*");
-            // set crop properties
-            cropIntent.putExtra("crop", "true");
-            // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
-            cropIntent.putExtra("outputX", 256);
-            cropIntent.putExtra("outputY", 256);
-            // retrieve data on return
-            cropIntent.putExtra("return-data", true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, PIC_CROP);
-        }
-        // respond to users whose devices do not support the crop action
-        catch (ActivityNotFoundException anfe) {
-            // display an error message
-        }
     }
 
     private Bitmap bitmap = null;
@@ -308,120 +442,5 @@ public class UserProfileActivity extends GenieBaseActivity {
             cursor.close();
         }
         return path;
-    }
-
-    @OnClick(R.id.userIcon)
-    public void onClickUserIcon() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Change Profile Picture");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-                    try {
-                        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(captureIntent, CAMERA_CAPTURE);
-                    } catch (ActivityNotFoundException anfe) {
-                    }
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickIntent, PICK_IMAGE);
-                } else if (options[item].equals("Remove Picture")) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp, UserProfileActivity.this.getTheme()));
-                    } else {
-                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp));
-                    }
-                    if (new File(DataFields.profilePicturePath).exists())
-                        new File(DataFields.profilePicturePath).delete();
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-    @OnClick(R.id.update)
-    public void onClickUpdate() {
-        if (name.getText().toString().trim().length() > 0) {
-            if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
-                return;
-            }
-            final ProgressDialog progressBar = new ProgressDialog(this);
-            progressBar.setCancelable(true);
-            progressBar.setMessage(getString(R.string.updatinguserinformation));
-            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressBar.show();
-            JSONObject json = new JSONObject();
-            try {
-                json.put("name", name.getText().toString());
-                json.put("email", email.getText().toString());
-                json.put("address", address.getText().toString());
-                JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.UPDATEUSER, json,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                progressBar.dismiss();
-                                progressBar.cancel();
-                                if (response != null) {
-                                    logging.LogV("Response ", response.toString());
-                                    // todo implement response
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                }) {
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
-                        return params;
-                    }
-                };
-
-                genieApplication.addToRequestQueue(req);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.id.action_previous_orders:
-                startActivity(new Intent(this, OrderDetailsActivity.class));
-                return true;
-            case R.id.action_share:
-                String shareBody = getString(R.string.bodytext);
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

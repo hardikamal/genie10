@@ -168,12 +168,6 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
-    private void scroll() {
-        if (messages.size() > 1) {
-            recyclerView.smoothScrollToPosition(messages.size() - 1);
-        }
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LOCATIONRESULT) {
             if (resultCode == 1) {
@@ -257,5 +251,11 @@ public class ChatFragment extends GenieFragment {
                 });
             }
         }).start();
+    }
+
+    private void scroll() {
+        if (messages.size() > 1) {
+            recyclerView.smoothScrollToPosition(messages.size() - 1);
+        }
     }
 }

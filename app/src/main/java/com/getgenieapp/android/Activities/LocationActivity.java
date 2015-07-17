@@ -75,14 +75,53 @@ public class LocationActivity extends GenieBaseActivity {
     AlertDialog.Builder dialog;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.location_activity);
+        ButterKnife.inject(this);
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+                .getMap();
+
+        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
+        recyclerView.setAdapter(chatAdapter);
+        dialog = new AlertDialog.Builder(this);
+
+        checkLocationStatus();
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(DataFields.small1000TimeOut);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        refreshLocation.performClick();
+                    }
+                });
+            }
+        }).start();
+
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         checkLocationStatus();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -121,42 +160,7 @@ public class LocationActivity extends GenieBaseActivity {
         return _Location;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.location_activity);
-        ButterKnife.inject(this);
 
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                .getMap();
-
-        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
-        recyclerView.setAdapter(chatAdapter);
-        dialog = new AlertDialog.Builder(this);
-
-        checkLocationStatus();
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(DataFields.small1000TimeOut);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        refreshLocation.performClick();
-                    }
-                });
-            }
-        }).start();
-
-        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
-    }
 
     private void checkLocationStatus() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

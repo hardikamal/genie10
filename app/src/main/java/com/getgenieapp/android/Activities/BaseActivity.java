@@ -3,7 +3,6 @@ package com.getgenieapp.android.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,10 +20,8 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -35,20 +32,34 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     Toolbar mToolbar;
     @InjectView(R.id.screen)
     LinearLayout screen;
-    private Uri picUri;
-
     private Socket mSocket;
 
-    {
-        try {
-            mSocket = IO.socket(DataFields.getChatUrl());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_base);
+        ButterKnife.inject(this);
+        mSocket = genieApplication.getSocket();
+        getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
+                setSupportActionBar(mToolbar);
+                startFragment(R.id.body, new MainFragment());
+                mToolbar.setLogo(R.drawable.genie_logo);
+            }
         }
     }
 
-    public Socket getSocket() {
-        return mSocket;
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     @Override
@@ -65,19 +76,29 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-        ButterKnife.inject(this);
-        setupUI(screen, this);
-        getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
-                setSupportActionBar(mToolbar);
-                startFragment(R.id.body, new MainFragment());
-                mToolbar.setLogo(R.drawable.genie_logo);
-            }
-        }
+    public void onStart() {
+        super.onStart();
+        mSocket.on("reset connection", reset_connection);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("user message", sendUserMessage);
+        mSocket.on("message_received", onMessageReceived);
+        mSocket.on("typing", onTyping);
+        mSocket.on("server_error", onServerError);
+        mSocket.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("message_received", onMessageReceived);
+        mSocket.off("user message", sendUserMessage);
+        mSocket.off("typing", onTyping);
+        mSocket.off("server_error", onServerError);
+        mSocket.off("reset connection", reset_connection);
     }
 
     @Override
@@ -105,7 +126,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 goBack();
                 return true;
             case R.id.action_profile:
-                startActivity(new Intent(this, UserProfileActivity.class));
+                startActivity(new Intent(BaseActivity.this, UserProfileActivity.class));
                 return true;
             case R.id.action_previous_orders:
                 startActivity(new Intent(this, OrderDetailsActivity.class));
@@ -120,6 +141,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public Socket getSocket() {
+        return mSocket;
     }
 
     private void goBack() {
@@ -137,6 +162,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public void onClick(Categories categories) {
+
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
@@ -166,32 +192,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSocket.on("reset connection", reset_connection);
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.on("user message", sendUserMessage);
-        mSocket.on("message_received", onMessageReceived);
-        mSocket.on("typing", onTyping);
-        mSocket.on("server_error", onServerError);
-        mSocket.connect();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mSocket.disconnect();
-        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("message_received", onMessageReceived);
-        mSocket.off("user message", sendUserMessage);
-        mSocket.off("typing", onTyping);
-        mSocket.off("server_error", onServerError);
-        mSocket.off("reset connection", reset_connection);
     }
 
     private Emitter.Listener reset_connection = new Emitter.Listener() {

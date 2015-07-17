@@ -38,6 +38,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
         setContentView(R.layout.activity_order_details);
         ButterKnife.inject(this);
         ActionBar actionBar = getSupportActionBar();
@@ -47,6 +48,18 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         }
         getUserOrders();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
     }
 
     private void getUserOrders() {

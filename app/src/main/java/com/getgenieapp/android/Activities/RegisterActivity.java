@@ -46,18 +46,6 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     static int time = 61;
 
-    public void onResume() {
-        super.onResume();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-        registerReceiver(myBroadcastReceiver, filter);
-    }
-
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(myBroadcastReceiver);
-    }
-
     private BroadcastReceiver myBroadcastReceiver =
             new BroadcastReceiver() {
                 @Override
@@ -108,6 +96,18 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
             startFragment(R.id.body, new VerifyFragment());
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(myBroadcastReceiver, filter);
+    }
+
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(myBroadcastReceiver);
     }
 
     @Override

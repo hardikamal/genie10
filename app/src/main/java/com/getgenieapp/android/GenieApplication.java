@@ -1,6 +1,10 @@
 package com.getgenieapp.android;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.ComponentCallbacks2;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -12,11 +16,15 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.LoggingBuilder;
 import com.getgenieapp.android.Extras.LruBitmapCache;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+
+import java.net.URISyntaxException;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -41,6 +49,15 @@ public class GenieApplication extends Application {
     private TinyBus mBus;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private Socket mSocket;
+
+    {
+        try {
+            mSocket = IO.socket(DataFields.getChatUrl());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -57,6 +74,8 @@ public class GenieApplication extends Application {
         mSecurePrefs = new SecurePreferences(this);
         mBus = TinyBus.from(this);
         ACRA.init(this);
+        registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
+        registerComponentCallbacks(new MyComponentsLifecycleCallbacks());
     }
 
     public SecurePreferences getSecurePrefs() {
@@ -67,6 +86,10 @@ public class GenieApplication extends Application {
         return mBus;
     }
 
+    public Socket getSocket() {
+        return mSocket;
+    }
+
     public LoggingBuilder getLoggingBuilder() {
         return loggingBuilder;
 
@@ -75,9 +98,11 @@ public class GenieApplication extends Application {
     public FontChangeCrawler getFontChangeCrawlerRegular() {
         return fontChangerRegular;
     }
+
     public FontChangeCrawler getFontChangeCrawlerMedium() {
         return fontChangerMedium;
     }
+
     public FontChangeCrawler getFontChangeCrawlerLight() {
         return fontChangerLight;
     }
@@ -117,6 +142,58 @@ public class GenieApplication extends Application {
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
+        }
+    }
+
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private static final class MyComponentsLifecycleCallbacks implements ComponentCallbacks2 {
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+        }
+
+        @Override
+        public void onLowMemory() {
+        }
+
+        @Override
+        public void onTrimMemory(int level) {
+        }
+    }
+
+    private static final class MyActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
+        private int numRunningActivities = 0;
+
+        public void onActivityCreated(Activity activity, Bundle bundle) {
+            numRunningActivities++;
+        }
+
+        public void onActivityDestroyed(Activity activity) {
+            numRunningActivities--;
+        }
+
+        public void onActivityPaused(Activity activity) {
+        }
+
+        public void onActivityResumed(Activity activity) {
+        }
+
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        }
+
+        public void onActivityStarted(Activity activity) {
+        }
+
+        public void onActivityStopped(Activity activity) {
         }
     }
 }

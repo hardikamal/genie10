@@ -36,15 +36,10 @@ import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends GenieActivity {
 
-    //    UIHelpers uiHelpers;
     long start = 0;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-
-    public SplashScreenActivity() {
-        utils = new Utils(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +90,21 @@ public class SplashScreenActivity extends GenieActivity {
             showAlertToUser();
         }
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logging.LogI("On Start");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+    }
+
+    @Override
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onDestroy();
     }
 
     private void showAlertToUser() {
@@ -218,20 +228,7 @@ public class SplashScreenActivity extends GenieActivity {
         genieApplication.addToRequestQueue(req);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        logging.LogI("On Start");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
-    }
 
-    @Override
-    protected void onDestroy() {
-        logging.LogI("On Destroy");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        super.onDestroy();
-    }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

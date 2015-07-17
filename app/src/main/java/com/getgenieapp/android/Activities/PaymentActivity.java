@@ -18,9 +18,21 @@ import com.github.mrengineer13.snackbar.SnackBar;
 public class PaymentActivity extends GenieBaseActivity {
 
     @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
         WebView webview = new WebView(this);
 
         setContentView(webview);
