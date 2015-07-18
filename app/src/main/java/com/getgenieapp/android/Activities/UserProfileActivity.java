@@ -81,7 +81,6 @@ public class UserProfileActivity extends GenieBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
@@ -127,12 +126,13 @@ public class UserProfileActivity extends GenieBaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_home:
-                Intent intent = new Intent(this, BaseActivity.class);
-                intent.putExtra("page", "categories");
-                startActivity(intent);
-                finish();
-                return true;
+//            case R.id.action_home:
+//                Intent intent = new Intent(this, BaseActivity.class);
+//                intent.putExtra("page", "finish");
+//                startActivity(intent);
+//                onBackPressed();
+//                finish();
+//                return true;
             case R.id.action_previous_orders:
                 Intent profileIntent = new Intent(this, OrderDetailsActivity.class);
                 profileIntent.putExtra("canclose", true);

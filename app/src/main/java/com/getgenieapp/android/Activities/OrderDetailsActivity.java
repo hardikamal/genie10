@@ -100,12 +100,12 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 if (canClose)
                     finish();
                 return true;
-            case R.id.action_home:
-                Intent intent = new Intent(this, BaseActivity.class);
-                intent.putExtra("page", "categories");
-                startActivity(intent);
-                finish();
-                return true;
+//            case R.id.action_home:
+//                Intent intent = new Intent(this, BaseActivity.class);
+//                intent.putExtra("page", "finish");
+//                startActivity(intent);
+//                finish();
+//                return true;
             case R.id.action_share:
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);

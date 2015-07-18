@@ -70,27 +70,35 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     public void onStart() {
         super.onStart();
-        mSocket.on("reset connection", reset_connection);
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.on("user message", sendUserMessage);
-        mSocket.on("message_received", onMessageReceived);
-        mSocket.on("typing", onTyping);
-        mSocket.on("server_error", onServerError);
-        mSocket.connect();
+        if (getIntent().getExtras() != null) {
+            if (!getIntent().getStringExtra("page").equals("finish")) {
+                mSocket.on("reset connection", reset_connection);
+                mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+                mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+                mSocket.on("user message", sendUserMessage);
+                mSocket.on("message_received", onMessageReceived);
+                mSocket.on("typing", onTyping);
+                mSocket.on("server_error", onServerError);
+                mSocket.connect();
+            }
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.disconnect();
-        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("message_received", onMessageReceived);
-        mSocket.off("user message", sendUserMessage);
-        mSocket.off("typing", onTyping);
-        mSocket.off("server_error", onServerError);
-        mSocket.off("reset connection", reset_connection);
+        if (getIntent().getExtras() != null) {
+            if (!getIntent().getStringExtra("page").equals("finish")) {
+                mSocket.disconnect();
+                mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+                mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+                mSocket.off("message_received", onMessageReceived);
+                mSocket.off("user message", sendUserMessage);
+                mSocket.off("typing", onTyping);
+                mSocket.off("server_error", onServerError);
+                mSocket.off("reset connection", reset_connection);
+            }
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -90,6 +91,47 @@ public class ChatFragment extends GenieFragment {
         send.setShadowColor(Color.parseColor(color));
         message.setTextColor(Color.parseColor(color));
 
+
+        message.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(DataFields.smallTimeOut);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                scroll();
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
+
+        message.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(DataFields.smallTimeOut);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                scroll();
+                            }
+                        });
+                    }
+                }).start();
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                return false;
+            }
+        });
 
         messages = dbDataSource.getAllMessages();
 
@@ -232,9 +274,8 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.messageLayout)
     public void onClickMessageBox() {
-        message.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(message, InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(message, InputMethodManager.RESULT_UNCHANGED_SHOWN);
         new Thread(new Runnable() {
             public void run() {
                 try {

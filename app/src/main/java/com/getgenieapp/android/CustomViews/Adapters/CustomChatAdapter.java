@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -78,7 +79,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         return position;
     }
 
-    static class ViewHolderMain extends RecyclerView.ViewHolder {
+    static class ViewHolderMain extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         @Optional
         @InjectView(R.id.text)
         TextView text;
@@ -124,10 +125,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
+        Context localContext;
 
         public ViewHolderMain(View itemView, Context context) {
             super(itemView);
             ButterKnife.inject(this, itemView);
+            this.localContext = context;
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+//            Toast.makeText(localContext, "Long Clicked", Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 

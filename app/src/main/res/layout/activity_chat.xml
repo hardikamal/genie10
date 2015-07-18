@@ -32,7 +32,7 @@
 
             <EditText
                 android:id="@+id/message"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_5sdp"
@@ -40,7 +40,7 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/typeamessage"
                 android:imeOptions="actionSend"
-                android:inputType="text"
+                android:inputType="text|textMultiLine|textCapSentences"
                 android:maxLines="7"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/colorPrimaryDark"
