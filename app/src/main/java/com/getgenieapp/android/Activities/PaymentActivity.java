@@ -42,6 +42,6 @@ public class PaymentActivity extends GenieBaseActivity {
             }
         });
 
-        webview.loadUrl("http://developer.android.com/");
+        webview.loadUrl("http://imojo.in/mrn77");
     }
 }

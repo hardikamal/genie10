@@ -81,6 +81,7 @@ public class ChatFragment extends GenieFragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
+            id = bundle.getInt("id", 0);
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
@@ -131,7 +132,7 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
-        messages = dbDataSource.getAllMessages();
+        messages = dbDataSource.getAllListBasedOnCategory(String.valueOf(id));
 
         String present = "";
         String now = "";
@@ -252,29 +253,13 @@ public class ChatFragment extends GenieFragment {
     }
 
     @Subscribe
-    public void onMessageReceived(final Chat chat) {
-        if (chat.getCid() == id) {
-            MessageValues messageValues = null;
-            if (chat.getCategory() == 1) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-            }
-            if (chat.getCategory() == 2) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-            }
-            if (chat.getCategory() == 3) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-            }
-            if (chat.getCategory() == 5) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-            }
-
-            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+    public void onMessageReceived(final Messages messageObject) {
+        if (messageObject.getCategory() == id) {
             messages.add(messageObject);
-            dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();
             scroll();
         } else {
-            showToast("New message Received", SnackBar.MED_SNACK, SnackBar.Style.INFO, rootView);
+            ((BaseActivity) getActivity()).showToast("New message Received", SnackBar.MED_SNACK, SnackBar.Style.INFO);
             // todo add notification
         }
     }

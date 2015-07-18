@@ -115,7 +115,7 @@ public class UpdateIntentService extends IntentService {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, DataFields.getServerUrl() + DataFields.UPDATEGCMURL, "", new Response.Listener<JSONObject>() {
+                JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, DataFields.getServerUrl() + DataFields.UPDATEGCMURL, json, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {

@@ -5,7 +5,8 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical">
-
+//DB4E4B
+    //
     <com.getgenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android"
         android:id="@+id/splash_image"
         android:layout_width="match_parent"

@@ -264,6 +264,10 @@ public class VerifyFragment extends GenieFragment {
         JSONObject json = new JSONObject();
         try {
             json.put("verification_code", Integer.parseInt(code));
+            char1.setText("");
+            char2.setText("");
+            char3.setText("");
+            char4.setText("");
             JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.VERIFYURL, json,
                     new Response.Listener<JSONObject>() {
                         @Override

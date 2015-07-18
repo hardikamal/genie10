@@ -47,14 +47,6 @@ public class GenieFragment extends Fragment {
         dbDataSource = new DBDataSource(getActivity());
     }
 
-    public void showToast(String message, Short duration, SnackBar.Style style, View rootView) {
-        new SnackBar.Builder(getActivity().getApplication(), rootView)
-                .withMessage(message)
-                .withStyle(style)
-                .withDuration(duration)
-                .show();
-    }
-
     public static void hideKeyboard(Activity activity) {
         if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

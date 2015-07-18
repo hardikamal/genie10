@@ -19,6 +19,8 @@ import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
+import com.getgenieapp.android.Objects.MessageValues;
+import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
@@ -69,29 +71,37 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mSocket.on("reset connection", reset_connection);
-        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.on("user message", sendUserMessage);
-        mSocket.on("incoming agent message", onMessageReceived);
-        mSocket.on("typing", onTyping);
-        mSocket.on("server_error", onServerError);
-        mSocket.connect();
+    public void onResume() {
+        super.onResume();
+        logging.LogV("Socket Checking");
+        if (!mSocket.connected()) {
+            logging.LogV("Socket Opened");
+            mSocket.on("reset connection", reset_connection);
+            mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+            mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+            mSocket.on("user message", sendUserMessage);
+            mSocket.on("incoming agent message", onMessageReceived);
+            mSocket.on("typing", onTyping);
+            mSocket.on("server_error", onServerError);
+            mSocket.connect();
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSocket.disconnect();
-        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("incoming agent message", onMessageReceived);
-        mSocket.off("user message", sendUserMessage);
-        mSocket.off("typing", onTyping);
-        mSocket.off("server_error", onServerError);
-        mSocket.off("reset connection", reset_connection);
+    protected void onPause() {
+        super.onPause();
+        logging.LogV("Socket Checking");
+        if (mSocket.connected()) {
+            logging.LogV("Socket Closed");
+            mSocket.disconnect();
+            mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+            mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+            mSocket.off("incoming agent message", onMessageReceived);
+            mSocket.off("user message", sendUserMessage);
+            mSocket.off("typing", onTyping);
+            mSocket.off("server_error", onServerError);
+            mSocket.off("reset connection", reset_connection);
+        }
     }
 
     @Override
@@ -163,6 +173,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
+        bundle.putInt("id", categories.getId());
         bundle.putString("color", categories.getBg_color());
         bundle.putLong("hide_time", categories.getHide_chats_time());
         bundle.putString("url", categories.getImage_url());
@@ -183,12 +194,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setSubtitleTextAppearance(this, R.style.subText);
 
         mToolbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
-//
-//        try {
-//            getSupportActionBar().setTitle(categories.getName());
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void setTyping() {
@@ -310,8 +315,24 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
+                    MessageValues messageValues = null;
+                    if (chat.getCategory() == 1) {
+                        messageValues = new MessageValues(chat.getCategory(), chat.getText());
+                    }
+                    if (chat.getCategory() == 2) {
+                        messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
+                    }
+                    if (chat.getCategory() == 3) {
+                        messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
+                    }
+                    if (chat.getCategory() == 5) {
+                        messageValues = new MessageValues(chat.getCategory(), chat.getText());
+                    }
 
-                    mBus.post(new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url));
+                    Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+                    dbDataSource.addNormal(messageObject);
+                    mBus.post(messageObject);
                 }
             });
         }

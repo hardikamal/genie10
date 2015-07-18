@@ -205,6 +205,7 @@ public class RegisterFragment extends GenieFragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         parentLoadingView.setLoading(false);
+                        System.out.println("Error "+ error.toString());
                         ((RegisterActivity) getActivity()).onError(new Register());
                     }
                 });
