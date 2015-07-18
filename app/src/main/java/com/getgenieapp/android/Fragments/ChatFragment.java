@@ -128,7 +128,6 @@ public class ChatFragment extends GenieFragment {
                         });
                     }
                 }).start();
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 return false;
             }
         });
@@ -211,6 +210,13 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
+    @Override
+    public void onDetach()
+    {
+        hideKeyboard(getActivity());
+        super.onDetach();
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data.getExtras() != null) {
             MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
@@ -225,7 +231,11 @@ public class ChatFragment extends GenieFragment {
     }
 
     @OnClick(R.id.send)
-    public void onClickSend() {
+    public void onClickSend(View buttonSend) {
+
+        final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
+        buttonSend.startAnimation(animTranslate);
+
         if (imageResource) {
             hideKeyboard(getActivity());
             startActivityForResult(new Intent(getActivity(), LocationActivity.class), LOCATIONRESULT);
@@ -274,8 +284,6 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.messageLayout)
     public void onClickMessageBox() {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(message, InputMethodManager.RESULT_UNCHANGED_SHOWN);
         new Thread(new Runnable() {
             public void run() {
                 try {

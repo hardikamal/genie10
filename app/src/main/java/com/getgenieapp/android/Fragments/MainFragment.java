@@ -1,21 +1,18 @@
 package com.getgenieapp.android.Fragments;
 
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.CustomViews.Adapters.CustomAdapter;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
@@ -56,12 +53,20 @@ public class MainFragment extends GenieFragment {
 
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
         ButterKnife.inject(this, rootView);
+
         logging.LogV("Main Activity");
         loadingView.setText("Loading Categories...");
         loadingView.setLoading(true);
         loadCategories();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        hideKeyboard(getActivity());
     }
 
     private void refreshData() {
@@ -151,9 +156,6 @@ public class MainFragment extends GenieFragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         customAdapter = new CustomAdapter(categoriesList, getActivity());
         recyclerView.setAdapter(customAdapter);
-//        Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_200);
-//        recyclerView.setAnimation(anim);
-//        anim.start();
     }
 
     public interface onSelect {

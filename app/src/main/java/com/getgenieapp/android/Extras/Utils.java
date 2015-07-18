@@ -138,12 +138,6 @@ public class Utils {
         return tManager.getDeviceId();
     }
 
-//    public String getPhoneNumber()
-//    {
-//        TelephonyManager tManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-//        return tManager.getLine1Number();
-//    }
-
     public String getMacId() {
         WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();

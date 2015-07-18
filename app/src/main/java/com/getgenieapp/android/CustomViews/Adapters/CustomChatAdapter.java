@@ -245,17 +245,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.mapView.setVisibility(View.VISIBLE);
 //                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
                 viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
-                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Uri gmmIntentUri = Uri.parse("geo:" + messageValues.getLat() + "," + messageValues.getLng() + "?z=15");
-                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                        mapIntent.setPackage("com.google.android.apps.maps");
-                        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                            context.startActivity(mapIntent);
-                        }
-                    }
-                });
+//                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Uri gmmIntentUri = Uri.parse("geo:" + messageValues.getLat() + "," + messageValues.getLng() + "?z=15");
+//                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//                        mapIntent.setPackage("com.google.android.apps.maps");
+//                        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+//                            context.startActivity(mapIntent);
+//                        }
+//                    }
+//                });
 
 //        if (messages.getDirection() == 1) {
                 if (position % 2 == 0) {

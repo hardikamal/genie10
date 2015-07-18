@@ -70,35 +70,27 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     public void onStart() {
         super.onStart();
-        if (getIntent().getExtras() != null) {
-            if (!getIntent().getStringExtra("page").equals("finish")) {
-                mSocket.on("reset connection", reset_connection);
-                mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
-                mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-                mSocket.on("user message", sendUserMessage);
-                mSocket.on("message_received", onMessageReceived);
-                mSocket.on("typing", onTyping);
-                mSocket.on("server_error", onServerError);
-                mSocket.connect();
-            }
-        }
+        mSocket.on("reset connection", reset_connection);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("user message", sendUserMessage);
+        mSocket.on("message_received", onMessageReceived);
+        mSocket.on("typing", onTyping);
+        mSocket.on("server_error", onServerError);
+        mSocket.connect();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (getIntent().getExtras() != null) {
-            if (!getIntent().getStringExtra("page").equals("finish")) {
-                mSocket.disconnect();
-                mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-                mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-                mSocket.off("message_received", onMessageReceived);
-                mSocket.off("user message", sendUserMessage);
-                mSocket.off("typing", onTyping);
-                mSocket.off("server_error", onServerError);
-                mSocket.off("reset connection", reset_connection);
-            }
-        }
+        mSocket.disconnect();
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("message_received", onMessageReceived);
+        mSocket.off("user message", sendUserMessage);
+        mSocket.off("typing", onTyping);
+        mSocket.off("server_error", onServerError);
+        mSocket.off("reset connection", reset_connection);
     }
 
     @Override
@@ -162,7 +154,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setLogo(R.drawable.genie_logo);
         mToolbar.setTitle("");
         startFragmentFromLeft(R.id.body, new MainFragment());
-        hideKeyboard(this);
     }
 
     @Override
@@ -271,7 +262,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     public boolean dispatchTouchEvent(MotionEvent ev) {
         View v = getCurrentFocus();
         CircularButton btn = (CircularButton) findViewById(R.id.send);
-
         if (v != null &&
                 (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
                 v instanceof EditText &&
