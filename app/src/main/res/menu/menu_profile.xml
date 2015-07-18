@@ -7,6 +7,11 @@
         android:title="@string/share"
         yourapp:showAsAction="ifRoom|collapseActionView" />
     <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/home"
+        yourapp:showAsAction="ifRoom|collapseActionView" />
+    <item
         android:id="@+id/action_previous_orders"
         android:icon="@drawable/ic_list_white_24dp"
         android:title="@string/profile"

@@ -115,7 +115,7 @@ public class ChatFragment extends GenieFragment {
         if (hide_time != 0) {
             messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
         }
-        
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());

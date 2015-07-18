@@ -76,6 +76,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     final int PIC_CROP = 2;
     private Uri picUri;
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
+    boolean canClose = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,9 @@ public class UserProfileActivity extends GenieBaseActivity {
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-
+        if (getIntent().getExtras() != null) {
+            canClose = getIntent().getBooleanExtra("canclose", false);
+        }
         update.setTextColor(getResources().getColor(R.color.white));
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
@@ -124,8 +127,18 @@ public class UserProfileActivity extends GenieBaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_home:
+                Intent intent = new Intent(this, BaseActivity.class);
+                intent.putExtra("page", "categories");
+                startActivity(intent);
+                finish();
+                return true;
             case R.id.action_previous_orders:
-                startActivity(new Intent(this, OrderDetailsActivity.class));
+                Intent profileIntent = new Intent(this, OrderDetailsActivity.class);
+                profileIntent.putExtra("canclose", true);
+                startActivity(profileIntent);
+                if (canClose)
+                    finish();
                 return true;
             case R.id.action_share:
                 String shareBody = getString(R.string.bodytext);

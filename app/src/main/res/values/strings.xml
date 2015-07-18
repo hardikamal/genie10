@@ -309,4 +309,6 @@
     <string name="devicedoesnotsupportmessage">Whoops - your device doesn\'t support the crop action!</string>
     <string name="notabletoacceslocation">Not able to access Location</string>
     <string name="ohno">"Oh no! "</string>
+    <string name="searchlocation">Search Location</string>
+    <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
 </resources>

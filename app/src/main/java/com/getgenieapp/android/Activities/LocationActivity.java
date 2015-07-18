@@ -5,39 +5,55 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getgenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
+import com.getgenieapp.android.Place.PlaceAutocompleteAdapter;
 import com.getgenieapp.android.R;
 import com.github.mrengineer13.snackbar.SnackBar;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -58,7 +74,7 @@ import butterknife.OnClick;
 // On click on fav place will share the location
 // Adapter is CustomPlaceAdapter
 
-public class LocationActivity extends GenieBaseActivity {
+public class LocationActivity extends GenieBaseActivity implements GoogleApiClient.OnConnectionFailedListener {
     @InjectView(R.id.refreshLocation)
     CircularButton refreshLocation;
     @InjectView(R.id.location)
@@ -71,11 +87,20 @@ public class LocationActivity extends GenieBaseActivity {
     CircularButton pickPlaces;
     @InjectView(R.id.pickplacebutton)
     Button pickplacebutton;
+    @InjectView(R.id.autocomplete_places)
+    AutoCompleteTextView mAutocompleteView;
 
     private int LOCATIONRESULT = 1;
     int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
     AlertDialog.Builder dialog;
+
+    protected GoogleApiClient mGoogleApiClient;
+
+    private PlaceAutocompleteAdapter mAdapter;
+
+    private static final LatLngBounds BOUNDS = new LatLngBounds(
+            new LatLng(4.428586, 105.769779), new LatLng(37.059575, 65.230231));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +135,21 @@ public class LocationActivity extends GenieBaseActivity {
                 });
             }
         }).start();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        // Register a listener that receives callbacks when a suggestion has been selected
+        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
+                mGoogleApiClient, BOUNDS, null);
+        mAutocompleteView.setAdapter(mAdapter);
+
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -188,6 +228,19 @@ public class LocationActivity extends GenieBaseActivity {
             dialog.show();
         }
     }
+
+//    @OnClick(R.id.save)
+//    public void onClickSave() {
+//        final String placeId = String.valueOf(mAutocompleteView.getText());
+//
+//            /*
+//             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+//              details about the place.
+//              */
+//        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+//                .getPlaceById(mGoogleApiClient, placeId);
+//        placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+//    }
 
     @OnClick(R.id.refreshLocation)
     public void onClickRefresh() {
@@ -373,4 +426,72 @@ public class LocationActivity extends GenieBaseActivity {
             imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         }
     }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Toast.makeText(this,
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
+                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
+        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
+                websiteUri));
+
+    }
+
+    /**
+     * Callback for results from a Places Geo Data API query that shows the first place result in
+     * the details view on screen.
+     */
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                places.release();
+                return;
+            }
+            // Get the Place object from the buffer.
+            final Place place = places.get(0);
+
+            MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+            showSaveLaterBox(messageValues);
+
+            places.release();
+        }
+    };
+
+    /**
+     * Listener that handles selections from suggestions from the AutoCompleteTextView that
+     * displays Place suggestions.
+     * Gets the place id of the selected item and issues a request to the Places Geo Data API
+     * to retrieve more details about the place.
+     *
+     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
+     * String...)
+     */
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each Place suggestion in a PlaceAutocomplete object from which we
+             read the place ID.
+              */
+            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+            final String placeId = String.valueOf(item.placeId);
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+              details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+        }
+    };
 }

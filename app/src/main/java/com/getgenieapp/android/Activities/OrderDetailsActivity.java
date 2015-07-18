@@ -34,6 +34,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     LoadingView loadingView;
     @InjectView(R.id.orderList)
     RecyclerView orderList;
+    boolean canClose = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,9 @@ public class OrderDetailsActivity extends GenieBaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         getUserOrders();
+        if (getIntent().getExtras() != null) {
+            canClose = getIntent().getBooleanExtra("canclose", false);
+        }
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
@@ -75,7 +79,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_base, menu);
+        getMenuInflater().inflate(R.menu.menu_orders, menu);
         return true;
     }
 
@@ -90,7 +94,17 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 onBackPressed();
                 return true;
             case R.id.action_profile:
-                startActivity(new Intent(this, UserProfileActivity.class));
+                Intent profileIntent = new Intent(this, UserProfileActivity.class);
+                profileIntent.putExtra("canclose", true);
+                startActivity(profileIntent);
+                if (canClose)
+                    finish();
+                return true;
+            case R.id.action_home:
+                Intent intent = new Intent(this, BaseActivity.class);
+                intent.putExtra("page", "categories");
+                startActivity(intent);
+                finish();
                 return true;
             case R.id.action_share:
                 String shareBody = getString(R.string.bodytext);
