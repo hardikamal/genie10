@@ -152,8 +152,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         } else if (currentMessage.getMessageType() == 5) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
         } else {
-//        if (messagesList.get(viewType).getDirection() == 1)
-            if (viewType % 2 == 0)
+            if (messagesList.get(viewType).getDirection() == 1)
+//            if (viewType % 2 == 0)
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
             else
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
@@ -257,8 +257,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 //                    }
 //                });
 
-//        if (messages.getDirection() == 1) {
-                if (position % 2 == 0) {
+                if (messages.getDirection() == 1) {
+//                if (position % 2 == 0) {
                     GradientDrawable gd = new GradientDrawable(
                             GradientDrawable.Orientation.TOP_BOTTOM,
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -292,8 +292,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     }
                 });
 
-//        if (messages.getDirection() == 1) {
-                if (position % 2 == 0) {
+                if (messages.getDirection() == 1) {
+//                if (position % 2 == 0) {
                     GradientDrawable gd = new GradientDrawable(
                             GradientDrawable.Orientation.TOP_BOTTOM,
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -316,8 +316,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             }
 
-//        if (messages.getDirection() == 1) {
-            if (position % 2 == 0) {
+            if (messages.getDirection() == 1) {
+//            if (position % 2 == 0) {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,

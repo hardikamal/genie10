@@ -24,8 +24,8 @@ public class DataFields {
     public static final String REGISTERURL = "/users";
     private static final String CHAT_SERVER_URL = "http://chat.socket.io";
     private static final String StagingServer = "http://staging0.getgenieapp.com";
-    private static final String localServer = "http://192.168.1.4:3000";
-    private static final String localSocket = "http://192.168.1.4:3004";
+    private static final String localServer = "http://192.168.1.27:3000";
+    private static final String localSocket = "http://192.168.1.27:3004";
     private static final String API = "/api";
     private static final String Version = "/v1";
     public static final String VERIFYURL = "/verifyuser";
@@ -38,12 +38,16 @@ public class DataFields {
     public static final int CAMERA_CAPTURE = 1;
     public static final int PICK_IMAGE = 1;
     public static final int PIC_CROP = 2;
+    public static final int TEXT = 1;
+    public static final int LOCATION = 2;
+    public static final int IMAGE = 3;
+    public static final int PAYNOW = 5;
 
     public static String getServerUrl() {
-        return StagingServer + API + Version;
+        return localServer + API + Version;
     }
 
     public static String getChatUrl() {
-        return CHAT_SERVER_URL;
+        return localSocket;
     }
 }

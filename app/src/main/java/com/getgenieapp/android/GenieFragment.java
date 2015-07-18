@@ -47,30 +47,12 @@ public class GenieFragment extends Fragment {
         dbDataSource = new DBDataSource(getActivity());
     }
 
-    public void setupUI(View view, final Activity activity) {
-
-        //Set up touch listener for non-text box views to hide keyboard.
-        if (!(view instanceof EditText)) {
-
-            view.setOnTouchListener(new View.OnTouchListener() {
-
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideKeyboard(activity);
-                    return false;
-                }
-
-            });
-        }
-
-        if (view instanceof ViewGroup) {
-
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-
-                View innerView = ((ViewGroup) view).getChildAt(i);
-
-                setupUI(innerView, activity);
-            }
-        }
+    public void showToast(String message, Short duration, SnackBar.Style style, View rootView) {
+        new SnackBar.Builder(getActivity().getApplication(), rootView)
+                .withMessage(message)
+                .withStyle(style)
+                .withDuration(duration)
+                .show();
     }
 
     public static void hideKeyboard(Activity activity) {

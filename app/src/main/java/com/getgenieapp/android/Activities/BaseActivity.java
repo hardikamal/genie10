@@ -10,21 +10,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
+import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @InjectView(R.id.screen)
     LinearLayout screen;
     private Socket mSocket;
+    private Categories categorie_selected = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.on("user message", sendUserMessage);
-        mSocket.on("message_received", onMessageReceived);
+        mSocket.on("incoming agent message", onMessageReceived);
         mSocket.on("typing", onTyping);
         mSocket.on("server_error", onServerError);
         mSocket.connect();
@@ -86,7 +87,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mSocket.disconnect();
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("message_received", onMessageReceived);
+        mSocket.off("incoming agent message", onMessageReceived);
         mSocket.off("user message", sendUserMessage);
         mSocket.off("typing", onTyping);
         mSocket.off("server_error", onServerError);
@@ -158,7 +159,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public void onClick(Categories categories) {
-
+        this.categorie_selected = categories;
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
@@ -182,11 +183,37 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setSubtitleTextAppearance(this, R.style.subText);
 
         mToolbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
+//
+//        try {
+//            getSupportActionBar().setTitle(categories.getName());
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//        }
+    }
 
-        try {
-            getSupportActionBar().setTitle(categories.getName());
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+    public void setTyping() {
+        if (categorie_selected != null) {
+            FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+            List<Fragment> fragments = fragmentManager.getFragments();
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                    setSupportActionBar(mToolbar);
+
+                    ActionBar actionBar = getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setHomeButtonEnabled(true);
+                        actionBar.setDisplayHomeAsUpEnabled(true);
+                    }
+
+                    mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+
+                    mToolbar.setTitle(categorie_selected.getName());
+                    mToolbar.setSubtitleTextAppearance(this, R.style.subText);
+
+                    mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+                    mToolbar.setSubtitle(getString(R.string.agentistyping));
+                }
+            }
         }
     }
 
@@ -217,6 +244,74 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 @Override
                 public void run() {
                     System.out.println(args[0].toString());
+                    int cid = 0;
+                    int aid = 0;
+                    int category = 0;
+                    String text = "";
+                    int status = 0;
+                    int sender_id = 0;
+                    long created_at = 0;
+                    long updated_at = 0;
+                    String id = "";
+                    double lng = 0;
+                    double lat = 0;
+                    String url = "";
+                    try {
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (jsonObject.has("cid")) {
+                            cid = jsonObject.getInt("cid");
+                        }
+                        if (jsonObject.has("_id")) {
+                            id = jsonObject.getString("_id");
+                        }
+                        if (jsonObject.has("chat")) {
+                            JSONObject chat = jsonObject.getJSONObject("chat");
+                            if (chat.has("aid")) {
+                                aid = chat.getInt("aid");
+                            }
+                            if (chat.has("message")) {
+                                JSONObject message = chat.getJSONObject("message");
+                                if (message.has("category")) {
+                                    category = message.getInt("category");
+                                }
+                                if (message.has("status")) {
+                                    status = message.getInt("status");
+                                }
+                                if (message.has("sender_id")) {
+                                    sender_id = message.getInt("sender_id");
+                                }
+                                if (message.has("created_at")) {
+                                    created_at = message.getLong("created_at");
+                                }
+                                if (message.has("updated_at")) {
+                                    updated_at = message.getLong("updated_at");
+                                }
+                                if (message.has("category_value")) {
+                                    JSONObject category_value = message.getJSONObject("category_value");
+                                    if (category == 1) {
+                                        if (category_value.has("text"))
+                                            text = category_value.getString("text");
+                                    } else if (category == 2) {
+                                        if (category_value.has("lng"))
+                                            lng = category_value.getDouble("lng");
+                                        if (category_value.has("lat"))
+                                            lat = category_value.getDouble("lat");
+                                        if (category_value.has("text"))
+                                            text = category_value.getString("text");
+                                    } else if (category == 3) {
+                                        if (category_value.has("text"))
+                                            text = category_value.getString("text");
+                                        if (category_value.has("url"))
+                                            url = category_value.getString("url");
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mBus.post(new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url));
                 }
             });
         }
@@ -258,28 +353,33 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         }
     };
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        View v = getCurrentFocus();
-        CircularButton btn = (CircularButton) findViewById(R.id.send);
-        if (v != null &&
-                (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
-                v instanceof EditText &&
-                !v.getClass().getName().startsWith("android.webkit.")) {
-            int scrcoords[] = new int[2];
-            v.getLocationOnScreen(scrcoords);
-            float x = ev.getRawX() + v.getLeft() - scrcoords[0];
-            float y = ev.getRawY() + v.getTop() - scrcoords[1];
-            if (btn != null) {
-                int[] pos = new int[2];
-                btn.getLocationOnScreen(pos);
-                if (ev.getY() <= (pos[1] + btn.getHeight()) && ev.getX() > pos[0]) //location button event
-                    return super.dispatchTouchEvent(ev);
-            }
-            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
-                hideKeyboard(this);
-        }
+    float x1 = 0;
+    float x2 = 0;
+    int MIN_DISTANCE = 10;
 
-        return super.dispatchTouchEvent(ev);
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        View v = getCurrentFocus();
+//        CircularButton btn = (CircularButton) findViewById(R.id.send);
+//
+//        if (v != null &&
+//                (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
+//                v instanceof EditText &&
+//                !v.getClass().getName().startsWith("android.webkit.")) {
+//            int scrcoords[] = new int[2];
+//            v.getLocationOnScreen(scrcoords);
+//            float x = ev.getRawX() + v.getLeft() - scrcoords[0];
+//            float y = ev.getRawY() + v.getTop() - scrcoords[1];
+//            if (btn != null) {
+//                int[] pos = new int[2];
+//                btn.getLocationOnScreen(pos);
+//                if (ev.getY() <= (pos[1] + btn.getHeight()) && ev.getX() > pos[0]) //location button event
+//                    return super.dispatchTouchEvent(ev);
+//            }
+//            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
+//                hideKeyboard(this);
+//        }
+//
+//        return super.dispatchTouchEvent(ev);
+//    }
 }

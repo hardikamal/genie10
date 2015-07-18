@@ -1,7 +1,6 @@
 package com.getgenieapp.android.Fragments;
 
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,11 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +26,7 @@ import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieFragment;
+import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
@@ -43,6 +41,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.halfbit.tinybus.Subscribe;
 
 /**
  * Created by Raviteja on 7/15/2015.
@@ -211,8 +210,7 @@ public class ChatFragment extends GenieFragment {
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         hideKeyboard(getActivity());
         super.onDetach();
     }
@@ -225,8 +223,59 @@ public class ChatFragment extends GenieFragment {
             dbDataSource.addNormal(messageObject);
             chatAdapter.notifyDataSetChanged();
             scroll();
+            JSONObject valueJSON = new JSONObject();
+            try {
+                valueJSON.put("text", messageValues.getText());
+                valueJSON.put("lng", messageValues.getLng());
+                valueJSON.put("lat", messageValues.getLat());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emitMessage(DataFields.LOCATION, valueJSON);
         } else {
             ((BaseActivity) getActivity()).showToast(getString(R.string.errorinaccessinglocation), SnackBar.LONG_SNACK, SnackBar.Style.DEFAULT);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        logging.LogV("Showed", "on Start");
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        logging.LogV("Showed", "on Stop");
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onMessageReceived(final Chat chat) {
+        if (chat.getCid() == id) {
+            MessageValues messageValues = null;
+            if (chat.getCategory() == 1) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+            }
+            if (chat.getCategory() == 2) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
+            }
+            if (chat.getCategory() == 3) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
+            }
+            if (chat.getCategory() == 5) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+            }
+
+            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+            messages.add(messageObject);
+            dbDataSource.addNormal(messageObject);
+            chatAdapter.notifyDataSetChanged();
+            scroll();
+        } else {
+            showToast("New message Received", SnackBar.MED_SNACK, SnackBar.Style.INFO, rootView);
+            // todo add notification
         }
     }
 
@@ -265,20 +314,29 @@ public class ChatFragment extends GenieFragment {
                 chatAdapter.notifyDataSetChanged();
                 scroll();
             }
-            JSONObject jsonObject = new JSONObject();
+            JSONObject valueJSON = new JSONObject();
             try {
-                JSONObject valueJSON = new JSONObject();
                 valueJSON.put("text", typedMessage);
-                JSONObject subJson = new JSONObject();
-                subJson.put("category", 1);
-                subJson.put("category_value", valueJSON);
-                subJson.put("created_at", System.currentTimeMillis());
-                jsonObject.put("msg", subJson);
-                jsonObject.put("cid", 1);
-                ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            emitMessage(DataFields.TEXT, valueJSON);
+        }
+    }
+
+    private void emitMessage(int messageCategory, JSONObject valueJSON) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONObject subJson = new JSONObject();
+            subJson.put("category", messageCategory);
+            subJson.put("category_value", valueJSON);
+            subJson.put("created_at", System.currentTimeMillis());
+
+            jsonObject.put("msg", subJson);
+            jsonObject.put("cid", id);
+            ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
