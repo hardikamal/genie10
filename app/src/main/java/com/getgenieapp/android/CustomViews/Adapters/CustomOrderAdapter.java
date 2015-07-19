@@ -1,6 +1,7 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -17,10 +18,12 @@ import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.Order;
 import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by Manny on 6/16/2015.
@@ -84,17 +87,13 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
         viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("Just Clicked Repeat Order", SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                showToast("Just Clicked Repeat Order", Style.INFO);
             }
         });
     }
 
-    public void showToast(String message, Short duration, SnackBar.Style style) {
-        new SnackBar.Builder((Activity) context)
-                .withMessage(message)
-                .withStyle(style)
-                .withDuration(duration)
-                .show();
+    public void showToast(String message, Style style) {
+        Crouton.makeText((Activity) context, message, style).show();
     }
 
     @Override

@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp">
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
         <fragment
             android:id="@+id/map"
@@ -16,14 +17,58 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <LinearLayout
+            android:id="@+id/searchlayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.getgenieapp.android.CustomViews.Button.CircularButton
+                android:id="@+id/search"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:src="@drawable/ic_search_white_24dp"
+                app:buttonColor="@color/colorPrimary"
+                app:shadowColor="@color/colorPrimary" />
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete_places"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:hint="@string/searchlocation"
+                android:textColor="@android:color/primary_text_light"
+                android:visibility="gone" />
+
+            <com.getgenieapp.android.CustomViews.Button.CircularButton
+                android:id="@+id/save"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:src="@drawable/ic_add_white_24dp"
+                android:visibility="gone"
+                app:buttonColor="@color/colorPrimary"
+                app:shadowColor="@color/colorPrimary" />
+        </LinearLayout>
+
         <com.getgenieapp.android.CustomViews.Button.CircularButton
             android:id="@+id/refreshLocation"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="20dp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
             android:src="@drawable/ic_my_location_white_24dp"
             app:buttonColor="@color/colorPrimaryDark"
             app:shadowColor="@color/colorPrimaryDark" />
@@ -37,7 +82,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <LinearLayout
@@ -68,52 +113,6 @@
                 android:text="@string/sendcurrentlocation"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/_15sdp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorPrimaryDark" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_45sdp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
-                android:id="@+id/search"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:src="@drawable/ic_search_white_24dp"
-                app:buttonColor="@color/colorPrimary"
-                app:shadowColor="@color/colorPrimary" />
-
-            <AutoCompleteTextView
-                android:id="@+id/autocomplete_places"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_weight="1"
-                android:hint="@string/searchlocation"
-                android:textColor="@android:color/primary_text_light" />
-
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
-                android:id="@+id/save"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:src="@drawable/ic_add_white_24dp"
-                android:visibility="gone"
-                app:buttonColor="@color/colorPrimary"
-                app:shadowColor="@color/colorPrimary" />
         </LinearLayout>
 
         <View

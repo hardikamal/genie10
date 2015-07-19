@@ -44,7 +44,7 @@ public class DataFields {
     public static final int PAYNOW = 5;
 
     public static String getServerUrl() {
-        return localServer + API + Version;
+        return StagingServer + API + Version;
     }
 
     public static String getChatUrl() {

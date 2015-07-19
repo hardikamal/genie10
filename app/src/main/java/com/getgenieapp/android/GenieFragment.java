@@ -15,7 +15,6 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.gson.Gson;
 
 import de.halfbit.tinybus.TinyBus;

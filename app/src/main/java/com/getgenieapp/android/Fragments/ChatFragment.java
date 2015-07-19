@@ -30,7 +30,6 @@ import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +41,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.halfbit.tinybus.Subscribe;
+import de.keyboardsurfer.android.widget.crouton.Configuration;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by Raviteja on 7/15/2015.
@@ -64,6 +66,8 @@ public class ChatFragment extends GenieFragment {
     private int LOCATIONRESULT = 1;
     String url;
     View rootView;
+    ViewGroup viewGroup;
+    Style CUSTOMSTYLE;
 
     /**
      * @param savedInstanceState
@@ -75,7 +79,7 @@ public class ChatFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
-
+        this.viewGroup = container;
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -86,7 +90,6 @@ public class ChatFragment extends GenieFragment {
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
-
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
         message.setTextColor(Color.parseColor(color));
@@ -132,40 +135,7 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
-        messages = dbDataSource.getAllListBasedOnCategory(String.valueOf(id));
-
-        String present = "";
-        String now = "";
-
-        ArrayList<Integer> messageTypes = new ArrayList<>();
-        messageTypes.add(1);
-        messageTypes.add(2);
-        messageTypes.add(3);
-
-        for (int i = messages.size() - 1; i >= 0; i--) {
-            now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
-            if (!present.equals("") && !present.equals(now)) {
-                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
-            }
-            if (i == 0) {
-                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
-            }
-            present = now;
-        }
-
-        if (hide_time != 0) {
-            messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
-        }
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
-        recyclerView.setAdapter(chatAdapter);
-        scroll();
-        Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_100);
-        recyclerView.setAnimation(anim);
-        anim.start();
-
+        displayMessgaes();
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -210,6 +180,42 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
+    private void displayMessgaes() {
+        messages = dbDataSource.getAllListBasedOnCategory(String.valueOf(id));
+
+        String present = "";
+        String now = "";
+
+        ArrayList<Integer> messageTypes = new ArrayList<>();
+        messageTypes.add(1);
+        messageTypes.add(2);
+        messageTypes.add(3);
+
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
+            if (!present.equals("") && !present.equals(now)) {
+                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+            }
+            if (i == 0) {
+                messages.add(i, new Messages("0", 1, 1, 9, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+            }
+            present = now;
+        }
+
+        if (hide_time != 0) {
+            messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
+        }
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
+        recyclerView.setAdapter(chatAdapter);
+        scroll();
+        Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_100);
+        recyclerView.setAnimation(anim);
+        anim.start();
+    }
+
     @Override
     public void onDetach() {
         hideKeyboard(getActivity());
@@ -234,7 +240,7 @@ public class ChatFragment extends GenieFragment {
             }
             emitMessage(DataFields.LOCATION, valueJSON);
         } else {
-            ((BaseActivity) getActivity()).showToast(getString(R.string.errorinaccessinglocation), SnackBar.LONG_SNACK, SnackBar.Style.DEFAULT);
+            Crouton.makeText(getActivity(), getString(R.string.errorinaccessinglocation), Style.ALERT, viewGroup).show();
         }
     }
 
@@ -243,6 +249,9 @@ public class ChatFragment extends GenieFragment {
         super.onStart();
         logging.LogV("Showed", "on Start");
         mBus.register(this);
+        if (messages.size() < dbDataSource.getAllListBasedOnCategory(String.valueOf(id)).size()) {
+            displayMessgaes();
+        }
     }
 
     @Override
@@ -259,7 +268,7 @@ public class ChatFragment extends GenieFragment {
             chatAdapter.notifyDataSetChanged();
             scroll();
         } else {
-            ((BaseActivity) getActivity()).showToast("New message Received", SnackBar.MED_SNACK, SnackBar.Style.INFO);
+            Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceived), Style.CONFIRM, viewGroup).show();
             // todo add notification
         }
     }

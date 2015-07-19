@@ -16,8 +16,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,7 +40,6 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Place.PlaceAutocompleteAdapter;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -64,6 +65,8 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 // Location Activity is used by user to share location to server and save fav locations for future usage.
 // Pick places API is used to pick places (this PAY per use api is developed by google). Pick places API gives option to share current location, But i did my own implementation to
@@ -89,6 +92,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     Button pickplacebutton;
     @InjectView(R.id.autocomplete_places)
     AutoCompleteTextView mAutocompleteView;
+    @InjectView(R.id.save)
+    CircularButton save;
 
     private int LOCATIONRESULT = 1;
     int PLACE_PICKER_REQUEST = 1;
@@ -140,6 +145,26 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 .enableAutoManage(this, 0 /* clientId */, this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
+
+        mAutocompleteView.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                logging.LogV("Char 1", "on Text Changed");
+                if (mAutocompleteView.getText().toString().trim().length() > 0) {
+                    save.setVisibility(View.VISIBLE);
+                } else {
+                    save.setVisibility(View.GONE);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+
+        });
 
         // Register a listener that receives callbacks when a suggestion has been selected
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
@@ -280,6 +305,19 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         locationButton.performClick();
     }
 
+    @OnClick(R.id.save)
+    public void onClickSave() {
+        if (mAutocompleteView.getText().toString().trim().length() > 0) {
+            showSaveLaterBoxNoAlert(new MessageValues(2, "Location : "+ mAutocompleteView.getText().toString(), 0.00, 0.00));
+        }
+    }
+
+    @OnClick(R.id.search)
+    public void onClickSearch() {
+        mAutocompleteView.setVisibility(View.VISIBLE);
+    }
+
+
     @OnClick(R.id.locationButton)
     public void onClickLocationButton() {
         MessageValues messageValues = getLocation();
@@ -287,33 +325,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     }
 
     private void setResultBackToActivity(MessageValues messageValues) {
-        if (messageValues.getLat() != 0.00 || messageValues.getLng() != 0.00) {
-            Intent intent = new Intent();
-            intent.putExtra("lat", messageValues.getLat());
-            intent.putExtra("lng", messageValues.getLng());
-            intent.putExtra("address", messageValues.getText());
-            setResult(LOCATIONRESULT, intent);
-            finish();
-        } else {
-            dialog = new AlertDialog.Builder(this);
-            dialog.setCancelable(true);
-            dialog.setMessage(getString(R.string.notabletogetyourlocation));
-            dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            });
-            dialog.setNegativeButton(getString(R.string.goback), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    paramDialogInterface.cancel();
-                    onBackPressed();
-                }
-            });
-            dialog.show();
-        }
+        Intent intent = new Intent();
+        intent.putExtra("lat", messageValues.getLat());
+        intent.putExtra("lng", messageValues.getLng());
+        intent.putExtra("address", messageValues.getText());
+        setResult(LOCATIONRESULT, intent);
+        finish();
     }
 
     private void showSaveLaterBox(final MessageValues messageValues) {
@@ -323,12 +340,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             final EditText saveas = (EditText) promptsView.findViewById(R.id.saveas);
 
             ((TextView) promptsView.findViewById(R.id.address)).setText("Address : " + messageValues.getText());
-            ((TextView) promptsView.findViewById(R.id.lat)).setText("Latitude : " + String.valueOf(messageValues.getLat()));
-            ((TextView) promptsView.findViewById(R.id.lng)).setText("Longitude : " + String.valueOf(messageValues.getLng()));
 
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setView(promptsView)
-                    .setTitle("Save As")
+                    .setTitle("Save as Favorite Place")
                     .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
@@ -337,12 +352,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                                         , messageValues.getLat(), saveas.getText().toString().trim()));
                                 setResultBackToActivity(messageValues);
                             } else {
-                                showToast(getString(R.string.gaveanametoplace), SnackBar.LONG_SNACK, SnackBar.Style.INFO);
+                                Crouton.makeText(LocationActivity.this, getString(R.string.gaveanametoplace), Style.ALERT).show();
                                 showSaveLaterBox(messageValues);
                             }
                         }
                     })
-                    .setPositiveButton("Skip", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             setResultBackToActivity(messageValues);
                         }
@@ -368,6 +383,37 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             });
             dialog.show();
         }
+    }
+
+    private void showSaveLaterBoxNoAlert(final MessageValues messageValues) {
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View promptsView = inflater.inflate(R.layout.saveaddresslayout, null);
+        final EditText saveas = (EditText) promptsView.findViewById(R.id.saveas);
+
+        ((TextView) promptsView.findViewById(R.id.address)).setText("Address : " + messageValues.getText());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setView(promptsView)
+                .setTitle("Save as Favorite Place")
+                .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
+                            dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
+                                    , messageValues.getLat(), saveas.getText().toString().trim()));
+                            setResultBackToActivity(messageValues);
+                        } else {
+                            Crouton.makeText(LocationActivity.this, getString(R.string.gaveanametoplace), Style.ALERT).show();
+                            showSaveLaterBox(messageValues);
+                        }
+                    }
+                })
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        setResultBackToActivity(messageValues);
+                    }
+                });
+        alert.show();
     }
 
     private MessageValues getLocation() {
@@ -397,7 +443,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 e.printStackTrace();
             }
         } else {
-            showToast(getString(R.string.notabletoacceslocation), SnackBar.LONG_SNACK, SnackBar.Style.ALERT);
+            Crouton.makeText(LocationActivity.this, getString(R.string.notabletoacceslocation), Style.ALERT).show();
         }
         return new MessageValues(3, _Location, longitude, latitude);
     }
@@ -458,6 +504,16 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             final Place place = places.get(0);
 
             MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+            LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
+
+            map.addMarker(new MarkerOptions().position(currentLocation)
+                    .title("Your Current Location:\n" + messageValues.getText()));
+
+            // Move the camera instantly to hamburg with a zoom of 15.
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+
+            // Zoom in, animating the camera.
+            map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
             showSaveLaterBox(messageValues);
 
             places.release();

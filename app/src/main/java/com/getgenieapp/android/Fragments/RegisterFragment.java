@@ -1,5 +1,6 @@
 package com.getgenieapp.android.Fragments;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,7 +33,6 @@ import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONException;
@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class RegisterFragment extends GenieFragment {
 
@@ -58,6 +60,7 @@ public class RegisterFragment extends GenieFragment {
     @InjectView(R.id.getStarted)
     ButtonRectangle getStarted;
     View rootView;
+    ViewGroup viewGroup;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
@@ -83,7 +86,7 @@ public class RegisterFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
-
+        this.viewGroup = container;
         rootView = inflater.inflate(R.layout.fragment_register_new, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -205,7 +208,7 @@ public class RegisterFragment extends GenieFragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         parentLoadingView.setLoading(false);
-                        System.out.println("Error "+ error.toString());
+                        System.out.println("Error " + error.toString());
                         ((RegisterActivity) getActivity()).onError(new Register());
                     }
                 });
@@ -224,9 +227,9 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
         if (name.getText().toString().trim().length() == 0) {
-            ((RegisterActivity) getActivity()).showToast(getString(R.string.pleaseentername), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
+            Crouton.makeText(getActivity(), getString(R.string.pleaseentername), Style.ALERT, viewGroup).show();
         } else if (number.getText().toString().trim().length() < 10) {
-            ((RegisterActivity) getActivity()).showToast(getString(R.string.pleaseentervalidnumber), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
+            Crouton.makeText(getActivity(), getString(R.string.pleaseentervalidnumber), Style.ALERT, viewGroup).show();
         } else {
             parentLoadingView.setText(getResources().getString(R.string.registeringuser));
             parentLoadingView.setLoading(true);

@@ -16,7 +16,6 @@ import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.gson.Gson;
 
 import de.halfbit.tinybus.TinyBus;
@@ -91,13 +90,6 @@ public class GenieActivity extends Activity {
     @Override
     protected void onRestoreInstanceState(Bundle loadState) {
         super.onRestoreInstanceState(loadState);
-    }
-    public void showToast(String message, Short duration, SnackBar.Style style) {
-        new SnackBar.Builder(this)
-                .withMessage(message)
-                .withStyle(style)
-                .withDuration(duration)
-                .show();
     }
 
     public static void hideKeyboard(Activity activity) {

@@ -68,7 +68,7 @@
     <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="mapservicemissing">MAP SERVICE MISSING</string>
     <string name="mapupdate">MAP UPDATE REQUIRED</string>
-    <string name="sendcurrentlocation">Send your current location</string>
+    <string name="sendcurrentlocation">Send your location</string>
     <string name="favorites">My Favorites</string>
     <string name="mapapikey">AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM</string>
     <string name="errorinaccessinglocation">Error in accessing location</string>
@@ -312,4 +312,6 @@
     <string name="searchlocation">Search Location</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="agentistyping">SuperGenie is typing...</string>
+    <string name="newmessagereceived">New message Received</string>
+    <string name="onconnectionerror">Connection Lost</string>
 </resources>

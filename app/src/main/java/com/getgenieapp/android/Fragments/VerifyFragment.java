@@ -24,7 +24,6 @@ import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +37,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.halfbit.tinybus.Subscribe;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class VerifyFragment extends GenieFragment {
     @InjectView(R.id.subText)
@@ -58,7 +59,7 @@ public class VerifyFragment extends GenieFragment {
     final int entryLength = 1;
     Timer timer = new Timer();
     View rootView;
-
+    ViewGroup viewGroup;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class VerifyFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
+        this.viewGroup = container;
         rootView = inflater.inflate(R.layout.fragment_verify, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -323,7 +325,7 @@ public class VerifyFragment extends GenieFragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response.toString());
-                        ((RegisterActivity) getActivity()).showToast(genieApplication.getString(R.string.smsrequestresend), SnackBar.MED_SNACK, SnackBar.Style.CONFIRM);
+                        Crouton.makeText(getActivity(), genieApplication.getString(R.string.smsrequestresend), Style.INFO, viewGroup).show();
                         if (response.has("token")) {
                             try {
                                 sharedPreferences.edit().putString(DataFields.TOKEN, response.getString("token")).apply();

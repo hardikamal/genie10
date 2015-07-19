@@ -1,6 +1,7 @@
 package com.getgenieapp.android.CustomViews.Adapters;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,7 +28,6 @@ import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by Raviteja on 6/16/2015.
@@ -66,12 +68,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         this.catImageUrl = catImageUrl;
     }
 
-    public void showToast(String message, Short duration, SnackBar.Style style) {
-        new SnackBar.Builder((Activity) context)
-                .withMessage(message)
-                .withStyle(style)
-                .withDuration(duration)
-                .show();
+    public void showToast(String message, Style style) {
+        Crouton.makeText((Activity) context, message, style).show();
     }
 
     @Override
@@ -205,7 +203,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showToast(context.getString(R.string.finishordertext), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                        showToast(context.getString(R.string.finishordertext), Style.INFO);
                         Intent intent = new Intent(context, PaymentActivity.class);
                         intent.putExtra("url", messageValues.getUrl());
                         ((Activity) context).startActivityForResult(intent, 1);
@@ -242,9 +240,10 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         + ","
                         + messageValues.getLng()
                         + "&sensor=false";
-                viewHolderMain.mapView.setVisibility(View.VISIBLE);
+                if (messageValues.getLat() != 0.00 && messageValues.getLng() != 0.00) {
+                    viewHolderMain.mapView.setVisibility(View.VISIBLE);
 //                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
-                viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
+                    viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
 //                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
@@ -256,6 +255,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 //                        }
 //                    }
 //                });
+                }
 
                 if (messages.getDirection() == 1) {
 //                if (position % 2 == 0) {

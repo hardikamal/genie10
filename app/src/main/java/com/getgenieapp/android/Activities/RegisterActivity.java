@@ -25,7 +25,6 @@ import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.Objects.Verify;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +33,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 // Register activity will navigate the registration process to user.
 // This accepts the extra to check the user needs to register or verify
@@ -127,7 +129,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Register register) {
-        showToast(getString(R.string.unexpectederror), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
+        Crouton.makeText(this, getString(R.string.unexpectederror), Style.ALERT).show();
     }
 
     @Override
@@ -180,7 +182,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Verify verify) {
-        showToast(getString(R.string.servererrortryagain), SnackBar.MED_SNACK, SnackBar.Style.ALERT);
+        Crouton.makeText(this, getString(R.string.servererrortryagain), Style.ALERT).show();
     }
 
     @Override

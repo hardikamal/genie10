@@ -42,6 +42,7 @@ public class MainFragment extends GenieFragment {
     static ArrayList<Categories> categoriesList = new ArrayList<>();
     onSelect on_Select;
     CustomAdapter customAdapter = null;
+    ViewGroup viewGroup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +51,7 @@ public class MainFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
-
+        this.viewGroup = container;
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
         ButterKnife.inject(this, rootView);
 
@@ -63,8 +64,7 @@ public class MainFragment extends GenieFragment {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         hideKeyboard(getActivity());
     }

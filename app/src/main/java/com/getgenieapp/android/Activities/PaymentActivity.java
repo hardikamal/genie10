@@ -8,7 +8,9 @@ import android.webkit.WebViewClient;
 
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 // Payment activity is used to access the payment web view from application
 // Use TinyBus to send signal of payment received, so the activity can close.
@@ -37,7 +39,7 @@ public class PaymentActivity extends GenieBaseActivity {
         });
         webview.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                showToast(getString(R.string.ohno) + description, SnackBar.LONG_SNACK, SnackBar.Style.INFO);
+                Crouton.makeText(PaymentActivity.this, getString(R.string.ohno) + description, Style.ALERT).show();
                 onBackPressed();
             }
         });

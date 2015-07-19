@@ -40,7 +40,6 @@ import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.GraphicsUtil;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.R;
-import com.github.mrengineer13.snackbar.SnackBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +55,8 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class UserProfileActivity extends GenieBaseActivity {
     @InjectView(R.id.name)
@@ -182,7 +183,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                     Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, null);
                     //There is no thumb-nail with this Image
                     if (thumb == null) {
-                        showToast(getString(R.string.failedtogetthumbnail), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                        Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT).show();
                         //so create thumb-nail from image itself
                         Cursor cursor = resolver
                                 .query(actualUri,
@@ -261,7 +262,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         // respond to users whose devices do not support the crop action
         catch (ActivityNotFoundException anfe) {
             // display an error message
-            showToast(getString(R.string.devicedoesnotsupportmessage), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+            Crouton.makeText(this, getString(R.string.devicedoesnotsupportmessage), Style.INFO).show();
         }
     }
 
@@ -277,7 +278,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(captureIntent, DataFields.CAMERA_CAPTURE);
                     } catch (ActivityNotFoundException anfe) {
-                        showToast(getString(R.string.devicedoesnotsupportmessage), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.devicedoesnotsupportmessage), Style.INFO).show();
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickIntent = new Intent(Intent.ACTION_PICK,
@@ -303,7 +304,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     public void onClickUpdate() {
         if (name.getText().toString().trim().length() > 0) {
             if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
-                showToast(getString(R.string.entervalidemail), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidemail), Style.INFO).show();
                 return;
             }
             final ProgressDialog progressBar = new ProgressDialog(this);
@@ -330,7 +331,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        showToast(getString(R.string.errorwhileupdatinguserinformation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.errorwhileupdatinguserinformation), Style.INFO).show();
                     }
                 }) {
                     @Override
@@ -345,7 +346,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            showToast(getString(R.string.entervalidinformation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+            Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidinformation), Style.INFO).show();
         }
     }
 
@@ -401,7 +402,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            showToast(getString(R.string.notabletoaccessthelocation), SnackBar.MED_SNACK, SnackBar.Style.INFO);
+            Crouton.makeText(UserProfileActivity.this, getString(R.string.notabletoaccessthelocation), Style.INFO).show();
         }
         progressBar.dismiss();
         progressBar.cancel();

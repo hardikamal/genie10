@@ -32,6 +32,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect {
     @InjectView(R.id.toolbar)
@@ -235,8 +237,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(),
-                            "On Connection Error", Toast.LENGTH_LONG).show();
+                    Crouton.makeText(BaseActivity.this,
+                            getString(R.string.onconnectionerror), Style.ALERT, R.id.body).show();
                 }
             });
         }
@@ -356,7 +358,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    setTyping();
                 }
             });
         }
