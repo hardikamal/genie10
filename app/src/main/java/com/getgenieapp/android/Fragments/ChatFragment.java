@@ -100,7 +100,7 @@ public class ChatFragment extends GenieFragment {
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            Thread.sleep(DataFields.smallTimeOut);
+                            Thread.sleep(DataFields.small400TimeOut);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -119,7 +119,7 @@ public class ChatFragment extends GenieFragment {
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            Thread.sleep(DataFields.smallTimeOut);
+                            Thread.sleep(DataFields.small400TimeOut);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -338,7 +338,7 @@ public class ChatFragment extends GenieFragment {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Thread.sleep(DataFields.smallTimeOut);
+                    Thread.sleep(DataFields.small400TimeOut);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

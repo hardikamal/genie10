@@ -60,6 +60,7 @@ public class VerifyFragment extends GenieFragment {
     Timer timer = new Timer();
     View rootView;
     ViewGroup viewGroup;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class VerifyFragment extends GenieFragment {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(DataFields.smallTimeOut);
+                        Thread.sleep(DataFields.small400TimeOut);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -142,7 +143,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut * 2);
+                        Thread.sleep(DataFields.small600TimeOut);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -152,7 +153,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut * 3);
+                        Thread.sleep(DataFields.small800TimeOut);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -162,7 +163,7 @@ public class VerifyFragment extends GenieFragment {
                         }
                     });
                     try {
-                        Thread.sleep(DataFields.smallTimeOut * 4);
+                        Thread.sleep(DataFields.small1000TimeOut);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -266,10 +267,6 @@ public class VerifyFragment extends GenieFragment {
         JSONObject json = new JSONObject();
         try {
             json.put("verification_code", Integer.parseInt(code));
-            char1.setText("");
-            char2.setText("");
-            char3.setText("");
-            char4.setText("");
             JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.VERIFYURL, json,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -382,6 +379,10 @@ public class VerifyFragment extends GenieFragment {
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
+                            char1.setText("");
+                            char2.setText("");
+                            char3.setText("");
+                            char4.setText("");
                             parentLoadingView.setLoading(true);
                         }
                     });

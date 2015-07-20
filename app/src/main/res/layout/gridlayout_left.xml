@@ -100,11 +100,4 @@
             android:textSize="@dimen/_10sdp" />
 
     </LinearLayout>
-
-    <View
-        android:id="@+id/emptyspace"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_5sdp" />
-
-
 </LinearLayout>

@@ -120,8 +120,7 @@
                     android:layout_marginTop="@dimen/_12sdp"
                     android:inputType="text"
                     android:textColor="@color/color999"
-                    android:text="@string/getstarted"
-                    android:textSize="@dimen/_6sdp" />
+                    android:text="@string/getstarted" />
             </LinearLayout>
 
         </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>

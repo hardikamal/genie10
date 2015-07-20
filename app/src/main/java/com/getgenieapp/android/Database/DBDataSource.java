@@ -143,6 +143,39 @@ public class DBDataSource {
         return labels;
     }
 
+    private ArrayList<Messages> parseCursorWithHideTime(Cursor cursor, long hide_time) {
+        ArrayList<Messages> labels = new ArrayList<Messages>();
+        if (cursor.moveToFirst()) {
+            do {
+                JSONObject jsonObject;
+                MessageValues messageValues = new MessageValues();
+                try {
+                    jsonObject = new JSONObject(cursor.getString(5));
+                    if (jsonObject.has("id")) {
+                        if (jsonObject.getInt("id") == 1) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
+                        } else if (jsonObject.getInt("id") == 2) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                        } else if (jsonObject.getInt("id") == 3) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
+                        } else if (jsonObject.getInt("id") == 5) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (Long.parseLong(cursor.getString(7)) > hide_time) {
+                    labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)),
+                            Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), messageValues,
+                            Integer.parseInt(cursor.getString(6)), Long.parseLong(cursor.getString(7)),
+                            Long.parseLong(cursor.getString(8)), Integer.parseInt(cursor.getString(9))));
+                }
+            } while (cursor.moveToNext());
+        }
+        return labels;
+    }
+
     public ArrayList<Messages> getAllListBasedOnCategory(String category_id) {
         open();
         Cursor cursor = database.query(DBHandler.TABLE,
@@ -153,6 +186,21 @@ public class DBDataSource {
                         , DBHandler.direction},
                 DBHandler.category_id + "== " + category_id, null, null, null, null);
         ArrayList<Messages> labels = parseCursor(cursor);
+        cursor.close();
+        close();
+        return labels;
+    }
+
+    public ArrayList<Messages> getAllListBasedOnCategoryWithHideTime(String category_id, long hide_time) {
+        open();
+        Cursor cursor = database.query(DBHandler.TABLE,
+                new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
+                        , DBHandler.message_type, DBHandler.category_id
+                        , DBHandler.message_values, DBHandler.status
+                        , DBHandler.created_at, DBHandler.updated_at
+                        , DBHandler.direction},
+                DBHandler.category_id + "== " + category_id, null, null, null, null);
+        ArrayList<Messages> labels = parseCursorWithHideTime(cursor, hide_time);
         cursor.close();
         close();
         return labels;

@@ -59,8 +59,6 @@ public class CustomAdapter extends RecyclerView.Adapter {
         LinearLayout middlebar;
         @InjectView(R.id.lowerBar)
         LinearLayout lowerbar;
-        @InjectView(R.id.emptyspace)
-        View emptyspace;
         @InjectView(R.id.title)
         TextView title;
         @InjectView(R.id.image)
@@ -135,7 +133,6 @@ public class CustomAdapter extends RecyclerView.Adapter {
         viewHolderMain.topbar.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.middlebar.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.lowerbar.setBackgroundColor(Color.parseColor(category.getBg_color()));
-        viewHolderMain.emptyspace.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.title.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.title.setText(category.getName());
 
@@ -150,7 +147,6 @@ public class CustomAdapter extends RecyclerView.Adapter {
             viewHolderMain.notification_count.setBackgroundResource(android.R.color.transparent);
         }
         viewHolderMain.image.setImageUrl(category.getImage_url(), imageLoader);
-//        viewHolderMain.showText(category.getDescription());
     }
 
     private void goToChatActivity(Categories category) {

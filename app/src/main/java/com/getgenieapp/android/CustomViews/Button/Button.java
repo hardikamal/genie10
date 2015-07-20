@@ -119,7 +119,7 @@ public abstract class Button extends CustomView {
     public Bitmap makeCircle() {
         Bitmap output = Bitmap.createBitmap(
                 getWidth(), getHeight()
-                        , Config.ARGB_8888);
+                , Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         canvas.drawARGB(0, 0, 0, 0);
         Paint paint = new Paint();

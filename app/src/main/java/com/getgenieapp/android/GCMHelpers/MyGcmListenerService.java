@@ -47,6 +47,7 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Messages: " + message);
 
+
         /**
          * Production applications would usually process the message here.
          * Eg: - Syncing with server.

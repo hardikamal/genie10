@@ -66,7 +66,7 @@ public class LoggingBuilder {
             setFile("AppLog.log");
         if (!file.getParentFile().exists())
             file.getParentFile().mkdirs();
-        if (!file.exists()) {
+        if (!file.exists() && getWriteToLog()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {

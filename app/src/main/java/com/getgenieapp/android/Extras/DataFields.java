@@ -7,7 +7,9 @@ import java.io.File;
 public class DataFields {
     public static final int SplashScreenGeneralTimeOut = 3000;
     public static final int VerifyTimeOut = 2000;
-    public static final int smallTimeOut = 500;
+    public static final int small400TimeOut = 400;
+    public static final int small600TimeOut = 600;
+    public static final int small800TimeOut = 800;
     public static final int small1000TimeOut = 1000;
     public static final String TAG = "Get Genie App";
 
