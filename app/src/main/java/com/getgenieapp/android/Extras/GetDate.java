@@ -14,18 +14,18 @@ public class GetDate {
 
     public String convertLongToDate(long unixTime) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(unixTime*1000);
+        calendar.setTimeInMillis(unixTime * 1000);
 
         if (isSameDay(calendar, Calendar.getInstance())) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a");
             Date time = new Date(unixTime * 1000);
-            return " "+dateFormat.format(time);
+            return " " + dateFormat.format(time);
         } else if (isYesterday(calendar, Calendar.getInstance())) {
             return " Yesterday";
         } else {
             SimpleDateFormat dateFormatToday = new SimpleDateFormat("dd/MM/yyyy");
             Date time = new Date(unixTime * 1000);
-            return " "+dateFormatToday.format(time);
+            return " " + dateFormatToday.format(time);
         }
     }
 
@@ -35,7 +35,7 @@ public class GetDate {
         }
         return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == (cal2.get(Calendar.DAY_OF_YEAR)-1));
+                cal1.get(Calendar.DAY_OF_YEAR) == (cal2.get(Calendar.DAY_OF_YEAR) - 1));
     }
 
     public boolean isSameDay(Calendar cal1, Calendar cal2) {
@@ -45,5 +45,12 @@ public class GetDate {
         return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
+    }
+
+    public String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date date = new Date();
+        String sDate = dateFormat.format(date);
+        return sDate;
     }
 }

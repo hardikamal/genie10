@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.MainFragment;
 import com.getgenieapp.android.GenieBaseActivity;
@@ -40,7 +41,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @InjectView(R.id.screen)
     LinearLayout screen;
     private Socket mSocket;
-    private Categories categorie_selected = null;
+    private static Categories categorie_selected = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,37 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 setSupportActionBar(mToolbar);
                 startFragment(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
+            }
+            if (getIntent().getStringExtra("page").contains("message")) {
+                int id = sharedPreferences.getInt("catid", 0);
+                new NotificationHandler(this).resetNotification();
+                System.out.println(getIntent().getExtras().toString());
+                if (id == 0) {
+                    setSupportActionBar(mToolbar);
+                    startFragment(R.id.body, new MainFragment());
+                    mToolbar.setLogo(R.drawable.genie_logo);
+                    mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mToolbar.setTitle("");
+                } else {
+                    this.categorie_selected = dbDataSource.getCategories(id);
+
+                    setSupportActionBar(mToolbar);
+
+                    ActionBar actionBar = getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setHomeButtonEnabled(true);
+                        actionBar.setDisplayHomeAsUpEnabled(true);
+                    }
+
+                    actionBar.setTitle(categorie_selected.getName());
+
+                    mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+
+                    mToolbar.setTitle(categorie_selected.getName());
+
+                    mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+                    onReceive(categorie_selected);
+                }
             }
         }
     }
@@ -168,16 +200,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         startFragmentFromLeft(R.id.body, new MainFragment());
     }
 
-    @Override
     public void onClick(Categories categories) {
         this.categorie_selected = categories;
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("id", categories.getId());
-        bundle.putString("color", categories.getBg_color());
-        bundle.putLong("hide_time", categories.getHide_chats_time());
-        bundle.putString("url", categories.getImage_url());
+        bundle.putInt("id", categorie_selected.getId());
+        bundle.putString("color", categorie_selected.getBg_color());
+        bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
+        bundle.putString("url", categorie_selected.getImage_url());
         chatFragment.setArguments(bundle);
         startFragment(R.id.body, chatFragment);
 
@@ -191,10 +222,22 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
         mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
 
-        mToolbar.setTitle(categories.getName());
-        mToolbar.setSubtitleTextAppearance(this, R.style.subText);
+        mToolbar.setTitle(categorie_selected.getName());
 
-        mToolbar.setBackgroundColor(Color.parseColor(categories.getBg_color()));
+        mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+    }
+
+    public void onReceive(Categories categories) {
+        this.categorie_selected = categories;
+        System.out.println("Socket connection status : " + mSocket.connected());
+        ChatFragment chatFragment = new ChatFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", categorie_selected.getId());
+        bundle.putString("color", categorie_selected.getBg_color());
+        bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
+        bundle.putString("url", categorie_selected.getImage_url());
+        chatFragment.setArguments(bundle);
+        startFragment(R.id.body, chatFragment);
     }
 
     public void setTyping() {

@@ -71,8 +71,8 @@ public class DBDataSource {
     }
 
     public void addNormalCategories(Categories categories) {
-        open();
         if (getCategoriesExists(String.valueOf(categories.getId())) == 1) {
+            open();
             ContentValues values = new ContentValues();
             values.put(DBHandler.cat_name, categories.getName());
             values.put(DBHandler.img_url, categories.getImage_url());
@@ -154,7 +154,7 @@ public class DBDataSource {
         close();
     }
 
-    public void UpdateCatNotification(String catId, int notification) {
+    public void UpdateCatNotification(int catId, int notification) {
         open();
         ContentValues cv = new ContentValues();
         cv.put(DBHandler.notification, notification);
@@ -176,14 +176,14 @@ public class DBDataSource {
         return labels;
     }
 
-    public Categories getCategories(String cat_id) {
+    public Categories getCategories(int catId) {
         open();
         Cursor cursor = database.query(DBHandler.CATTABLE,
                 new String[]{DBHandler.cat_id, DBHandler.notification
                         , DBHandler.cat_name, DBHandler.img_url
                         , DBHandler.description, DBHandler.bg_color
                         , DBHandler.hide_chats_time},
-                DBHandler.cat_id + "== " + cat_id, null, null, null, null);
+                DBHandler.cat_id + "== " + catId, null, null, null, null);
         Categories labels = parseCursorCat(cursor).get(0);
         cursor.close();
         close();

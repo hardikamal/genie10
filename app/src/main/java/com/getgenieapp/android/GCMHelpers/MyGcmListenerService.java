@@ -19,6 +19,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,10 @@ import android.util.Log;
 
 import com.getgenieapp.android.Activities.SplashScreenActivity;
 import com.getgenieapp.android.Database.DBDataSource;
+import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.GetDate;
+import com.getgenieapp.android.Extras.NotificationHandler;
+import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
@@ -52,104 +57,126 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        int cid = 0;
-        int aid = 0;
-        int category = 0;
-        String text = "";
-        int status = 0;
-        int sender_id = 0;
-        long created_at = 0;
-        long updated_at = 0;
-        String id = "";
-        double lng = 0;
-        double lat = 0;
-        String url = "";
-        try {
-            JSONObject jsonObject = new JSONObject(data.getString("msg"));
-            if (jsonObject.has("cid")) {
-                cid = jsonObject.getInt("cid");
-            }
-            if (jsonObject.has("_id")) {
-                id = jsonObject.getString("_id");
-            }
-            if (jsonObject.has("chat")) {
-                JSONObject chat = jsonObject.getJSONObject("chat");
-                if (chat.has("aid")) {
-                    aid = chat.getInt("aid");
+        if (data.containsKey("msg")) {
+            int cid = 0;
+            int aid = 0;
+            int category = 0;
+            String text = "";
+            int status = 0;
+            int sender_id = 0;
+            long created_at = 0;
+            long updated_at = 0;
+            String id = "";
+            double lng = 0;
+            double lat = 0;
+            String url = "";
+            try {
+                JSONObject jsonObject = new JSONObject(data.getString("msg"));
+                if (jsonObject.has("cid")) {
+                    cid = jsonObject.getInt("cid");
                 }
-                if (chat.has("message")) {
-                    JSONObject message = chat.getJSONObject("message");
-                    if (message.has("category")) {
-                        category = message.getInt("category");
+                if (jsonObject.has("_id")) {
+                    id = jsonObject.getString("_id");
+                }
+                if (jsonObject.has("chat")) {
+                    JSONObject chat = jsonObject.getJSONObject("chat");
+                    if (chat.has("aid")) {
+                        aid = chat.getInt("aid");
                     }
-                    if (message.has("status")) {
-                        status = message.getInt("status");
-                    }
-                    if (message.has("sender_id")) {
-                        sender_id = message.getInt("sender_id");
-                    }
-                    if (message.has("created_at")) {
-                        created_at = message.getLong("created_at");
-                    }
-                    if (message.has("updated_at")) {
-                        updated_at = message.getLong("updated_at");
-                    }
-                    if (message.has("category_value")) {
-                        JSONObject category_value = message.getJSONObject("category_value");
-                        if (category == 1) {
-                            if (category_value.has("text"))
-                                text = category_value.getString("text");
-                        } else if (category == 2) {
-                            if (category_value.has("lng"))
-                                lng = category_value.getDouble("lng");
-                            if (category_value.has("lat"))
-                                lat = category_value.getDouble("lat");
-                            if (category_value.has("text"))
-                                text = category_value.getString("text");
-                        } else if (category == 3) {
-                            if (category_value.has("text"))
-                                text = category_value.getString("text");
-                            if (category_value.has("url"))
-                                url = category_value.getString("url");
+                    if (chat.has("message")) {
+                        JSONObject message = chat.getJSONObject("message");
+                        if (message.has("category")) {
+                            category = message.getInt("category");
+                        }
+                        if (message.has("status")) {
+                            status = message.getInt("status");
+                        }
+                        if (message.has("sender_id")) {
+                            sender_id = message.getInt("sender_id");
+                        }
+                        if (message.has("created_at")) {
+                            created_at = message.getLong("created_at");
+                        }
+                        if (message.has("updated_at")) {
+                            updated_at = message.getLong("updated_at");
+                        }
+                        if (message.has("category_value")) {
+                            JSONObject category_value = message.getJSONObject("category_value");
+                            if (category == 1) {
+                                if (category_value.has("text"))
+                                    text = category_value.getString("text");
+                            } else if (category == 2) {
+                                if (category_value.has("lng"))
+                                    lng = category_value.getDouble("lng");
+                                if (category_value.has("lat"))
+                                    lat = category_value.getDouble("lat");
+                                if (category_value.has("text"))
+                                    text = category_value.getString("text");
+                            } else if (category == 3) {
+                                if (category_value.has("text"))
+                                    text = category_value.getString("text");
+                                if (category_value.has("url"))
+                                    url = category_value.getString("url");
+                            }
                         }
                     }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
-        MessageValues messageValues = null;
-        if (chat.getCategory() == 1) {
-            messageValues = new MessageValues(chat.getCategory(), chat.getText());
-        }
-        if (chat.getCategory() == 2) {
-            messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-        }
-        if (chat.getCategory() == 3) {
-            messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-        }
-        if (chat.getCategory() == 5) {
-            messageValues = new MessageValues(chat.getCategory(), chat.getText());
-        }
+            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
+            MessageValues messageValues = null;
+            if (chat.getCategory() == 1) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+            }
+            if (chat.getCategory() == 2) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
+            }
+            if (chat.getCategory() == 3) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
+            }
+            if (chat.getCategory() == 5) {
+                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+            }
 
-        Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
-        new DBDataSource(this).addNormal(messageObject);
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Messages: " + data.toString());
+            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+            DBDataSource dbDataSource = new DBDataSource(this);
+            dbDataSource.addNormal(messageObject);
+            Log.d(TAG, "From: " + from);
+            Log.d(TAG, "Messages: " + data.toString());
+//            dbDataSource.UpdateCatNotification(chat.getCategory(), dbDataSource.getCategories(chat.getCategory()).getNotification_count() + 1);
 
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
+            /**
+             * Production applications would usually process the message here.
+             * Eg: - Syncing with server.
+             *     - Store message in local database.
+             *     - Update UI.
+             */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification("SuperGenie");
+            /**
+             * In some cases it may be useful to show a notification indicating to the user
+             * that a message was received.
+             */
+            new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), chat.getCid());
+        } else {
+
+        }
+    }
+
+    private String showMessage(MessageValues messageValues) {
+        if (messageValues.get_id() == 1) {
+            return messageValues.getText();
+        }
+        if (messageValues.get_id() == 2) {
+            return messageValues.getText();
+        }
+        if (messageValues.get_id() == 3) {
+            return getString(R.string.imagereceived);
+        }
+        if (messageValues.get_id() == 5) {
+            return getString(R.string.paynow);
+        }
+        return getString(R.string.imagereceived);
     }
     // [END receive_message]
 
