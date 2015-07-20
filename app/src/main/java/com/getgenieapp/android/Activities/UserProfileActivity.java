@@ -183,7 +183,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                     Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, null);
                     //There is no thumb-nail with this Image
                     if (thumb == null) {
-                        Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT).show();
+                        Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT, R.id.body).show();
                         //so create thumb-nail from image itself
                         Cursor cursor = resolver
                                 .query(actualUri,
@@ -262,7 +262,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         // respond to users whose devices do not support the crop action
         catch (ActivityNotFoundException anfe) {
             // display an error message
-            Crouton.makeText(this, getString(R.string.devicedoesnotsupportmessage), Style.INFO).show();
+            Crouton.makeText(this, getString(R.string.devicedoesnotsupportmessage), Style.INFO, R.id.body).show();
         }
     }
 
@@ -278,7 +278,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         startActivityForResult(captureIntent, DataFields.CAMERA_CAPTURE);
                     } catch (ActivityNotFoundException anfe) {
-                        Crouton.makeText(UserProfileActivity.this, getString(R.string.devicedoesnotsupportmessage), Style.INFO).show();
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.devicedoesnotsupportmessage), Style.INFO, R.id.body).show();
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickIntent = new Intent(Intent.ACTION_PICK,
@@ -304,7 +304,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     public void onClickUpdate() {
         if (name.getText().toString().trim().length() > 0) {
             if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
-                Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidemail), Style.INFO).show();
+                Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidemail), Style.INFO, R.id.body).show();
                 return;
             }
             final ProgressDialog progressBar = new ProgressDialog(this);
@@ -331,7 +331,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Crouton.makeText(UserProfileActivity.this, getString(R.string.errorwhileupdatinguserinformation), Style.INFO).show();
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.errorwhileupdatinguserinformation), Style.INFO, R.id.body).show();
                     }
                 }) {
                     @Override
@@ -346,7 +346,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidinformation), Style.INFO).show();
+            Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidinformation), Style.INFO, R.id.body).show();
         }
     }
 
@@ -402,7 +402,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 e.printStackTrace();
             }
         } else {
-            Crouton.makeText(UserProfileActivity.this, getString(R.string.notabletoaccessthelocation), Style.INFO).show();
+            Crouton.makeText(UserProfileActivity.this, getString(R.string.notabletoaccessthelocation), Style.INFO, R.id.body).show();
         }
         progressBar.dismiss();
         progressBar.cancel();

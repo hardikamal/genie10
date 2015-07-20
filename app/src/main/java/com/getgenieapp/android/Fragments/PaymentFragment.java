@@ -14,14 +14,15 @@ import android.webkit.WebViewClient;
 import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.R;
-import com.github.johnpersano.supertoasts.SuperCardToast;
-import com.github.johnpersano.supertoasts.SuperToast;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by Raviteja on 7/20/2015.
  */
 public class PaymentFragment extends GenieFragment {
-
+    ViewGroup viewGroup;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class PaymentFragment extends GenieFragment {
         }
 
         WebView webview = new WebView(getActivity());
-
+        this.viewGroup = container;
         View rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
 
         webview.getSettings().setJavaScriptEnabled(true);
@@ -45,13 +46,7 @@ public class PaymentFragment extends GenieFragment {
         });
         webview.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                SuperCardToast superCardToast = new SuperCardToast((BaseActivity) getActivity());
-                superCardToast.setText(getString(R.string.ohno) + description);
-                superCardToast.setDuration(SuperToast.Duration.LONG);
-                superCardToast.setBackground(SuperToast.Background.RED);
-                superCardToast.setTextColor(Color.WHITE);
-                superCardToast.setSwipeToDismiss(true);
-                superCardToast.show();
+                Crouton.makeText((BaseActivity) getActivity(), getString(R.string.ohno) + description, Style.ALERT, viewGroup).show();
             }
         });
 

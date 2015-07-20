@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class SplashScreenActivity extends GenieActivity {
 
@@ -202,18 +204,20 @@ public class SplashScreenActivity extends GenieActivity {
                                     }
                                     logging.LogI("Start Main Activity");
                                     Intent intent = new Intent(SplashScreenActivity.this, BaseActivity.class);
-                                    intent.putExtra("page","categories");
+                                    intent.putExtra("page", "categories");
                                     intent.putStringArrayListExtra("category", categoriesList);
                                     startActivity(intent);
                                     finish();
                                 }
                             }).start();
+                        } else {
+                            Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                
+                Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                 error.printStackTrace();
             }
         }) {

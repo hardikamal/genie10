@@ -93,7 +93,7 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     }
 
     public void showToast(String message, Style style) {
-        Crouton.makeText((Activity) context, message, style).show();
+        Crouton.makeText((Activity) context, message, style, R.id.body).show();
     }
 
     @Override
