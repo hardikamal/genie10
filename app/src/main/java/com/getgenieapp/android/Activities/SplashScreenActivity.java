@@ -213,6 +213,7 @@ public class SplashScreenActivity extends GenieActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                
                 error.printStackTrace();
             }
         }) {
@@ -226,7 +227,6 @@ public class SplashScreenActivity extends GenieActivity {
 
         genieApplication.addToRequestQueue(req);
     }
-
 
 
     /**

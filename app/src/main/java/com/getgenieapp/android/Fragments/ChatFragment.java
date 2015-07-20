@@ -67,7 +67,6 @@ public class ChatFragment extends GenieFragment {
     String url;
     View rootView;
     ViewGroup viewGroup;
-    Style CUSTOMSTYLE;
 
     /**
      * @param savedInstanceState

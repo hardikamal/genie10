@@ -45,7 +45,7 @@ public class NotificationHandler {
         mNotificationManager.notify(mId, mBuilder.build());
     }
 
-    public void newNotification(int mId, String title, String msg, String bigTitle, String msgExtra, boolean status) {
+    public void newNotification(int mId, String title, String msg, String bigTitle, String msgExtra) {
         Intent intent = new Intent(context, SplashScreenActivity.class);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
@@ -84,9 +84,9 @@ public class NotificationHandler {
         mNotificationManager.cancel(mId);
     }
 
-    public void updateNotification(int mId, String title, String msg, String bigTitle, String msgExtra, boolean status) {
+    public void updateNotification(int mId, String title, String msg, String bigTitle, String msgExtra) {
         if (size == 0) {
-            newNotification(mId, title, msg, bigTitle, msgExtra, status);
+            newNotification(mId, title, msg, bigTitle, msgExtra);
         } else {
             if (msgEvents.length == size) {
                 Intent intent = new Intent(context, SplashScreenActivity.class);
@@ -144,14 +144,14 @@ public class NotificationHandler {
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(mId, mBuilder.build());
             } else {
-                newNotification(mId, title, msg, bigTitle, msgExtra, status);
+                newNotification(mId, title, msg, bigTitle, msgExtra);
             }
         }
     }
 
-    public void updateLastNotification(int mId, String title, String msg, String bigTitle, String msgExtra, boolean status) {
+    public void updateLastNotification(int mId, String title, String msg, String bigTitle, String msgExtra) {
         if (size == 0) {
-            newNotification(mId, title, msg, bigTitle, msgExtra, status);
+            newNotification(mId, title, msg, bigTitle, msgExtra);
         } else {
             if (msgEvents.length == size) {
                 Intent postponeIntent = new Intent(context, SplashScreenActivity.class);
@@ -201,7 +201,7 @@ public class NotificationHandler {
 
                 mNotificationManager.notify(mId, mBuilder.build());
             } else {
-                newNotification(mId, title, msg, bigTitle, msgExtra, status);
+                newNotification(mId, title, msg, bigTitle, msgExtra);
             }
         }
     }

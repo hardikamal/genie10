@@ -123,14 +123,11 @@ public class DBDataSource {
                     if (jsonObject.has("id")) {
                         if (jsonObject.getInt("id") == 1) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        }
-                        else if (jsonObject.getInt("id") == 2) {
+                        } else if (jsonObject.getInt("id") == 2) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
-                        }
-                        else if (jsonObject.getInt("id") == 3) {
+                        } else if (jsonObject.getInt("id") == 3) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
-                        }
-                        else if (jsonObject.getInt("id") == 5) {
+                        } else if (jsonObject.getInt("id") == 5) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         }
                     }
