@@ -5,8 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/webPage"
+    <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/parentLoadingView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:lv_color="@color/colorPrimary"
+        app:lv_loading="false"
+        app:lv_title="@string/paymentpageload">
+
+        <WebView
+            android:id="@+id/webPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
+
 </LinearLayout>

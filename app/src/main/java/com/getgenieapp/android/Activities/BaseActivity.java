@@ -20,6 +20,7 @@ import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.MainFragment;
+import com.getgenieapp.android.Fragments.PaymentFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
@@ -93,7 +94,18 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
+                setSupportActionBar(mToolbar);
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setHomeButtonEnabled(true);
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+                }
+                mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+                mToolbar.setTitle(categorie_selected.getName());
+                mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+                onReceiveFromLeft(categorie_selected);
+            } else if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                 goBack();
             } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
                 super.onBackPressed();
@@ -161,7 +173,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                goBack();
+                onBackPressed();
                 return true;
             case R.id.action_profile:
                 startActivity(new Intent(BaseActivity.this, UserProfileActivity.class));
@@ -240,6 +252,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         bundle.putString("url", categorie_selected.getImage_url());
         chatFragment.setArguments(bundle);
         startFragment(R.id.body, chatFragment);
+    }
+
+    public void onReceiveFromLeft(Categories categories) {
+        categorie_selected = categories;
+        System.out.println("Socket connection status : " + mSocket.connected());
+        ChatFragment chatFragment = new ChatFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", categorie_selected.getId());
+        bundle.putString("color", categorie_selected.getBg_color());
+        bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
+        bundle.putString("url", categorie_selected.getImage_url());
+        chatFragment.setArguments(bundle);
+        startFragmentFromLeft(R.id.body, chatFragment);
     }
 
     public void setTyping() {
@@ -431,6 +456,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    new NotificationHandler(BaseActivity.this).cancelNotification(DataFields.ALERTMSG);
                     logging.LogV(args[0].toString());
                     Crouton.makeText(BaseActivity.this, getString(R.string.isoffline), Style.ALERT, R.id.body).show();
                     sharedPreferences.edit().putBoolean("agent", false).apply();
@@ -446,9 +472,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Crouton.makeText(BaseActivity.this, getString(R.string.isonline), Style.CONFIRM, R.id.body).show();
                     logging.LogV(args[0].toString());
                     sharedPreferences.edit().putBoolean("agent", true).apply();
                     setChatStatus(true);
+                    new NotificationHandler(BaseActivity.this).cancelNotification(DataFields.ALERTMSG);
                 }
             });
         }

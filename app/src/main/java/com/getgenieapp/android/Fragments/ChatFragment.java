@@ -92,7 +92,7 @@ public class ChatFragment extends GenieFragment {
             url = bundle.getString("url");
         }
 
-        if (sharedPreferences.getBoolean("agent", false)) {
+        if (!sharedPreferences.getBoolean("agent", true)) {
             setDisable();
         }
 

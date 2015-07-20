@@ -318,4 +318,6 @@
     <string name="notavailablemessage">SuperGenie is not available</string>
     <string name="imagereceived">Image Received</string>
     <string name="isoffline">SuperGenie is Offline</string>
+    <string name="isonline">SuperGenie is Online</string>
+    <string name="paymentpageload">Loading Payment Page</string>
 </resources>

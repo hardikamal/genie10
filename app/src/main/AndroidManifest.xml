@@ -110,10 +110,6 @@
             android:theme="@style/MyMaterialThemeWithToolBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activities.PaymentActivity"
-            android:label="@string/title_activity_payment"
-            android:screenOrientation="sensorPortrait" />
-        <activity
             android:name=".Activities.BaseActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="sensorPortrait"

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,11 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.getgenieapp.android.Activities.PaymentActivity;
+import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.Utils;
+import com.getgenieapp.android.Fragments.PaymentFragment;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
@@ -69,7 +71,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     }
 
     public void showToast(String message, Style style) {
-        Crouton.makeText((Activity) context, message, style).show();
+
     }
 
     @Override
@@ -204,9 +206,11 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(View v) {
                         showToast(context.getString(R.string.finishordertext), Style.INFO);
-                        Intent intent = new Intent(context, PaymentActivity.class);
-                        intent.putExtra("url", messageValues.getUrl());
-                        ((Activity) context).startActivityForResult(intent, 1);
+                        PaymentFragment paymentFragment = new PaymentFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("url", messageValues.getUrl());
+                        paymentFragment.setArguments(bundle);
+                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
                     }
                 });
                 viewHolderMain.catimage.setImageUrl(catImageUrl, imageLoader);
