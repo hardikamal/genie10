@@ -28,6 +28,7 @@ import com.getgenieapp.android.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     static int time = 61;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     private BroadcastReceiver myBroadcastReceiver =
             new BroadcastReceiver() {
@@ -64,17 +66,16 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                             final Object[] pdusObj = (Object[]) bundle.get("pdus");
                             for (int i = 0; i < pdusObj.length; i++) {
                                 SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
-                                String phoneNumber = currentMessage.getDisplayOriginatingAddress();
-                                String senderNum = phoneNumber;
                                 String message = currentMessage.getDisplayMessageBody();
                                 String phrase = "code : ";
                                 if (message.contains(phrase)) {
                                     int index = message.indexOf(phrase);
                                     String code = message.substring(index + phrase.length());
-                                    System.out.println(code);
                                     code = code.trim();
-                                    if (code.length() == 4)
+                                    if (code.length() == 4) {
                                         mBus.post(code);
+                                        mixpanelDataAdd.put("Verification Code", code);
+                                    }
                                 }
                             }
                         }
@@ -84,23 +85,50 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
             };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mixPanelTimerStart(RegisterActivity.class.getName());
+        logging.LogI("On Start");
+    }
+
+    @Override
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
+        mixPanelTimerStop(RegisterActivity.class.getName());
+        mixPanelBuildHashMap("General Run " + SplashScreenActivity.class.getName(), mixpanelDataAdd);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (new File(DataFields.profilePicturePath).exists())
             new File(DataFields.profilePicturePath).delete();
         setContentView(R.layout.activity_register);
-        getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
-        time = 61;
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setLogo(R.drawable.genie_logo);
-        actionBar.setTitle("");
 
-        if (getIntent().getStringExtra("page").equals("Register"))
+        // clear all previous users data
+        dbDataSource.cleanAll();
+        sharedPreferences.edit().clear().apply();
+
+        getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
+        // 60 seconds timer reset
+        time = 61;
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setLogo(R.drawable.genie_logo);
+            actionBar.setTitle("");
+        }
+
+        if (getIntent().getStringExtra("page").equals("Register")) {
             startFragment(R.id.body, new RegisterFragment());
-        else
+            mixpanelDataAdd.put("Fragment", "Register Fragment");
+        } else {
             startFragment(R.id.body, new VerifyFragment());
+            mixpanelDataAdd.put("Fragment", "Verify Fragment");
+        }
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -134,49 +162,62 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Verify verify) {
+        mixpanelDataAdd.put("Server Call", "Categories");
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                        System.out.println(response.toString());
+                        mixpanelDataAdd.put("Server Call", "Categories Success");
                         if (response.length() > 0) {
-                            ArrayList<String> categoriesList = new ArrayList<String>();
-                            for (int i = 0; i < response.length(); i++) {
-                                try {
-                                    categoriesList.add(response.getJSONObject(i).toString());
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                            new Thread(new Runnable() {
+                                public void run() {
+                                    ArrayList<String> categoriesList = new ArrayList<>();
+                                    for (int i = 0; i < response.length(); i++) {
+                                        try {
+                                            categoriesList.add(response.getJSONObject(i).toString());
+                                            JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
+                                            dbDataSource.UpdateMessages(jsonObject.getInt("id"), jsonObject.getLong("hide_chats_time"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    logging.LogI("Start Main Activity");
+                                    mixpanelDataAdd.put("Activity", "MainActivity");
+                                    Intent intent = new Intent(RegisterActivity.this, BaseActivity.class);
+                                    intent.putExtra("page", "categories");
+                                    intent.putStringArrayListExtra("category", categoriesList);
+                                    startActivity(intent);
+                                    finish();
                                 }
-                            }
-                            logging.LogI("Start Main Activity");
-                            Intent intent = new Intent(RegisterActivity.this, BaseActivity.class);
-                            intent.putExtra("page", "categories");
-                            intent.putStringArrayListExtra("category", categoriesList);
-                            startActivity(intent);
-                            finish();
+                            }).start();
+                        } else {
+                            mixpanelDataAdd.put("Server Call", "Categories Error");
+                            mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
+                            Crouton.makeText(RegisterActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Intent intent = new Intent(RegisterActivity.this, SplashScreenActivity.class);
-                startActivity(intent);
-                finish();
+                mixpanelDataAdd.put("Server Call", "Categories Server 500 Error");
+                mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
+                Crouton.makeText(RegisterActivity.this, getString(R.string.errortryagain), Style.INFO).show();
+                error.printStackTrace();
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
                 return params;
             }
         };
-
         genieApplication.addToRequestQueue(req);
     }
 
     @Override
     public void onRedo(Verify verify) {
+        mixPanelBuild("User redoing registration");
         startFragmentFromLeft(R.id.body, new RegisterFragment());
     }
 
@@ -202,12 +243,5 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                 hideKeyboard(this);
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-    public static void hideKeyboard(Activity activity) {
-        if (activity != null && activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
-        }
     }
 }

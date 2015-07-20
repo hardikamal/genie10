@@ -18,6 +18,10 @@ import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 import de.halfbit.tinybus.TinyBus;
 
 public class GenieFragment extends Fragment {
@@ -25,8 +29,6 @@ public class GenieFragment extends Fragment {
     public Gson gson;
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawlerRegular;
-    public FontChangeCrawler fontChangeCrawlerMedium;
-    public FontChangeCrawler fontChangeCrawlerLight;
     public SecurePreferences sharedPreferences;
     public Logging logging;
     public TinyBus mBus;
@@ -40,8 +42,6 @@ public class GenieFragment extends Fragment {
         genieApplication = GenieApplication.getInstance();
         sharedPreferences = genieApplication.getSecurePrefs();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
-        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
-        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();
         gson = new Gson();
@@ -61,5 +61,29 @@ public class GenieFragment extends Fragment {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         }
+    }
+
+    public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
+        mixpanel.trackMap(eventName, myValues);
+    }
+
+    public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
+        mixpanel.track(eventName, jsonObject);
+    }
+
+    public void mixPanelBuild(String eventName) {
+        mixpanel.track(eventName);
+    }
+
+    public void mixPanelFlush() {
+        mixpanel.flush();
+    }
+
+    public void mixPanelTimerStart(String timerName) {
+        mixpanel.timeEvent(timerName);
+    }
+
+    public void mixPanelTimerStop(String timerName) {
+        mixpanel.track(timerName);
     }
 }

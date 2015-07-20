@@ -43,8 +43,6 @@ public class GenieApplication extends Application {
     private LoggingBuilder loggingBuilder;
     private static GenieApplication genieApplication;
     private FontChangeCrawler fontChangerRegular;
-    private FontChangeCrawler fontChangerMedium;
-    private FontChangeCrawler fontChangerLight;
     private SecurePreferences mSecurePrefs;
     private TinyBus mBus;
     private RequestQueue mRequestQueue;
@@ -64,8 +62,6 @@ public class GenieApplication extends Application {
         super.onCreate();
         genieApplication = this;
         fontChangerRegular = new FontChangeCrawler(getAssets(), "Roboto-Regular.ttf");
-        fontChangerMedium = new FontChangeCrawler(getAssets(), "Roboto-Medium.ttf");
-        fontChangerLight = new FontChangeCrawler(getAssets(), "Roboto-Light.ttf");
         loggingBuilder = new LoggingBuilder(getApplicationContext())
                 .setCanDisplayOnLogCat(true)
                 .setWriteToLog(false)
@@ -97,14 +93,6 @@ public class GenieApplication extends Application {
 
     public FontChangeCrawler getFontChangeCrawlerRegular() {
         return fontChangerRegular;
-    }
-
-    public FontChangeCrawler getFontChangeCrawlerMedium() {
-        return fontChangerMedium;
-    }
-
-    public FontChangeCrawler getFontChangeCrawlerLight() {
-        return fontChangerLight;
     }
 
     public static synchronized GenieApplication getInstance() {

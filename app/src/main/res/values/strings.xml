@@ -3,6 +3,7 @@
     <string name="companyName">SuperGenie</string>
     <string name="version">0.0.0.0</string>
     <string name="mixpanel">b0495338b2ad0709731791003f5a24af</string>
+    <string name="projectId">1083662993807</string>
 
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>

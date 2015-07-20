@@ -22,6 +22,10 @@ import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 import de.halfbit.tinybus.TinyBus;
 
 public class GenieBaseActivity extends AppCompatActivity {
@@ -29,8 +33,6 @@ public class GenieBaseActivity extends AppCompatActivity {
     public GenieApplication genieApplication;
     public SecurePreferences sharedPreferences;
     public FontChangeCrawler fontChangeCrawlerRegular;
-    public FontChangeCrawler fontChangeCrawlerMedium;
-    public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
     public Utils utils;
@@ -43,8 +45,6 @@ public class GenieBaseActivity extends AppCompatActivity {
         mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
-        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
-        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         logging = genieApplication.getLoggingBuilder().setUp();
         sharedPreferences = genieApplication.getSecurePrefs();
         mBus = genieApplication.getBus();
@@ -78,12 +78,6 @@ public class GenieBaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        mixpanel.flush();
-        super.onDestroy();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);
     }
@@ -98,5 +92,35 @@ public class GenieBaseActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         }
+    }
+
+    public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
+        mixpanel.trackMap(eventName, myValues);
+    }
+
+    public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
+        mixpanel.track(eventName, jsonObject);
+    }
+
+    public void mixPanelBuild(String eventName) {
+        mixpanel.track(eventName);
+    }
+
+    public void mixPanelFlush() {
+        mixpanel.flush();
+    }
+
+    public void mixPanelTimerStart(String timerName) {
+        mixpanel.timeEvent(timerName);
+    }
+
+    public void mixPanelTimerStop(String timerName) {
+        mixpanel.track(timerName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mixpanel.flush();
+        super.onDestroy();
     }
 }

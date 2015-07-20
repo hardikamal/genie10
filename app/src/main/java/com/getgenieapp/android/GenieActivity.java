@@ -12,12 +12,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -29,30 +36,29 @@ public class GenieActivity extends Activity {
     public SecurePreferences sharedPreferences;
     public GenieApplication genieApplication;
     public FontChangeCrawler fontChangeCrawlerRegular;
-    public FontChangeCrawler fontChangeCrawlerMedium;
-    public FontChangeCrawler fontChangeCrawlerLight;
     public Logging logging;
     public TinyBus mBus;
     public ImageLoader imageLoader;
     public Utils utils;
+    public DBDataSource dbDataSource;
     public MixpanelAPI mixpanel;
+
     /**
      * @param savedInstance
      */
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
-        fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
-        fontChangeCrawlerLight = genieApplication.getFontChangeCrawlerLight();
         sharedPreferences = genieApplication.getSecurePrefs();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();
         gson = new Gson();
         imageLoader = genieApplication.getImageLoader();
         utils = new Utils(this);
+        dbDataSource = new DBDataSource(this);
+        mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         mixpanel.identify(utils.getDeviceSerialNumber());
     }
 
@@ -100,5 +106,35 @@ public class GenieActivity extends Activity {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         }
+    }
+
+    public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
+        mixpanel.trackMap(eventName, myValues);
+    }
+
+    public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
+        mixpanel.track(eventName, jsonObject);
+    }
+
+    public void mixPanelBuild(String eventName) {
+        mixpanel.track(eventName);
+    }
+
+    public void mixPanelFlush() {
+        mixpanel.flush();
+    }
+
+    public void mixPanelTimerStart(String timerName) {
+        mixpanel.timeEvent(timerName);
+    }
+
+    public void mixPanelTimerStop(String timerName) {
+        mixpanel.track(timerName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mixpanel.flush();
+        super.onDestroy();
     }
 }

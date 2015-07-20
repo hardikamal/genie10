@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.android.volley.AuthFailureError;
@@ -17,7 +16,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.getgenieapp.android.Database.DBHandler;
 import com.getgenieapp.android.Extras.DataFields;
-import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.UpdateIntentService;
 import com.getgenieapp.android.GenieActivity;
@@ -44,29 +42,30 @@ public class SplashScreenActivity extends GenieActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        try {
-            JSONObject props = new JSONObject();
-            props.put("Splash Screen", "Entered");
-            mixpanel.track("MainActivity - onCreate called", props);
-        } catch (JSONException e) {
-            Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-        }
+
         logging.LogD("Splash Screen", "Entered ");
+        mixpanelDataAdd.put("Splash Screen", "Entered");
+
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
+
         // Start Database
         new DBHandler(this);
+
         start = System.currentTimeMillis();
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 logging.LogD("GCM BroadCast", "Received");
                 logging.LogD("Read Preference", "Yes");
+                mixpanelDataAdd.put("GCM BroadCast", "Received");
                 boolean sentToken = intent.getBooleanExtra("status", false);
                 boolean verifyStatus = intent.getBooleanExtra("verify", false);
 
@@ -83,16 +82,11 @@ public class SplashScreenActivity extends GenieActivity {
 
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
-            try {
-                JSONObject props = new JSONObject();
-                props.put("Splash Screen Internet Check", "Available");
-                mixpanel.track("MainActivity - onCreate called", props);
-            } catch (JSONException e) {
-                Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-            }
             logging.LogD("Internet", "Available");
+            mixpanelDataAdd.put("Internet", "Available");
             if (checkPlayServices()) {
                 logging.LogD("Play Services", "Up to date");
+                mixpanelDataAdd.put("Play Services", "Up to date");
                 // Start IntentService to register this application with GCM.
                 logging.LogD("Register", "GCM Start");
                 if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
@@ -100,18 +94,13 @@ public class SplashScreenActivity extends GenieActivity {
                     startService(intent);
                 } else {
                     logging.LogV("Register", "Token Not found");
+                    mixpanelDataAdd.put("Register", "Token Not found");
                     runToRegisterPage(true);
                 }
             }
         } else {
-            try {
-                JSONObject props = new JSONObject();
-                props.put("Splash Screen Internet Check", "Offline");
-                mixpanel.track("MainActivity - onCreate called", props);
-            } catch (JSONException e) {
-                Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-            }
             logging.LogD("Internet", "Show Alert");
+            mixpanelDataAdd.put("Internet not found", "Show Alert");
             showAlertToUser();
         }
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
@@ -120,6 +109,7 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mixPanelTimerStart(SplashScreenActivity.class.getName());
         logging.LogI("On Start");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
@@ -128,8 +118,9 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixpanel.flush();
+        mixPanelTimerStop(SplashScreenActivity.class.getName());
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        mixPanelBuildHashMap("General Run " + SplashScreenActivity.class.getName(), mixpanelDataAdd);
         super.onDestroy();
     }
 
@@ -142,26 +133,14 @@ public class SplashScreenActivity extends GenieActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.openSettings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        try {
-                            JSONObject props = new JSONObject();
-                            props.put("Splash Screen Settings Screen", "Clicked");
-                            mixpanel.track("MainActivity - onCreate called", props);
-                        } catch (JSONException e) {
-                            Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                        }
                         logging.LogD("Settings", "Clicked");
+                        mixpanelDataAdd.put("Settings", "Clicked");
                         // opens the settings page
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                     }
                 }).setNegativeButton(R.string.exitapp, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                try {
-                    JSONObject props = new JSONObject();
-                    props.put("Splash Screen Alert", "Exit App");
-                    mixpanel.track("MainActivity - onCreate called", props);
-                } catch (JSONException e) {
-                    Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                }
+                mixpanelDataAdd.put("Alert", "Exit App");
                 // kills the page and exists the app
                 finish();
             }
@@ -180,13 +159,7 @@ public class SplashScreenActivity extends GenieActivity {
                     } catch (Exception err) {
                         err.printStackTrace();
                     }
-                    try {
-                        JSONObject props = new JSONObject();
-                        props.put("Splash Screen", "Going to Walk thru page");
-                        mixpanel.track("MainActivity - onCreate called", props);
-                    } catch (JSONException e) {
-                        Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                    }
+                    mixpanelDataAdd.put("Activity", "Walkthru");
                     logging.LogI("Start Walk Thru Activity");
                     Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
                     startActivity(intent);
@@ -207,13 +180,8 @@ public class SplashScreenActivity extends GenieActivity {
                 } catch (Exception err) {
                     err.printStackTrace();
                 }
-                try {
-                    JSONObject props = new JSONObject();
-                    props.put("Splash Screen", "Go to verify Screen");
-                    mixpanel.track("MainActivity - onCreate called", props);
-                } catch (JSONException e) {
-                    Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                }
+                mixpanelDataAdd.put("Activity", "Verify");
+                mixPanelBuild("Verify Account On Return");
                 logging.LogI("Start Verify Activity");
                 Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
                 intent.putExtra("page", "Verify");
@@ -232,36 +200,33 @@ public class SplashScreenActivity extends GenieActivity {
     }
 
     private void getCategories() {
+        mixpanelDataAdd.put("Server Call", "Categories");
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                        System.out.println(response.toString());
+                        mixpanelDataAdd.put("Server Call", "Categories Success");
                         if (response.length() > 0) {
                             new Thread(new Runnable() {
                                 public void run() {
                                     ArrayList<String> categoriesList = new ArrayList<>();
+                                    for (int i = 0; i < response.length(); i++) {
+                                        try {
+                                            categoriesList.add(response.getJSONObject(i).toString());
+                                            JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
+                                            dbDataSource.UpdateMessages(jsonObject.getInt("id"), jsonObject.getLong("hide_chats_time"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    logging.LogI("Start Main Activity");
                                     try {
                                         logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                                         Thread.sleep(Math.max(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start), 0));
                                     } catch (Exception err) {
                                         err.printStackTrace();
                                     }
-                                    for (int i = 0; i < response.length(); i++) {
-                                        try {
-                                            categoriesList.add(response.getJSONObject(i).toString());
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    try {
-                                        JSONObject props = new JSONObject();
-                                        props.put("Splash Screen", "Go to main screen");
-                                        mixpanel.track("MainActivity - onCreate called", props);
-                                    } catch (JSONException e) {
-                                        Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                                    }
-                                    logging.LogI("Start Main Activity");
+                                    mixpanelDataAdd.put("Activity", "MainActivity");
                                     Intent intent = new Intent(SplashScreenActivity.this, BaseActivity.class);
                                     intent.putExtra("page", "categories");
                                     intent.putStringArrayListExtra("category", categoriesList);
@@ -270,26 +235,16 @@ public class SplashScreenActivity extends GenieActivity {
                                 }
                             }).start();
                         } else {
-                            try {
-                                JSONObject props = new JSONObject();
-                                props.put("Splash Screen Get Categories", "Server Error");
-                                mixpanel.track("MainActivity - onCreate called", props);
-                            } catch (JSONException e) {
-                                Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                            }
+                            mixpanelDataAdd.put("Server Call", "Categories Error");
+                            mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
                             Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    JSONObject props = new JSONObject();
-                    props.put("Splash Screen Get Categories", "500 Error");
-                    mixpanel.track("MainActivity - onCreate called", props);
-                } catch (JSONException e) {
-                    Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                }
+                mixpanelDataAdd.put("Server Call", "Categories Server 500 Error");
+                mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
                 Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                 error.printStackTrace();
             }
@@ -301,7 +256,6 @@ public class SplashScreenActivity extends GenieActivity {
                 return params;
             }
         };
-
         genieApplication.addToRequestQueue(req);
     }
 
@@ -318,13 +272,8 @@ public class SplashScreenActivity extends GenieActivity {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                try {
-                    JSONObject props = new JSONObject();
-                    props.put("Splash Screen device play services", "out of date");
-                    mixpanel.track("MainActivity - onCreate called", props);
-                } catch (JSONException e) {
-                    Log.e("MYAPP", "Unable to add properties to JSONObject", e);
-                }
+                mixpanelDataAdd.put("PlayServices", "Not supported");
+                mixPanelBuild("PlayServices Device Not Supported");
                 logging.LogI("This device is not supported.");
                 finish();
             }

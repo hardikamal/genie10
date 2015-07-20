@@ -48,6 +48,12 @@ public class DBDataSource {
         close();
     }
 
+    public void cleanFavTable() throws SQLException {
+        open();
+        database.execSQL("delete from " + DBHandler.FAVTABLE);
+        close();
+    }
+
     public void close() throws SQLException {
         database.close();
     }
@@ -370,5 +376,18 @@ public class DBDataSource {
         cursor.close();
         close();
         return status;
+    }
+
+    public void UpdateMessages(int id, long hide_chats_time) {
+        open();
+        long time = (System.currentTimeMillis() - (hide_chats_time)) / 1000;
+        database.delete(DBHandler.TABLE, DBHandler.category_id + "=" + id + " AND " + DBHandler.created_at + "<" + time, null);
+        close();
+    }
+
+    public void cleanAll() {
+        cleanCatTable();
+        cleanFavTable();
+        cleanTable();
     }
 }
