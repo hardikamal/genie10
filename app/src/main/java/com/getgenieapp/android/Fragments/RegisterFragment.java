@@ -179,7 +179,7 @@ public class RegisterFragment extends GenieFragment {
         JSONObject json = new JSONObject();
         try {
             json.put("name", name.getText().toString());
-            json.put("phone", "+91" + number.getText().toString());
+            json.put("phone", "+1" + number.getText().toString());
             json.put("device_serial_number", utils.getDeviceSerialNumber());
             json.put("mac_id", utils.getMacId());
             json.put("gcm_token", sharedPreferences.getString(DataFields.GCM_TOKEN, null));

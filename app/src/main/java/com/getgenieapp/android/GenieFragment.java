@@ -16,6 +16,7 @@ import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -30,10 +31,12 @@ public class GenieFragment extends Fragment {
     public Logging logging;
     public TinyBus mBus;
     public Utils utils;
+    public MixpanelAPI mixpanel;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        mixpanel = MixpanelAPI.getInstance(getActivity(), getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         sharedPreferences = genieApplication.getSecurePrefs();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
@@ -44,6 +47,13 @@ public class GenieFragment extends Fragment {
         gson = new Gson();
         utils = new Utils(getActivity());
         dbDataSource = new DBDataSource(getActivity());
+        mixpanel.identify(utils.getDeviceSerialNumber());
+    }
+
+    @Override
+    public void onDestroy() {
+        mixpanel.flush();
+        super.onDestroy();
     }
 
     public static void hideKeyboard(Activity activity) {

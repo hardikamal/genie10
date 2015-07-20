@@ -2,6 +2,8 @@
     <string name="app_name">SuperGenie</string>
     <string name="companyName">SuperGenie</string>
     <string name="version">0.0.0.0</string>
+    <string name="mixpanel">b0495338b2ad0709731791003f5a24af</string>
+
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>
     <string name="title_activity_main">Chat</string>

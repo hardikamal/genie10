@@ -279,6 +279,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     if (actionBar != null) {
                         actionBar.setHomeButtonEnabled(true);
                         actionBar.setDisplayHomeAsUpEnabled(true);
+                        actionBar.setTitle(categorie_selected.getName());
                     }
 
                     mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
@@ -472,7 +473,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Crouton.makeText(BaseActivity.this, getString(R.string.isonline), Style.CONFIRM, R.id.body).show();
                     logging.LogV(args[0].toString());
                     sharedPreferences.edit().putBoolean("agent", true).apply();
                     setChatStatus(true);

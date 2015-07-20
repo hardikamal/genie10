@@ -20,6 +20,7 @@ import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -34,10 +35,12 @@ public class GenieBaseActivity extends AppCompatActivity {
     public TinyBus mBus;
     public Utils utils;
     public DBDataSource dbDataSource;
+    public MixpanelAPI mixpanel;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
         fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
@@ -48,6 +51,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         gson = new Gson();
         utils = new Utils(this);
         dbDataSource = new DBDataSource(this);
+        mixpanel.identify(utils.getDeviceSerialNumber());
     }
 
     public void startFragment(int container, Fragment fragment) {
@@ -71,6 +75,12 @@ public class GenieBaseActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(container, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mixpanel.flush();
+        super.onDestroy();
     }
 
     @Override

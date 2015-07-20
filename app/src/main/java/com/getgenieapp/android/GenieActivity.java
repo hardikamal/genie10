@@ -17,6 +17,7 @@ import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.SecurePreferences.SecurePreferences;
 import com.google.gson.Gson;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -34,13 +35,14 @@ public class GenieActivity extends Activity {
     public TinyBus mBus;
     public ImageLoader imageLoader;
     public Utils utils;
-
+    public MixpanelAPI mixpanel;
     /**
      * @param savedInstance
      */
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
         fontChangeCrawlerMedium = genieApplication.getFontChangeCrawlerMedium();
@@ -51,6 +53,7 @@ public class GenieActivity extends Activity {
         gson = new Gson();
         imageLoader = genieApplication.getImageLoader();
         utils = new Utils(this);
+        mixpanel.identify(utils.getDeviceSerialNumber());
     }
 
     public void setupUI(View view, final Activity activity) {

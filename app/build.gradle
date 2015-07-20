@@ -53,16 +53,16 @@ android {
             applicationId 'com.getgenieapp.android'
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
-            versionCode 1
-            versionName '0.0.1.Beta'
+            versionCode 2
+            versionName '0.0.2.Beta'
         }
         releaseConfig {
             minSdkVersion 14
             applicationId 'com.getgenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
-            versionCode 1
-            versionName '0.0.1.Release'
+            versionCode 2
+            versionName '0.0.2.Alpha'
         }
     }
 }
@@ -86,4 +86,5 @@ dependencies {
         // exclusion is not necessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
+    compile "com.mixpanel.android:mixpanel-android:4.6.2"
 }
