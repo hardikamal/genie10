@@ -254,19 +254,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         }
     }
 
-//    @OnClick(R.id.save)
-//    public void onClickSave() {
-//        final String placeId = String.valueOf(mAutocompleteView.getText());
-//
-//            /*
-//             Issue a request to the Places Geo Data API to retrieve a Place object with additional
-//              details about the place.
-//              */
-//        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-//                .getPlaceById(mGoogleApiClient, placeId);
-//        placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-//    }
-
     @OnClick(R.id.refreshLocation)
     public void onClickRefresh() {
         MessageValues messageValues = getLocation();
@@ -308,7 +295,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @OnClick(R.id.save)
     public void onClickSave() {
         if (mAutocompleteView.getText().toString().trim().length() > 0) {
-            showSaveLaterBoxNoAlert(new MessageValues(2, "Location : "+ mAutocompleteView.getText().toString(), 0.00, 0.00));
+            showSaveLaterBoxNoAlert(new MessageValues(3, "Location : " + mAutocompleteView.getText().toString(), 0.00, 0.00));
         }
     }
 

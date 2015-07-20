@@ -264,6 +264,13 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                    List<Fragment> fragments = fragmentManager.getFragments();
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                            Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                        }
+                    }
                     setChatStatus(true);
                     logging.LogV(args[0].toString());
                     int cid = 0;

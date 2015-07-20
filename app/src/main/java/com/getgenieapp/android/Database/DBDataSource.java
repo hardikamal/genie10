@@ -70,6 +70,26 @@ public class DBDataSource {
         close();
     }
 
+    public void addNormalCategories(Categories categories) {
+        open();
+        if (getCategoriesExists(String.valueOf(categories.getId())) == 1) {
+            ContentValues values = new ContentValues();
+            values.put(DBHandler.cat_name, categories.getName());
+            values.put(DBHandler.img_url, categories.getImage_url());
+            values.put(DBHandler.description, categories.getDescription());
+            values.put(DBHandler.bg_color, categories.getBg_color());
+            values.put(DBHandler.hide_chats_time, String.valueOf(categories.getHide_chats_time()));
+            database.update(DBHandler.CATTABLE, values, DBHandler.cat_id + "==" + categories.getId(), null);
+        } else {
+            deleteCat(String.valueOf(categories.getId()));
+        }
+        close();
+    }
+
+    private void deleteCat(String id) {
+        database.delete(DBHandler.CATTABLE, DBHandler.cat_id + "==" + id, null);
+    }
+
     public void addFast(ArrayList<Messages> data) {
         open();
         String sql = "INSERT OR REPLACE INTO " + DBHandler.TABLE + " ( " + DBHandler.message_id + ", "
@@ -107,7 +127,7 @@ public class DBDataSource {
     public void addFastCategories(ArrayList<Categories> data) {
         open();
         String sql = "INSERT OR REPLACE INTO " + DBHandler.CATTABLE + " ( " + DBHandler.cat_id + ", "
-                + DBHandler.notification + ", " + DBHandler.cat_name + " , " + DBHandler.img_url +
+                + DBHandler.notification + ", " + DBHandler.cat_name + " , " + DBHandler.img_url + " , " +
                 DBHandler.description + ", " + DBHandler.bg_color + " , " + DBHandler.hide_chats_time +
                 " ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
@@ -165,6 +185,20 @@ public class DBDataSource {
                         , DBHandler.hide_chats_time},
                 DBHandler.cat_id + "== " + cat_id, null, null, null, null);
         Categories labels = parseCursorCat(cursor).get(0);
+        cursor.close();
+        close();
+        return labels;
+    }
+
+    public int getCategoriesExists(String cat_id) {
+        open();
+        Cursor cursor = database.query(DBHandler.CATTABLE,
+                new String[]{DBHandler.cat_id, DBHandler.notification
+                        , DBHandler.cat_name, DBHandler.img_url
+                        , DBHandler.description, DBHandler.bg_color
+                        , DBHandler.hide_chats_time},
+                DBHandler.cat_id + "== " + cat_id, null, null, null, null);
+        int labels = parseCursorCat(cursor).size();
         cursor.close();
         close();
         return labels;

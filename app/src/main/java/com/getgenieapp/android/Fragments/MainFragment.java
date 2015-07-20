@@ -81,16 +81,16 @@ public class MainFragment extends GenieFragment {
                             for (int i = 0; i < response.length(); i++) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
-                                    catList.add(new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
+                                    Categories categories = new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
                                             jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
-                                            jsonObject.getLong("hide_chats_time")));
+                                            jsonObject.getLong("hide_chats_time"));
+                                    catList.add(categories);
+                                    dbDataSource.addNormalCategories(categories);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                             if (catList.size() > 0) {
-                                dbDataSource.cleanCatTable();
-                                dbDataSource.addFastCategories(catList);
                                 categoriesList.clear();
                                 for (Categories categories : catList) {
                                     categoriesList.add(categories);
@@ -122,7 +122,6 @@ public class MainFragment extends GenieFragment {
                 return params;
             }
         };
-
         genieApplication.addToRequestQueue(req);
     }
 
@@ -142,6 +141,8 @@ public class MainFragment extends GenieFragment {
                     e.printStackTrace();
                 }
             }
+            dbDataSource.cleanCatTable();
+            dbDataSource.addFastCategories(categoriesList);
         } else {
             refreshData();
         }

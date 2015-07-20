@@ -248,9 +248,13 @@ public class ChatFragment extends GenieFragment {
         super.onStart();
         logging.LogV("Showed", "on Start");
         mBus.register(this);
-        if (messages.size() < dbDataSource.getAllListBasedOnCategory(String.valueOf(id)).size()) {
-            displayMessgaes();
-        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        logging.LogV("on Resume Chat");
+        displayMessgaes();
     }
 
     @Override
