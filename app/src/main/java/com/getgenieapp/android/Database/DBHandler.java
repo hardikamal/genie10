@@ -30,8 +30,18 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String lat = "lat";
     public static final String address = "address";
 
+    public static final String cat_count_id = "cat_count_id";
+    public static final String cat_id = "cat_id";
+    public static final String cat_name = "cat_name";
+    public static final String img_url = "img_url";
+    public static final String description = "description";
+    public static final String bg_color = "bg_color";
+    public static final String hide_chats_time = "hide_chats_time";
+    public static final String notification = "notification";
+
     public static final String FAVTABLE = "favstable";
     public static final String TABLE = "getgenietable";
+    public static final String CATTABLE = "getgenietable";
 
     private static final String DATABASE_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE +
             "(" + id + " INTEGER PRIMARY KEY autoincrement," + message_id + " TEXT," + agent_id + " TEXT,"
@@ -43,6 +53,10 @@ public class DBHandler extends SQLiteOpenHelper {
             "(" + fav_id + " INTEGER PRIMARY KEY autoincrement," + name + " TEXT," + lng + " TEXT,"
             + lat + " TEXT," + address + " TEXT)";
 
+    private static final String DATABASE_CREATE_TABLE_CAT = "CREATE TABLE IF NOT EXISTS " + CATTABLE +
+            "(" + cat_count_id + " INTEGER PRIMARY KEY autoincrement," + cat_id + " INT, " + notification + " INT, " + cat_name + " TEXT," + img_url + " TEXT,"
+            + description + " TEXT," + bg_color + " TEXT," + hide_chats_time + " TEXT)";
+
     public DBHandler(Context context) {
         super(context, DataFields.DBName, null, DataFields.DBVersion);
     }
@@ -51,6 +65,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_TABLE);
         db.execSQL(DATABASE_CREATE_TABLE_FAVS);
+        db.execSQL(DATABASE_CREATE_TABLE_CAT);
     }
 
     @Override
@@ -58,6 +73,7 @@ public class DBHandler extends SQLiteOpenHelper {
         // toast
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + FAVTABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CATTABLE);
         onCreate(db);
     }
 }

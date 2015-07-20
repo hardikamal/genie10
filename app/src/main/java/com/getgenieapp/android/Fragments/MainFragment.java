@@ -89,6 +89,8 @@ public class MainFragment extends GenieFragment {
                                 }
                             }
                             if (catList.size() > 0) {
+                                dbDataSource.cleanCatTable();
+                                dbDataSource.addFastCategories(catList);
                                 categoriesList.clear();
                                 for (Categories categories : catList) {
                                     categoriesList.add(categories);

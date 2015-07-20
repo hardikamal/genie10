@@ -44,6 +44,6 @@ public class PaymentActivity extends GenieBaseActivity {
             }
         });
 
-        webview.loadUrl("http://imojo.in/mrn77");
+        webview.loadUrl("http://imojo.in/1dz4pe");
     }
 }

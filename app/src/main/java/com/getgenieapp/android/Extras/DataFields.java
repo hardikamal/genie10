@@ -25,9 +25,13 @@ public class DataFields {
     public static final String UPDATEGCMURL = "/updategcm";
     public static final String REGISTERURL = "/users";
     private static final String CHAT_SERVER_URL = "http://chat.socket.io";
+
     private static final String StagingServer = "http://staging0.getgenieapp.com";
+    private static final String StagingSocket = "http://staging0chat.getgenieapp.com";
+
     private static final String localServer = "http://192.168.1.27:3000";
     private static final String localSocket = "http://192.168.1.27:3004";
+
     private static final String API = "/api";
     private static final String Version = "/v1";
     public static final String VERIFYURL = "/verifyuser";
@@ -50,6 +54,6 @@ public class DataFields {
     }
 
     public static String getChatUrl() {
-        return localSocket;
+        return StagingSocket;
     }
 }

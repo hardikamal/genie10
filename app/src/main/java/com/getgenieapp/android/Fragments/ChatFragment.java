@@ -356,4 +356,26 @@ public class ChatFragment extends GenieFragment {
             recyclerView.scrollToPosition(messages.size() - 1);
         }
     }
+
+    public void setDisable() {
+        message.setHint(genieApplication.getString(R.string.notavailablemessage));
+        message.setEnabled(false);
+        send.setEnabled(false);
+        send.setButtonColor(getResources().getColor(R.color.color999));
+        send.setShadowColor(getResources().getColor(R.color.color999));
+        messageLayout.setBackgroundColor(getResources().getColor(R.color.colorddd));
+    }
+
+    public void setEnable() {
+        if (!message.isEnabled()) {
+            message.setHint(genieApplication.getString(R.string.notavailablemessage));
+            message.setEnabled(false);
+        }
+        if (!send.isEnabled()) {
+            send.setButtonColor(Color.parseColor(color));
+            send.setShadowColor(Color.parseColor(color));
+            send.setEnabled(false);
+        }
+        messageLayout.setBackgroundColor(getResources().getColor(R.color.white));
+    }
 }

@@ -314,4 +314,5 @@
     <string name="agentistyping">SuperGenie is typing...</string>
     <string name="newmessagereceived">New message Received</string>
     <string name="onconnectionerror">Connection Lost</string>
+    <string name="notavailablemessage">SuperGenie is not available</string>
 </resources>

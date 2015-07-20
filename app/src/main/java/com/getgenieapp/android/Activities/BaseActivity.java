@@ -238,10 +238,25 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 public void run() {
                     Crouton.makeText(BaseActivity.this,
                             getString(R.string.onconnectionerror), Style.ALERT, R.id.body).show();
+                    setChatStatus(false);
                 }
             });
         }
     };
+
+    private void setChatStatus(boolean status) {
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                if (status) {
+                    ((ChatFragment) fragment).setEnable();
+                } else {
+                    ((ChatFragment) fragment).setDisable();
+                }
+            }
+        }
+    }
 
     private Emitter.Listener onMessageReceived = new Emitter.Listener() {
         @Override
@@ -249,7 +264,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println(args[0].toString());
+                    setChatStatus(true);
+                    logging.LogV(args[0].toString());
                     int cid = 0;
                     int aid = 0;
                     int category = 0;

@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.Objects.MessageValues;
 
@@ -35,10 +36,16 @@ public class DBDataSource {
         return database.isOpen();
     }
 
-    public void clean() throws SQLException {
-        if (!isOpen())
-            open();
+    public void cleanTable() throws SQLException {
+        open();
         database.execSQL("delete from " + DBHandler.TABLE);
+        close();
+    }
+
+    public void cleanCatTable() throws SQLException {
+        open();
+        database.execSQL("delete from " + DBHandler.CATTABLE);
+        close();
     }
 
     public void close() throws SQLException {
@@ -97,6 +104,72 @@ public class DBDataSource {
         close();
     }
 
+    public void addFastCategories(ArrayList<Categories> data) {
+        open();
+        String sql = "INSERT OR REPLACE INTO " + DBHandler.CATTABLE + " ( " + DBHandler.cat_id + ", "
+                + DBHandler.notification + ", " + DBHandler.cat_name + " , " + DBHandler.img_url +
+                DBHandler.description + ", " + DBHandler.bg_color + " , " + DBHandler.hide_chats_time +
+                " ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+
+        database.beginTransactionNonExclusive();
+        // db.beginTransaction();
+
+        SQLiteStatement stmt = database.compileStatement(sql);
+        for (Categories categories : data) {
+
+            stmt.bindString(1, String.valueOf(categories.getId()));
+            stmt.bindString(2, String.valueOf(categories.getNotification_count()));
+            stmt.bindString(3, String.valueOf(categories.getName()));
+            stmt.bindString(4, String.valueOf(categories.getImage_url()));
+            stmt.bindString(5, String.valueOf(categories.getDescription()));
+            stmt.bindString(6, String.valueOf(categories.getBg_color()));
+            stmt.bindString(7, String.valueOf(categories.getHide_chats_time()));
+
+            stmt.execute();
+            stmt.clearBindings();
+        }
+
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        close();
+    }
+
+    public void UpdateCatNotification(String catId, int notification) {
+        open();
+        ContentValues cv = new ContentValues();
+        cv.put(DBHandler.notification, notification);
+        database.update(DBHandler.CATTABLE, cv, DBHandler.cat_id + "=" + catId, null);
+        close();
+    }
+
+    public ArrayList<Categories> getAllCategories() {
+        open();
+        Cursor cursor = database.query(DBHandler.CATTABLE,
+                new String[]{DBHandler.cat_id, DBHandler.notification
+                        , DBHandler.cat_name, DBHandler.img_url
+                        , DBHandler.description, DBHandler.bg_color
+                        , DBHandler.hide_chats_time},
+                null, null, null, null, null);
+        ArrayList<Categories> labels = parseCursorCat(cursor);
+        cursor.close();
+        close();
+        return labels;
+    }
+
+    public Categories getCategories(String cat_id) {
+        open();
+        Cursor cursor = database.query(DBHandler.CATTABLE,
+                new String[]{DBHandler.cat_id, DBHandler.notification
+                        , DBHandler.cat_name, DBHandler.img_url
+                        , DBHandler.description, DBHandler.bg_color
+                        , DBHandler.hide_chats_time},
+                DBHandler.cat_id + "== " + cat_id, null, null, null, null);
+        Categories labels = parseCursorCat(cursor).get(0);
+        cursor.close();
+        close();
+        return labels;
+    }
+
     public ArrayList<Messages> getAllMessages() {
         open();
         Cursor cursor = database.query(DBHandler.TABLE,
@@ -138,6 +211,18 @@ public class DBDataSource {
                         Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), messageValues,
                         Integer.parseInt(cursor.getString(6)), Long.parseLong(cursor.getString(7)),
                         Long.parseLong(cursor.getString(8)), Integer.parseInt(cursor.getString(9))));
+            } while (cursor.moveToNext());
+        }
+        return labels;
+    }
+
+    private ArrayList<Categories> parseCursorCat(Cursor cursor) {
+        ArrayList<Categories> labels = new ArrayList<Categories>();
+        if (cursor.moveToFirst()) {
+            do {
+                labels.add(new Categories(cursor.getInt(0), cursor.getInt(1), cursor.getString(5),
+                        cursor.getString(3), cursor.getString(4),
+                        cursor.getString(2), Long.parseLong(cursor.getString(6))));
             } while (cursor.moveToNext());
         }
         return labels;
