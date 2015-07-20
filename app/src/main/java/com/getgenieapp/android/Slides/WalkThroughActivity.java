@@ -8,10 +8,14 @@ import android.view.View;
 import com.getgenieapp.android.Activities.RegisterActivity;
 import com.getgenieapp.android.CustomViews.Misc.AppIntro;
 import com.getgenieapp.android.R;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 public class WalkThroughActivity extends AppIntro {
+    MixpanelAPI mixpanelAPI;
+
     @Override
     public void init(Bundle savedInstanceState) {
+        mixpanelAPI = MixpanelAPI.getInstance(this, getString(R.string.projectId));
         addSlide(SampleSlide.newInstance(R.layout.slide1));
         addSlide(SampleSlide.newInstance(R.layout.slide2));
         addSlide(SampleSlide.newInstance(R.layout.slide3));
@@ -23,15 +27,16 @@ public class WalkThroughActivity extends AppIntro {
         startActivity(intent);
         finish();
     }
-
-    //
+    
     @Override
     public void onSkipPressed() {
+        mixpanelAPI.track("Walk Thru Skip Pressed");
         loadMainActivity();
     }
 
     @Override
     public void onDonePressed() {
+        mixpanelAPI.track("Walk Thru Done Pressed");
         loadMainActivity();
     }
 

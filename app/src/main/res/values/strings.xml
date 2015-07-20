@@ -13,7 +13,7 @@
     <string name="exitapp">Exit App</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="topText">Chat. Order. Done.</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="subText">Genie makes ordering as easy as chatting</string>
     <string name="getstarted">Get Started</string>
     <string name="name">Name</string>
@@ -301,6 +301,7 @@
     <string name="title_activity_base">BaseActivity</string>
     <string name="title_activity_walk_through">WalkThroughActivity</string>
     <string name="skip">Skip</string>
+    <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="locationisoff">Location is OFF</string>
     <string name="opensettings">Open Settings</string>
@@ -314,7 +315,7 @@
     <string name="ohno">"Oh no! "</string>
     <string name="searchlocation">Search Location</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
-    <string name="agentistyping">SuperGenie is typing...</string>
+    <string name="agentistyping">SuperGenie is typing…</string>
     <string name="newmessagereceived">New message Received</string>
     <string name="newmessagereceivedin">New message received in&#160;</string>
     <string name="onconnectionerror">Connection Lost</string>

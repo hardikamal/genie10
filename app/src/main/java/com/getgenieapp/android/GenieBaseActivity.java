@@ -52,6 +52,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         utils = new Utils(this);
         dbDataSource = new DBDataSource(this);
         mixpanel.identify(utils.getDeviceSerialNumber());
+        mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }
 
     public void startFragment(int container, Fragment fragment) {

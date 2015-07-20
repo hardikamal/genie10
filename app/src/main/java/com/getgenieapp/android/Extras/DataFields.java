@@ -5,6 +5,11 @@ import android.os.Environment;
 import java.io.File;
 
 public class DataFields {
+    public static final int ServerSelection = 1;
+    // 1 for Staging
+    // 2 for Test
+    // 3 for Local
+
     public static final int SplashScreenGeneralTimeOut = 3000;
     public static final int VerifyTimeOut = 2000;
     public static final int small400TimeOut = 400;
@@ -24,13 +29,17 @@ public class DataFields {
 
     public static final String UPDATEGCMURL = "/updategcm";
     public static final String REGISTERURL = "/users";
+
     private static final String CHAT_SERVER_URL = "http://chat.socket.io";
 
     private static final String StagingServer = "http://staging0.getgenieapp.com";
     private static final String StagingSocket = "http://staging0chat.getgenieapp.com";
 
-    private static final String localServer = "http://192.168.1.27:3000";
-    private static final String localSocket = "http://192.168.1.27:3004";
+    private static final String TestServer = "http://staging0.getgenieapp.com";
+    private static final String TestSocket = "http://staging0chat.getgenieapp.com";
+
+    private static final String LocalServer = "http://192.168.1.27:3000";
+    private static final String LocalSocket = "http://192.168.1.27:3004";
 
     private static final String API = "/api";
     private static final String Version = "/v1";
@@ -52,10 +61,36 @@ public class DataFields {
     public static int NotificationId = 1;
 
     public static String getServerUrl() {
-        return localServer + API + Version;
+        return findServer(ServerSelection) + API + Version;
     }
 
     public static String getChatUrl() {
-        return localSocket;
+        return findSocket(ServerSelection);
+    }
+
+    private static String findServer(int selection) {
+        switch (selection) {
+            case 1:
+                return StagingServer;
+            case 2:
+                return TestServer;
+            case 3:
+                return LocalServer;
+            default:
+                return StagingServer;
+        }
+    }
+
+    private static String findSocket(int selection) {
+        switch (selection) {
+            case 1:
+                return StagingSocket;
+            case 2:
+                return TestSocket;
+            case 3:
+                return LocalSocket;
+            default:
+                return StagingSocket;
+        }
     }
 }

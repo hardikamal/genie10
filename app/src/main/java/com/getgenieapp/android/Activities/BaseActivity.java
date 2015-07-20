@@ -10,12 +10,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.Fragments.ChatFragment;
@@ -33,6 +29,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -47,6 +44,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     LinearLayout screen;
     private Socket mSocket;
     private static Categories categorie_selected = null;
+    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,15 +55,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         if (getIntent().getExtras() != null) {
             if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
+                mixpanelDataAdd.put("Page", "Load Categories");
                 setSupportActionBar(mToolbar);
                 startFragment(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
             }
             if (getIntent().getStringExtra("page").contains("message")) {
+                mixpanelDataAdd.put("Page", "Go to Chat Screen");
                 int id = sharedPreferences.getInt("catid", 0);
+                mixpanelDataAdd.put("Page", "Go to Category " + id);
                 new NotificationHandler(this).resetNotification();
-                System.out.println(getIntent().getExtras().toString());
                 if (id == 0) {
+                    mixpanelDataAdd.put("Page", "Load Categories Multiple Messages");
+                    mixPanelBuild("Multiple Category Notification");
                     setSupportActionBar(mToolbar);
                     startFragment(R.id.body, new MainFragment());
                     mToolbar.setLogo(R.drawable.genie_logo);
@@ -73,6 +75,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mToolbar.setTitle("");
                 } else {
                     categorie_selected = dbDataSource.getCategories(id);
+                    mixpanelDataAdd.put("Page", "Open Category " + categorie_selected.getName());
+                    mixPanelBuild(categorie_selected.getName() + " Opened from notifications");
                     setSupportActionBar(mToolbar);
                     ActionBar actionBar = getSupportActionBar();
                     if (actionBar != null) {
@@ -91,10 +95,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public void onBackPressed() {
+        mixpanelDataAdd.put("Button Pressed", "Back");
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
+                mixpanelDataAdd.put("Back from", "Payment Fragment");
                 setSupportActionBar(mToolbar);
                 ActionBar actionBar = getSupportActionBar();
                 if (actionBar != null) {
@@ -106,8 +112,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
                 onReceiveFromLeft(categorie_selected);
             } else if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                mixpanelDataAdd.put("Back from", "Chat Fragment");
                 goBack();
             } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                mixpanelDataAdd.put("Back from", "Main Fragment");
                 super.onBackPressed();
             }
         }
@@ -116,13 +124,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     public void onResume() {
         super.onResume();
+        mixpanelDataAdd.put("Activity", "Resumed");
         logging.LogV("Socket Checking");
         if (!mSocket.connected()) {
+            mixpanelDataAdd.put("Socket", "Opened");
             logging.LogV("Socket Opened");
             mSocket.on("reset connection", reset_connection);
             mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-            mSocket.on("user message", sendUserMessage);
             mSocket.on("agents offline", agentOffline);
             mSocket.on("agents online", agentOnline);
             mSocket.on("incoming agent message", onMessageReceived);
@@ -133,10 +142,27 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mixPanelTimerStart(BaseActivity.class.getName());
+        logging.LogI("On Start");
+    }
+
+    @Override
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
+        mixPanelTimerStop(BaseActivity.class.getName());
+        mixPanelBuildHashMap("General Run " + BaseActivity.class.getName(), mixpanelDataAdd);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        mixpanelDataAdd.put("Activity", "Paused");
         logging.LogV("Socket Checking");
         if (mSocket.connected()) {
+            mixpanelDataAdd.put("Socket", "Closed");
             logging.LogV("Socket Closed");
             mSocket.disconnect();
             mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
@@ -144,7 +170,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.off("incoming agent message", onMessageReceived);
             mSocket.off("agents offline", agentOffline);
             mSocket.off("agents online", agentOnline);
-            mSocket.off("user message", sendUserMessage);
             mSocket.off("typing", onTyping);
             mSocket.off("server_error", onServerError);
             mSocket.off("reset connection", reset_connection);
@@ -157,6 +182,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment && data != null) {
+                mixpanelDataAdd.put("Location", "Activity Returned");
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
         }
@@ -173,15 +199,23 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
+                mixpanelDataAdd.put("Pressed", "Home/Back Menu");
+                mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
             case R.id.action_profile:
+                mixpanelDataAdd.put("Pressed", "Profile Menu");
+                mixPanelBuild("Profile Menu Pressed");
                 startActivity(new Intent(BaseActivity.this, UserProfileActivity.class));
                 return true;
             case R.id.action_previous_orders:
+                mixpanelDataAdd.put("Pressed", "Previous Orders Menu");
+                mixPanelBuild("Previous Orders Menu Pressed");
                 startActivity(new Intent(this, OrderDetailsActivity.class));
                 return true;
             case R.id.action_share:
+                mixpanelDataAdd.put("Pressed", "Share Menu");
+                mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
@@ -198,6 +232,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     private void goBack() {
+        mixpanelDataAdd.put("Opened", "Main Fragment");
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -215,8 +250,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void onClick(Categories categories) {
+        mixpanelDataAdd.put("Opened", "Category " + categories.getName());
+        mixPanelBuild(categories.getName() + " Selected from categories Screen");
         categorie_selected = categories;
-        System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
@@ -243,7 +279,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     public void onReceive(Categories categories) {
         categorie_selected = categories;
-        System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
@@ -255,8 +290,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void onReceiveFromLeft(Categories categories) {
+        mixpanelDataAdd.put("Opened", "Category " + categories.getName() + " From Payments");
         categorie_selected = categories;
-        System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
@@ -297,6 +332,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private Emitter.Listener reset_connection = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            mixPanelBuild("Socket Reset Connection");
+            mixpanelDataAdd.put("Socket", "Reset Connection");
             mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
             setChatStatus(true);
         }
@@ -308,6 +345,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mixpanelDataAdd.put("Socket", "Connection Error");
+                    mixPanelBuild("Socket Connection Error");
                     Crouton.makeText(BaseActivity.this,
                             getString(R.string.onconnectionerror), Style.ALERT, R.id.body).show();
                     setChatStatus(false);
@@ -322,8 +361,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                 if (status) {
+                    mixpanelDataAdd.put("Chat", "Enable");
                     ((ChatFragment) fragment).setEnable();
                 } else {
+                    mixpanelDataAdd.put("Chat", "Disable");
                     ((ChatFragment) fragment).setDisable();
                 }
             }
@@ -336,6 +377,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mixpanelDataAdd.put("Message", "Received" + args[0]);
                     setChatStatus(true);
                     logging.LogV(args[0].toString());
                     int cid = 0;
@@ -427,6 +469,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     List<Fragment> fragments = fragmentManager.getFragments();
                     for (Fragment fragment : fragments) {
                         if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                            mixpanelDataAdd.put("Message", "Received in category Screen");
+                            mixPanelBuild("Notification Set from category page");
                             Crouton.cancelAllCroutons();
                             Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
                             Categories categories = dbDataSource.getCategories(messageObject.getCategory());
@@ -439,24 +483,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         }
     };
 
-    private Emitter.Listener sendUserMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-        }
-    };
-
     private Emitter.Listener agentOffline = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mixpanelDataAdd.put("Socket", "Agent Offline");
+                    mixPanelBuild("Agent Offline");
                     new NotificationHandler(BaseActivity.this).cancelNotification(DataFields.ALERTMSG);
                     logging.LogV(args[0].toString());
                     Crouton.makeText(BaseActivity.this, getString(R.string.isoffline), Style.ALERT, R.id.body).show();
@@ -473,6 +507,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mixpanelDataAdd.put("Socket", "Agent Online");
+                    mixPanelBuild("Agent Online");
                     logging.LogV(args[0].toString());
                     sharedPreferences.edit().putBoolean("agent", true).apply();
                     setChatStatus(true);
@@ -488,6 +524,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mixpanelDataAdd.put("Socket", "Set Typing");
                     setTyping();
                 }
             });
@@ -500,35 +537,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    mixpanelDataAdd.put("Socket", "Server Error");
+                    mixPanelBuild("Socket Server Error");
                 }
             });
         }
     };
-
-//    @Override
-//    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        View v = getCurrentFocus();
-//        CircularButton btn = (CircularButton) findViewById(R.id.send);
-//
-//        if (v != null &&
-//                (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) &&
-//                v instanceof EditText &&
-//                !v.getClass().getName().startsWith("android.webkit.")) {
-//            int scrcoords[] = new int[2];
-//            v.getLocationOnScreen(scrcoords);
-//            float x = ev.getRawX() + v.getLeft() - scrcoords[0];
-//            float y = ev.getRawY() + v.getTop() - scrcoords[1];
-//            if (btn != null) {
-//                int[] pos = new int[2];
-//                btn.getLocationOnScreen(pos);
-//                if (ev.getY() <= (pos[1] + btn.getHeight()) && ev.getX() > pos[0]) //location button event
-//                    return super.dispatchTouchEvent(ev);
-//            }
-//            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
-//                hideKeyboard(this);
-//        }
-//
-//        return super.dispatchTouchEvent(ev);
-//    }
 }

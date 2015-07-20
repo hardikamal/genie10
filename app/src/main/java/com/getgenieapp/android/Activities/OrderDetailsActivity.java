@@ -19,6 +19,7 @@ import com.getgenieapp.android.Objects.OrderCategory;
 import com.getgenieapp.android.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,10 +37,26 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     RecyclerView orderList;
     boolean canClose = false;
 
+    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mixPanelTimerStart(LocationActivity.class.getName());
+        logging.LogI("On Start");
+    }
+
+    @Override
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
+        mixPanelTimerStop(LocationActivity.class.getName());
+        mixPanelBuildHashMap("General Run " + LocationActivity.class.getName(), mixpanelDataAdd);
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Socket connection status : " + genieApplication.getSocket().connected());
         setContentView(R.layout.activity_order_details);
         ButterKnife.inject(this);
         ActionBar actionBar = getSupportActionBar();
@@ -51,6 +68,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         if (getIntent().getExtras() != null) {
             canClose = getIntent().getBooleanExtra("canclose", false);
         }
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
@@ -117,5 +135,4 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

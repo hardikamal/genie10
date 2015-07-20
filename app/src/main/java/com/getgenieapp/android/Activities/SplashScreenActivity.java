@@ -161,6 +161,7 @@ public class SplashScreenActivity extends GenieActivity {
                     }
                     mixpanelDataAdd.put("Activity", "Walkthru");
                     logging.LogI("Start Walk Thru Activity");
+                    sharedPreferences.edit().clear().apply();
                     Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
                     startActivity(intent);
                     finish();

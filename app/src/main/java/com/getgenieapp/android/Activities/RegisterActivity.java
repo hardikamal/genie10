@@ -108,7 +108,6 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
         // clear all previous users data
         dbDataSource.cleanAll();
-        sharedPreferences.edit().clear().apply();
 
         getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
         // 60 seconds timer reset
@@ -147,7 +146,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Register register) {
-        sharedPreferences.edit().putString("token", register.getToken());
+        sharedPreferences.edit().putString(DataFields.TOKEN, register.getToken());
         VerifyFragment verifyFragment = new VerifyFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("runtimer", true);

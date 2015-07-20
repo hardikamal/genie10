@@ -60,6 +60,7 @@ public class GenieActivity extends Activity {
         dbDataSource = new DBDataSource(this);
         mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         mixpanel.identify(utils.getDeviceSerialNumber());
+        mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }
 
     public void setupUI(View view, final Activity activity) {

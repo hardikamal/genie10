@@ -48,6 +48,7 @@ public class GenieFragment extends Fragment {
         utils = new Utils(getActivity());
         dbDataSource = new DBDataSource(getActivity());
         mixpanel.identify(utils.getDeviceSerialNumber());
+        mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }
 
     @Override
