@@ -41,7 +41,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public static final String FAVTABLE = "favstable";
     public static final String TABLE = "getgenietable";
-    public static final String CATTABLE = "getgenietable";
+    public static final String CATTABLE = "cattable";
 
     private static final String DATABASE_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE +
             "(" + id + " INTEGER PRIMARY KEY autoincrement," + message_id + " TEXT," + agent_id + " TEXT,"
