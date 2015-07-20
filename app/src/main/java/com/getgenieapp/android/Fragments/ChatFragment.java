@@ -25,7 +25,9 @@ import com.getgenieapp.android.Activities.LocationActivity;
 import com.getgenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
+import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.GenieFragment;
+import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
@@ -81,7 +83,7 @@ public class ChatFragment extends GenieFragment {
         this.viewGroup = container;
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
-
+        Crouton.cancelAllCroutons();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             id = bundle.getInt("id", 0);
@@ -89,6 +91,8 @@ public class ChatFragment extends GenieFragment {
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
+        new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
+        dbDataSource.UpdateCatNotification(id, 0);
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
         message.setTextColor(Color.parseColor(color));
@@ -271,7 +275,10 @@ public class ChatFragment extends GenieFragment {
             chatAdapter.notifyDataSetChanged();
             scroll();
         } else {
-            Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceived), Style.CONFIRM, viewGroup).show();
+            Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+            dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+            System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
+            Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, viewGroup).show();
             // todo add notification
         }
     }

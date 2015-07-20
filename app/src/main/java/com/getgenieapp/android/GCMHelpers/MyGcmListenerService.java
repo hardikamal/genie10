@@ -144,7 +144,7 @@ public class MyGcmListenerService extends GcmListenerService {
             dbDataSource.addNormal(messageObject);
             Log.d(TAG, "From: " + from);
             Log.d(TAG, "Messages: " + data.toString());
-//            dbDataSource.UpdateCatNotification(chat.getCategory(), dbDataSource.getCategories(chat.getCategory()).getNotification_count() + 1);
+            dbDataSource.UpdateCatNotification(chat.getCid(), dbDataSource.getCategories(chat.getCid()).getNotification_count() + 1);
 
             /**
              * Production applications would usually process the message here.

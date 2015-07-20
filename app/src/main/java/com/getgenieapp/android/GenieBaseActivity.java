@@ -66,6 +66,13 @@ public class GenieBaseActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public void startFragmentNoEffect(int container, Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(container, fragment);
+        fragmentTransaction.commit();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);

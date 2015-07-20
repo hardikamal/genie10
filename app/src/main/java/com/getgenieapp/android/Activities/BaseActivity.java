@@ -197,7 +197,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         mToolbar.setLogo(R.drawable.genie_logo);
         mToolbar.setTitle("");
-        startFragmentFromLeft(R.id.body, new MainFragment());
+        MainFragment mainFragment = new MainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("refresh", true);
+        mainFragment.setArguments(bundle);
+        startFragmentFromLeft(R.id.body, mainFragment);
     }
 
     public void onClick(Categories categories) {
@@ -307,13 +311,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
-                    List<Fragment> fragments = fragmentManager.getFragments();
-                    for (Fragment fragment : fragments) {
-                        if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
-                            Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
-                        }
-                    }
                     setChatStatus(true);
                     logging.LogV(args[0].toString());
                     int cid = 0;
@@ -400,6 +397,17 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
                     dbDataSource.addNormal(messageObject);
                     mBus.post(messageObject);
+                    FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                    List<Fragment> fragments = fragmentManager.getFragments();
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                            Crouton.cancelAllCroutons();
+                            Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                            Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                            dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                            ((MainFragment) fragment).refreshDataFromLocal();
+                        }
+                    }
                 }
             });
         }
@@ -440,10 +448,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
-
-    float x1 = 0;
-    float x2 = 0;
-    int MIN_DISTANCE = 10;
 
 //    @Override
 //    public boolean dispatchTouchEvent(MotionEvent ev) {

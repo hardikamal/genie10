@@ -85,7 +85,7 @@ public class NotificationHandler {
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msgExtra)
                         .setStyle(inboxStyle)
-                        .setAutoCancel(false)
+                        .setAutoCancel(true)
                         .setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager =
@@ -162,7 +162,7 @@ public class NotificationHandler {
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)
-                                .setAutoCancel(false)
+                                .setAutoCancel(true)
                                 .setContentIntent(pendingIntent);
 
                 NotificationManager mNotificationManager =
@@ -223,7 +223,7 @@ public class NotificationHandler {
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)
-                                .setAutoCancel(false)
+                                .setAutoCancel(true)
                                 .setContentIntent(pendingIntent);
 
                 NotificationManager mNotificationManager =

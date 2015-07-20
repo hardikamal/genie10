@@ -18,6 +18,8 @@ import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Categories;
+import com.getgenieapp.android.Objects.Chat;
+import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 
 import org.json.JSONArray;
@@ -30,6 +32,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.halfbit.tinybus.Subscribe;
 
 /**
  * Created by Raviteja on 7/15/2015.
@@ -67,6 +70,35 @@ public class MainFragment extends GenieFragment {
     public void onStart() {
         super.onStart();
         hideKeyboard(getActivity());
+        logging.LogV("Showed", "on Start");
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        logging.LogV("Showed", "on Stop");
+        super.onStop();
+    }
+
+    public void refreshDataFromLocal() {
+        ArrayList<Categories> catList = dbDataSource.getAllCategories();
+        if (catList.size() > 0) {
+            categoriesList.clear();
+            for (Categories categories : catList) {
+                categoriesList.add(categories);
+            }
+            if (customAdapter != null) {
+                logging.LogV("Updating View");
+                View v = recyclerView.getChildAt(0);
+                int top = (v == null) ? 0 : v.getTop();
+                customAdapter.notifyDataSetChanged();
+                if (top < categoriesList.size())
+                    recyclerView.scrollToPosition(top);
+
+            }
+            setupCategories(categoriesList);
+        }
     }
 
     private void refreshData() {
@@ -127,25 +159,31 @@ public class MainFragment extends GenieFragment {
 
     private void loadCategories() {
         logging.LogV("Get Categories");
-        if (getActivity().getIntent().getExtras() != null && getActivity().getIntent().hasExtra("category")) {
-            ArrayList<String> rawList = getActivity().getIntent().getStringArrayListExtra("category");
-            if (rawList.size() > 0)
-                categoriesList.clear();
-            for (String raw : rawList) {
-                try {
-                    JSONObject jsonObject = new JSONObject(raw);
-                    categoriesList.add(new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
-                            jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
-                            jsonObject.getLong("hide_chats_time")));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            dbDataSource.cleanCatTable();
-            dbDataSource.addFastCategories(categoriesList);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            refreshDataFromLocal();
         } else {
-            refreshData();
+            if (getActivity().getIntent().getExtras() != null && getActivity().getIntent().hasExtra("category")) {
+                ArrayList<String> rawList = getActivity().getIntent().getStringArrayListExtra("category");
+                if (rawList.size() > 0)
+                    categoriesList.clear();
+                for (String raw : rawList) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(raw);
+                        categoriesList.add(new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
+                                jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
+                                jsonObject.getLong("hide_chats_time")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dbDataSource.cleanCatTable();
+                dbDataSource.addFastCategories(categoriesList);
+            } else {
+                refreshData();
+            }
         }
+
         setupCategories(categoriesList);
     }
 
