@@ -42,7 +42,7 @@ public class NotificationHandler {
                         .setSmallIcon(R.drawable.supergenie_1440)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msg)
-                        .setAutoCancel(false)
+                        .setAutoCancel(true)
                         .setContentIntent(pIntent);
 
         NotificationManager mNotificationManager =

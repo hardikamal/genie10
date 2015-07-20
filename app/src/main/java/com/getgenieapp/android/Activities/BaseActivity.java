@@ -10,8 +10,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.Fragments.ChatFragment;
@@ -67,22 +71,16 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mToolbar.setTitle("");
                 } else {
-                    this.categorie_selected = dbDataSource.getCategories(id);
-
+                    categorie_selected = dbDataSource.getCategories(id);
                     setSupportActionBar(mToolbar);
-
                     ActionBar actionBar = getSupportActionBar();
                     if (actionBar != null) {
                         actionBar.setHomeButtonEnabled(true);
                         actionBar.setDisplayHomeAsUpEnabled(true);
+                        actionBar.setTitle(categorie_selected.getName());
                     }
-
-                    actionBar.setTitle(categorie_selected.getName());
-
                     mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-
                     mToolbar.setTitle(categorie_selected.getName());
-
                     mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
                     onReceive(categorie_selected);
                 }
@@ -113,6 +111,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
             mSocket.on("user message", sendUserMessage);
+            mSocket.on("agents offline", agentOffline);
+            mSocket.on("agents online", agentOnline);
             mSocket.on("incoming agent message", onMessageReceived);
             mSocket.on("typing", onTyping);
             mSocket.on("server_error", onServerError);
@@ -130,6 +130,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
             mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
             mSocket.off("incoming agent message", onMessageReceived);
+            mSocket.off("agents offline", agentOffline);
+            mSocket.off("agents online", agentOnline);
             mSocket.off("user message", sendUserMessage);
             mSocket.off("typing", onTyping);
             mSocket.off("server_error", onServerError);
@@ -150,16 +152,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_base, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
@@ -205,7 +203,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void onClick(Categories categories) {
-        this.categorie_selected = categories;
+        categorie_selected = categories;
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
@@ -232,7 +230,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void onReceive(Categories categories) {
-        this.categorie_selected = categories;
+        categorie_selected = categories;
         System.out.println("Socket connection status : " + mSocket.connected());
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
@@ -274,6 +272,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         @Override
         public void call(Object... args) {
             mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
+            setChatStatus(true);
         }
     };
 
@@ -379,6 +378,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
                     MessageValues messageValues = null;
                     if (chat.getCategory() == 1) {
@@ -420,6 +420,35 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 @Override
                 public void run() {
 
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener agentOffline = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    logging.LogV(args[0].toString());
+                    Crouton.makeText(BaseActivity.this, getString(R.string.isoffline), Style.ALERT, R.id.body).show();
+                    sharedPreferences.edit().putBoolean("agent", false).apply();
+                    setChatStatus(false);
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener agentOnline = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    logging.LogV(args[0].toString());
+                    sharedPreferences.edit().putBoolean("agent", true).apply();
+                    setChatStatus(true);
                 }
             });
         }

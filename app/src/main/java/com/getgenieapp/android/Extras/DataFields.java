@@ -48,13 +48,14 @@ public class DataFields {
     public static final int LOCATION = 2;
     public static final int IMAGE = 3;
     public static final int PAYNOW = 5;
+    public static final int ALERTMSG = 2;
     public static int NotificationId = 1;
 
     public static String getServerUrl() {
-        return StagingServer + API + Version;
+        return localServer + API + Version;
     }
 
     public static String getChatUrl() {
-        return StagingSocket;
+        return localSocket;
     }
 }

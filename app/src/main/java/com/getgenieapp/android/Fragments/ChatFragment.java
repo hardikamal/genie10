@@ -28,7 +28,6 @@ import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.Objects.Categories;
-import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
@@ -43,7 +42,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.halfbit.tinybus.Subscribe;
-import de.keyboardsurfer.android.widget.crouton.Configuration;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -84,13 +82,20 @@ public class ChatFragment extends GenieFragment {
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
         Crouton.cancelAllCroutons();
+
         Bundle bundle = this.getArguments();
+
         if (bundle != null) {
             id = bundle.getInt("id", 0);
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
+
+        if (sharedPreferences.getBoolean("agent", false)) {
+            setDisable();
+        }
+
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
         dbDataSource.UpdateCatNotification(id, 0);
         send.setButtonColor(Color.parseColor(color));
@@ -138,7 +143,7 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
-        displayMessgaes();
+        displayMessages();
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -183,8 +188,8 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
-    private void displayMessgaes() {
-        messages = dbDataSource.getAllListBasedOnCategory(String.valueOf(id));
+    private void displayMessages() {
+        messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
 
         String present = "";
         String now = "";
@@ -258,7 +263,7 @@ public class ChatFragment extends GenieFragment {
     public void onResume() {
         super.onResume();
         logging.LogV("on Resume Chat");
-        displayMessgaes();
+        displayMessages();
     }
 
     @Override
@@ -369,24 +374,36 @@ public class ChatFragment extends GenieFragment {
     }
 
     public void setDisable() {
-        message.setHint(genieApplication.getString(R.string.notavailablemessage));
-        message.setEnabled(false);
-        send.setEnabled(false);
-        send.setButtonColor(getResources().getColor(R.color.color999));
-        send.setShadowColor(getResources().getColor(R.color.color999));
-        messageLayout.setBackgroundColor(getResources().getColor(R.color.colorddd));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                message.setHint(genieApplication.getString(R.string.notavailablemessage));
+                message.setEnabled(false);
+                send.setEnabled(false);
+                send.setButtonColor(getResources().getColor(R.color.color999));
+                send.setShadowColor(getResources().getColor(R.color.color999));
+                messageLayout.setBackgroundColor(getResources().getColor(R.color.colorddd));
+            }
+        });
     }
 
     public void setEnable() {
-        if (!message.isEnabled()) {
-            message.setHint(genieApplication.getString(R.string.notavailablemessage));
-            message.setEnabled(false);
-        }
-        if (!send.isEnabled()) {
-            send.setButtonColor(Color.parseColor(color));
-            send.setShadowColor(Color.parseColor(color));
-            send.setEnabled(false);
-        }
-        messageLayout.setBackgroundColor(getResources().getColor(R.color.white));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!message.isEnabled()) {
+                    Crouton.cancelAllCroutons();
+
+                    message.setHint(genieApplication.getString(R.string.typeamessage));
+                    message.setEnabled(true);
+                }
+                if (!send.isEnabled()) {
+                    send.setButtonColor(Color.parseColor(color));
+                    send.setShadowColor(Color.parseColor(color));
+                    send.setEnabled(true);
+                }
+                messageLayout.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+        });
     }
 }
