@@ -60,6 +60,7 @@ public class VerifyFragment extends GenieFragment {
     Timer timer = new Timer();
     View rootView;
     ViewGroup viewGroup;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,6 +106,7 @@ public class VerifyFragment extends GenieFragment {
     @Override
     public void onStart() {
         super.onStart();
+        mixPanelTimerStart(VerifyFragment.class.getName());
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
@@ -113,6 +115,8 @@ public class VerifyFragment extends GenieFragment {
     public void onStop() {
         mBus.unregister(this);
         timer.cancel();
+        mixPanelTimerStop(VerifyFragment.class.getName());
+        mixPanelBuildHashMap("General Run " + VerifyFragment.class.getName(), mixpanelDataAdd);
         logging.LogV("Showed", "on Stop");
         super.onStop();
     }
@@ -130,6 +134,7 @@ public class VerifyFragment extends GenieFragment {
         if (char1 != null && char2 != null && char3 != null && char4 != null
                 && char1.getText().toString().trim().length() == 0 && char2.getText().toString().trim().length() == 0
                 && char3.getText().toString().trim().length() == 0 && char4.getText().toString().trim().length() == 0) {
+            mixPanelBuild("Automatic Verification Done");
             new Thread(new Runnable() {
                 public void run() {
                     try {
@@ -267,10 +272,12 @@ public class VerifyFragment extends GenieFragment {
         JSONObject json = new JSONObject();
         try {
             json.put("verification_code", Integer.parseInt(code));
+            mixPanelTimerStart(DataFields.getServerUrl() + DataFields.VERIFYURL);
             JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.VERIFYURL, json,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            mixPanelTimerStop(DataFields.getServerUrl() + DataFields.VERIFYURL);
                             System.out.println(response.toString());
                             if (response != null) {
                                 try {
@@ -291,6 +298,7 @@ public class VerifyFragment extends GenieFragment {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    mixPanelTimerStop(DataFields.getServerUrl() + DataFields.VERIFYURL);
                     ((RegisterActivity) getActivity()).onError(new Register());
                 }
             }) {
@@ -311,16 +319,20 @@ public class VerifyFragment extends GenieFragment {
 
     @OnClick(R.id.redoRegistration)
     public void RedoRegistration() {
+        mixPanelBuild("User Clicked RedoRegistration");
         sharedPreferences.edit().clear().apply();
         ((RegisterActivity) getActivity()).onRedo(new Verify());
     }
 
     @OnClick(R.id.tapToResend)
     public void topToResend() {
+        mixPanelBuild("User Clicked Tap to resend");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.RESENDURL);
         JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.RESENDURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.RESENDURL);
                         System.out.println(response.toString());
                         Crouton.makeText(getActivity(), genieApplication.getString(R.string.smsrequestresend), Style.INFO, viewGroup).show();
                         if (response.has("token")) {
@@ -334,6 +346,7 @@ public class VerifyFragment extends GenieFragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.RESENDURL);
                 ((RegisterActivity) getActivity()).onError(new Register());
             }
         }) {
@@ -373,7 +386,7 @@ public class VerifyFragment extends GenieFragment {
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(DataFields.VerifyTimeOut);
+                        Thread.sleep(DataFields.small1000TimeOut);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

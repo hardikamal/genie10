@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.getgenieapp.android.Activities.LocationActivity;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
@@ -85,6 +86,7 @@ public class CustomPlaceAdapter extends RecyclerView.Adapter {
                 intent.putExtra("address", messages.getText());
                 ((Activity) context).setResult(1, intent);
                 ((Activity) context).finish();
+                ((LocationActivity) context).mixPanelBuild("Shared Fav Location from List");
             }
         });
     }

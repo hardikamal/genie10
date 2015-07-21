@@ -16,6 +16,8 @@ import com.getgenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.getgenieapp.android.GenieFragment;
 import com.getgenieapp.android.R;
 
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -30,6 +32,25 @@ public class PaymentFragment extends GenieFragment {
     WebView webview;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    String url = "http://imojo.in/mrn77";
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        hideKeyboard(getActivity());
+        mixPanelTimerStart(PaymentFragment.class.getName());
+        logging.LogV("Showed", "on Start");
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        mixPanelTimerStop(PaymentFragment.class.getName());
+        logging.LogV("Showed", "on Stop");
+        super.onStop();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +63,11 @@ public class PaymentFragment extends GenieFragment {
         this.viewGroup = container;
         View rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
         ButterKnife.inject(this, rootView);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            url = bundle.getString("url", url);
+        }
 
         parentLoadingView.setLoading(true);
         parentLoadingView.setText(getString(R.string.paymentpageload));
@@ -64,7 +90,7 @@ public class PaymentFragment extends GenieFragment {
             }
         });
 
-        webview.loadUrl("http://imojo.in/mrn77");
+        webview.loadUrl(url);
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;

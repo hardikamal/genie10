@@ -37,20 +37,20 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     RecyclerView orderList;
     boolean canClose = false;
 
-    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    public HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     protected void onStart() {
         super.onStart();
-        mixPanelTimerStart(LocationActivity.class.getName());
+        mixPanelTimerStart(OrderDetailsActivity.class.getName());
         logging.LogI("On Start");
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(LocationActivity.class.getName());
-        mixPanelBuildHashMap("General Run " + LocationActivity.class.getName(), mixpanelDataAdd);
+        mixPanelTimerStop(OrderDetailsActivity.class.getName());
+        mixPanelBuildHashMap("General Run " + OrderDetailsActivity.class.getName(), mixpanelDataAdd);
         super.onDestroy();
     }
 
@@ -82,13 +82,10 @@ public class OrderDetailsActivity extends GenieBaseActivity {
 
     private void setupOrders(ArrayList<Order> orders) {
         loadingView.setLoading(false);
-
+        mixpanelDataAdd.put("Size Orders", "Returned Size " + orders.size());
         orderList.setHasFixedSize(true);
         orderList.setLayoutManager(new LinearLayoutManager(this));
         orderList.setAdapter(new CustomOrderAdapter(orders, this));
-
-        // Set the Required Animation to GridView and start the Animation
-        // use fly_in_from_center to have 2nd type of animation effect (snapshot 2)
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_200);
         orderList.setAnimation(anim);
         anim.start();
@@ -96,35 +93,31 @@ public class OrderDetailsActivity extends GenieBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_orders, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
+                mixpanelDataAdd.put("Pressed", "Home/Back Menu");
+                mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
             case R.id.action_profile:
+                mixpanelDataAdd.put("Pressed", "Profile Menu");
+                mixPanelBuild("Profile Menu Pressed");
                 Intent profileIntent = new Intent(this, UserProfileActivity.class);
                 profileIntent.putExtra("canclose", true);
                 startActivity(profileIntent);
                 if (canClose)
                     finish();
                 return true;
-//            case R.id.action_home:
-//                Intent intent = new Intent(this, BaseActivity.class);
-//                intent.putExtra("page", "finish");
-//                startActivity(intent);
-//                finish();
-//                return true;
             case R.id.action_share:
+                mixpanelDataAdd.put("Pressed", "Share Menu");
+                mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

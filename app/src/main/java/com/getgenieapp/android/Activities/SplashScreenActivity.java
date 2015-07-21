@@ -202,10 +202,12 @@ public class SplashScreenActivity extends GenieActivity {
 
     private void getCategories() {
         mixpanelDataAdd.put("Server Call", "Categories");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                         mixpanelDataAdd.put("Server Call", "Categories Success");
                         if (response.length() > 0) {
                             new Thread(new Runnable() {
@@ -244,6 +246,7 @@ public class SplashScreenActivity extends GenieActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                 mixpanelDataAdd.put("Server Call", "Categories Server 500 Error");
                 mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
                 Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();

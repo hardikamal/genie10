@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -68,9 +69,8 @@ public class ChatFragment extends GenieFragment {
     View rootView;
     ViewGroup viewGroup;
 
-    /**
-     * @param savedInstanceState
-     */
+    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,6 +83,7 @@ public class ChatFragment extends GenieFragment {
         ButterKnife.inject(this, rootView);
         Crouton.cancelAllCroutons();
 
+
         Bundle bundle = this.getArguments();
 
         if (bundle != null) {
@@ -91,9 +92,13 @@ public class ChatFragment extends GenieFragment {
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
+        mixpanelDataAdd.put("Chat Fragment", id);
 
         if (!sharedPreferences.getBoolean("agent", true)) {
             setDisable();
+            mixpanelDataAdd.put("Chat Enable", false);
+        } else {
+            mixpanelDataAdd.put("Chat Enable", true);
         }
 
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
@@ -101,7 +106,6 @@ public class ChatFragment extends GenieFragment {
         send.setButtonColor(Color.parseColor(color));
         send.setShadowColor(Color.parseColor(color));
         message.setTextColor(Color.parseColor(color));
-
 
         message.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -177,6 +181,8 @@ public class ChatFragment extends GenieFragment {
         message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    mixpanelDataAdd.put("Chat", "Send Button");
+                    mixPanelBuild("Chat Send Button from Keyboard");
                     send.performClick();
                     return true;
                 }
@@ -190,7 +196,7 @@ public class ChatFragment extends GenieFragment {
 
     private void displayMessages() {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
-
+        mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
         String present = "";
         String now = "";
 
@@ -226,12 +232,14 @@ public class ChatFragment extends GenieFragment {
 
     @Override
     public void onDetach() {
+        mixpanelDataAdd.put("Chat Keyboard", "Hidden");
         hideKeyboard(getActivity());
         super.onDetach();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data.getExtras() != null) {
+            mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
             MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
             Messages messageObject = new Messages("1", 1, 1, 2, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
             messages.add(messageObject);
@@ -257,6 +265,8 @@ public class ChatFragment extends GenieFragment {
         super.onStart();
         logging.LogV("Showed", "on Start");
         mBus.register(this);
+        mixPanelTimerStart(ChatFragment.class.getName());
+        logging.LogI("On Start");
     }
 
     @Override
@@ -269,17 +279,23 @@ public class ChatFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
+        mixPanelTimerStop(ChatFragment.class.getName());
+        mixPanelBuildHashMap("General Run " + ChatFragment.class.getName(), mixpanelDataAdd);
         logging.LogV("Showed", "on Stop");
         super.onStop();
     }
 
     @Subscribe
     public void onMessageReceived(final Messages messageObject) {
+        mixpanelDataAdd.put("Chat Message", "Received");
         if (messageObject.getCategory() == id) {
+            mixpanelDataAdd.put("Chat Message", "Updated");
             messages.add(messageObject);
             chatAdapter.notifyDataSetChanged();
             scroll();
         } else {
+            mixPanelBuild("Message received when user is in different category");
+            mixpanelDataAdd.put("Message", "Different Category");
             Categories categories = dbDataSource.getCategories(messageObject.getCategory());
             dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
             System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
@@ -290,14 +306,14 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
-
-        final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
-        buttonSend.startAnimation(animTranslate);
-
         if (imageResource) {
+            mixpanelDataAdd.put("Chat Button", "Location clicked");
             hideKeyboard(getActivity());
             startActivityForResult(new Intent(getActivity(), LocationActivity.class), LOCATIONRESULT);
         } else {
+            mixpanelDataAdd.put("Chat Button", "Send clicked");
+            final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
+            buttonSend.startAnimation(animTranslate);
             String typedMessage = message.getText().toString().trim();
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
@@ -334,6 +350,7 @@ public class ChatFragment extends GenieFragment {
     }
 
     private void emitMessage(int messageCategory, JSONObject valueJSON) {
+        mixpanelDataAdd.put("Chat Message", "Sent");
         JSONObject jsonObject = new JSONObject();
         try {
             JSONObject subJson = new JSONObject();

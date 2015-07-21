@@ -46,6 +46,7 @@ public class MainFragment extends GenieFragment {
     onSelect on_Select;
     CustomAdapter customAdapter = null;
     ViewGroup viewGroup;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +71,7 @@ public class MainFragment extends GenieFragment {
     public void onStart() {
         super.onStart();
         hideKeyboard(getActivity());
+        mixPanelTimerStart(MainFragment.class.getName());
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
@@ -77,11 +79,14 @@ public class MainFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
+        mixPanelTimerStop(MainFragment.class.getName());
+        mixPanelBuildHashMap("General Run " + MainFragment.class.getName(), mixpanelDataAdd);
         logging.LogV("Showed", "on Stop");
         super.onStop();
     }
 
     public void refreshDataFromLocal() {
+        mixpanelDataAdd.put("Refresh Categories", "From Local");
         ArrayList<Categories> catList = dbDataSource.getAllCategories();
         if (catList.size() > 0) {
             categoriesList.clear();
@@ -102,11 +107,14 @@ public class MainFragment extends GenieFragment {
     }
 
     private void refreshData() {
+        mixpanelDataAdd.put("Refresh Categories", "From Server");
         logging.LogV("Refreshing Data");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                         System.out.println(response.toString());
                         if (response.length() > 0) {
                             ArrayList<Categories> catList = new ArrayList<>();
@@ -144,6 +152,7 @@ public class MainFragment extends GenieFragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                 error.printStackTrace();
             }
         }) {

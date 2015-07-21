@@ -38,6 +38,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -61,8 +63,26 @@ public class RegisterFragment extends GenieFragment {
     ButtonRectangle getStarted;
     View rootView;
     ViewGroup viewGroup;
-
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        hideKeyboard(getActivity());
+        mixPanelTimerStart(RegisterFragment.class.getName());
+        logging.LogV("Showed", "on Start");
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        mixPanelTimerStop(RegisterFragment.class.getName());
+        mixPanelBuildHashMap("General Run " + RegisterFragment.class.getName(), mixpanelDataAdd);
+        logging.LogV("Showed", "on Stop");
+        super.onStop();
+    }
 
     @Override
     public void onResume() {
@@ -176,6 +196,8 @@ public class RegisterFragment extends GenieFragment {
     }
 
     private void RegisterUser() {
+        mixPanelBuild("User Registered");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.REGISTERURL);
         JSONObject json = new JSONObject();
         try {
             json.put("name", name.getText().toString());
@@ -189,6 +211,7 @@ public class RegisterFragment extends GenieFragment {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
+                                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.REGISTERURL);
                                 parentLoadingView.setLoading(false);
                                 if (response != null) {
                                     logging.LogV("GCM Token", response.toString());
@@ -207,6 +230,7 @@ public class RegisterFragment extends GenieFragment {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.REGISTERURL);
                         parentLoadingView.setLoading(false);
                         System.out.println("Error " + error.toString());
                         ((RegisterActivity) getActivity()).onError(new Register());
@@ -227,10 +251,13 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
         if (name.getText().toString().trim().length() == 0) {
+            mixpanelDataAdd.put("Didnt Entered", "Name");
             Crouton.makeText(getActivity(), getString(R.string.pleaseentername), Style.ALERT, viewGroup).show();
         } else if (number.getText().toString().trim().length() < 10) {
+            mixpanelDataAdd.put("Didnt Entered", "Number");
             Crouton.makeText(getActivity(), getString(R.string.pleaseentervalidnumber), Style.ALERT, viewGroup).show();
         } else {
+            mixpanelDataAdd.put("Clicked", "Get Started");
             parentLoadingView.setText(getResources().getString(R.string.registeringuser));
             parentLoadingView.setLoading(true);
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

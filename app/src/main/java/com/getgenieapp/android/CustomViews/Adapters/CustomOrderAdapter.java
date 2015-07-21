@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.getgenieapp.android.Activities.OrderDetailsActivity;
 import com.getgenieapp.android.Extras.Logging;
 import com.getgenieapp.android.GenieApplication;
 import com.getgenieapp.android.Objects.Order;
@@ -87,6 +88,8 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
         viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((OrderDetailsActivity) context).mixpanelDataAdd.put("Pressed", "Repeat Order");
+                ((OrderDetailsActivity) context).mixPanelBuild("Just Clicked Repeat Order");
                 showToast("Just Clicked Repeat Order", Style.INFO);
             }
         });

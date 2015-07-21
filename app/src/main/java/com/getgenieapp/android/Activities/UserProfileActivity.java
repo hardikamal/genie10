@@ -78,6 +78,22 @@ public class UserProfileActivity extends GenieBaseActivity {
     private Uri picUri;
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
     boolean canClose = false;
+    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mixPanelTimerStart(UserProfileActivity.class.getName());
+        logging.LogI("On Start");
+    }
+
+    @Override
+    protected void onDestroy() {
+        logging.LogI("On Destroy");
+        mixPanelTimerStop(UserProfileActivity.class.getName());
+        mixPanelBuildHashMap("General Run " + UserProfileActivity.class.getName(), mixpanelDataAdd);
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +104,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         if (getIntent().getExtras() != null) {
             canClose = getIntent().getBooleanExtra("canclose", false);
         }
+
         update.setTextColor(getResources().getColor(R.color.white));
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
         userIcon.setShadowColor(getResources().getColor(R.color.colorPrimary));
@@ -112,29 +129,22 @@ public class UserProfileActivity extends GenieBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_profile, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
+                mixpanelDataAdd.put("Pressed", "Home/Back Menu");
+                mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
-//            case R.id.action_home:
-//                Intent intent = new Intent(this, BaseActivity.class);
-//                intent.putExtra("page", "finish");
-//                startActivity(intent);
-//                onBackPressed();
-//                finish();
-//                return true;
             case R.id.action_previous_orders:
+                mixpanelDataAdd.put("Pressed", "Previous Orders Menu");
+                mixPanelBuild("Previous Orders Menu Pressed");
                 Intent profileIntent = new Intent(this, OrderDetailsActivity.class);
                 profileIntent.putExtra("canclose", true);
                 startActivity(profileIntent);
@@ -142,6 +152,8 @@ public class UserProfileActivity extends GenieBaseActivity {
                     finish();
                 return true;
             case R.id.action_share:
+                mixpanelDataAdd.put("Pressed", "Share Menu");
+                mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
@@ -158,6 +170,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         if (resultCode == RESULT_OK) {
             // user is returning from capturing an image using the camera
             if (requestCode == CAMERA_CAPTURE) {
+                mixpanelDataAdd.put("Pressed", "Take a picture");
                 picUri = data.getData();
                 // carry out the crop operation
                 performCrop();
@@ -175,6 +188,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 userIcon.setImageBitmap(graphicUtil.getCircleBitmap(thePic, radius));
                 setPicture();
             } else if (requestCode == DataFields.PICK_IMAGE) {
+                mixpanelDataAdd.put("Pressed", "Pick picture");
                 try {
                     ContentResolver resolver = getContentResolver();
                     Uri actualUri = data.getData();
@@ -239,6 +253,7 @@ public class UserProfileActivity extends GenieBaseActivity {
 
 
     private void performCrop() {
+        mixpanelDataAdd.put("Pressed", "Crop it.");
         // take care of exceptions
         try {
             // call the standard crop action intent (the user device may not
@@ -273,6 +288,7 @@ public class UserProfileActivity extends GenieBaseActivity {
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
+                mixPanelBuild("User Profile Picture Clicked " + options[item]);
                 if (options[item].equals("Take Photo")) {
                     try {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -302,11 +318,13 @@ public class UserProfileActivity extends GenieBaseActivity {
 
     @OnClick(R.id.update)
     public void onClickUpdate() {
+        mixpanelDataAdd.put("Pressed", "Update");
         if (name.getText().toString().trim().length() > 0) {
             if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
                 Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidemail), Style.INFO, R.id.body).show();
                 return;
             }
+            mixPanelBuild("User Updated Profile");
             final ProgressDialog progressBar = new ProgressDialog(this);
             progressBar.setCancelable(true);
             progressBar.setMessage(getString(R.string.updatinguserinformation));
@@ -351,6 +369,7 @@ public class UserProfileActivity extends GenieBaseActivity {
     }
 
     private void setPicture() {
+        mixPanelBuild("User Updated Profile picture");
         userIcon.setDrawingCacheEnabled(true);
         Bitmap bitmap = userIcon.getDrawingCache();
         try {
@@ -374,6 +393,8 @@ public class UserProfileActivity extends GenieBaseActivity {
 
     @OnClick(R.id.locationButton)
     public void onCLickLocation() {
+        mixPanelBuild("User Updated Profile Location");
+        mixpanelDataAdd.put("Pressed", "Location Button to update user location");
         final ProgressDialog progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);
         progressBar.setMessage(getString(R.string.gettinglocationinfo));
