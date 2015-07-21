@@ -83,7 +83,6 @@ dependencies {
     compile 'com.github.nkzawa:socket.io-client:0.5.1'
     compile 'com.intuit.sdp:sdp-android:1.0.0'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
-        // exclusion is not necessary, but generally a good idea.
         exclude group: 'com.google.android', module: 'support-v4'
     }
     compile "com.mixpanel.android:mixpanel-android:4.6.2"
