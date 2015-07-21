@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/_10sdp"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -49,18 +48,6 @@
                 android:textColor="@android:color/primary_text_light"
                 android:visibility="gone" />
 
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
-                android:id="@+id/save"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:src="@drawable/ic_add_white_24dp"
-                android:visibility="gone"
-                app:buttonColor="@color/colorPrimary"
-                app:shadowColor="@color/colorPrimary" />
         </LinearLayout>
 
         <com.getgenieapp.android.CustomViews.Button.CircularButton

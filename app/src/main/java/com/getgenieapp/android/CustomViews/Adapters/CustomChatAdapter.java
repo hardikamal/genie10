@@ -25,8 +25,10 @@ import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.getgenieapp.android.Extras.Utils;
+import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.PaymentFragment;
 import com.getgenieapp.android.GenieApplication;
+import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
@@ -181,6 +183,24 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     viewHolderMain.loadingview.setLoading(true);
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        for (Messages msg : messagesList) {
+//                            if (msg.getMessageType() == 1 || msg.getMessageType() == 2 || msg.getMessageType() == 3 || msg.getMessageType() == 5) {
+//                                jsonObject.put("cid", msg.getCategory());
+//                                jsonObject.put("timestamp", msg.getCreatedAt());
+//                                break;
+//                            }
+                        }
+                        if (!jsonObject.has("cid") && messagesList.size() > 0) {
+                            jsonObject.put("cid", messagesList.get(0).getCategory());
+                            jsonObject.put("timestamp", System.currentTimeMillis());
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (jsonObject.has("cid"))
+                        ((BaseActivity) context).sendLoadMoreMessagesCall(jsonObject);
                 }
             });
         } else if (messages.getMessageType() == 9) {

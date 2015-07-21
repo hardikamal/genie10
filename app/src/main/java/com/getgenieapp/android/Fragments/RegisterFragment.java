@@ -1,9 +1,11 @@
 package com.getgenieapp.android.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -31,6 +34,7 @@ import com.getgenieapp.android.Extras.UIHelpers;
 import com.getgenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.getgenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.getgenieapp.android.GenieFragment;
+import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Register;
 import com.getgenieapp.android.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -49,10 +53,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 public class RegisterFragment extends GenieFragment {
 
     UIHelpers uiHelpers;
-    @InjectView(R.id.topText)
-    TextView topText;
-    @InjectView(R.id.subText)
-    TextView subText;
     @InjectView(R.id.name)
     MaterialEditText name;
     @InjectView(R.id.number)
@@ -61,6 +61,8 @@ public class RegisterFragment extends GenieFragment {
     LoadingView parentLoadingView;
     @InjectView(R.id.getStarted)
     ButtonRectangle getStarted;
+    @InjectView(R.id.areacode)
+    EditText areaCode;
     View rootView;
     ViewGroup viewGroup;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
@@ -148,6 +150,8 @@ public class RegisterFragment extends GenieFragment {
                 return false;
             }
         });
+
+        areaCode.setText("+" + utils.GetCountryZipCode());
 
         name.addTextChangedListener(new TextWatcher() {
 
@@ -271,5 +275,19 @@ public class RegisterFragment extends GenieFragment {
         public void onSuccess(Register register);
 
         public void onError(Register register);
+    }
+
+    @OnClick(R.id.terms)
+    public void onCLickTerms() {
+        mixPanelBuild("User Clicked Terms and Conditions");
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setMessage("Terms and Services")
+                .setTitle("Terms and Conditions")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert.show();
     }
 }

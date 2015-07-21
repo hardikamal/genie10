@@ -5,7 +5,7 @@ import android.os.Environment;
 import java.io.File;
 
 public class DataFields {
-    public static final int ServerSelection = 1;
+    public static final int ServerSelection = 3;
     // 1 for Staging
     // 2 for Test
     // 3 for Local
@@ -61,36 +61,10 @@ public class DataFields {
     public static int NotificationId = 1;
 
     public static String getServerUrl() {
-        return findServer(ServerSelection) + API + Version;
+        return StagingServer + API + Version;
     }
 
     public static String getChatUrl() {
-        return findSocket(ServerSelection);
-    }
-
-    private static String findServer(int selection) {
-        switch (selection) {
-            case 1:
-                return StagingServer;
-            case 2:
-                return TestServer;
-            case 3:
-                return LocalServer;
-            default:
-                return StagingServer;
-        }
-    }
-
-    private static String findSocket(int selection) {
-        switch (selection) {
-            case 1:
-                return StagingSocket;
-            case 2:
-                return TestSocket;
-            case 3:
-                return LocalSocket;
-            default:
-                return StagingSocket;
-        }
+        return StagingSocket;
     }
 }

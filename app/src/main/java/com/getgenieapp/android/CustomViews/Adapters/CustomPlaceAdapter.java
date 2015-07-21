@@ -26,6 +26,8 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Created by Raviteja on 7/10/2015.
@@ -72,11 +74,19 @@ public class CustomPlaceAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final MessageValues messages = messagesList.get(position);
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
         viewHolderMain.title.setText(messages.getName());
         viewHolderMain.address.setText(messages.getText());
+        viewHolderMain.main.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((LocationActivity) context).deletePlace(messagesList.get(position));
+//                Crouton.makeText((Activity) context, messagesList.get(position).getName() + " is Deleted", Style.INFO, R.id.list).show();
+                return true;
+            }
+        });
         viewHolderMain.main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

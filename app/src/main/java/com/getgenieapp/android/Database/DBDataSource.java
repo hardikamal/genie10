@@ -390,4 +390,10 @@ public class DBDataSource {
         cleanFavTable();
         cleanTable();
     }
+
+    public void deleteFav(MessageValues messageValues) {
+        open();
+        database.delete(DBHandler.FAVTABLE, DBHandler.name + " == '" + messageValues.getName() + "'", null);
+        cleanTable();
+    }
 }

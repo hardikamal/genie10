@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -20,15 +21,18 @@ import com.getgenieapp.android.Fragments.PaymentFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
+import com.getgenieapp.android.Objects.ChatArray;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -134,9 +138,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
             mSocket.on("agents offline", agentOffline);
             mSocket.on("agents online", agentOnline);
+            mSocket.on("earlier messages", loadMoreMessages);
             mSocket.on("incoming agent message", onMessageReceived);
             mSocket.on("typing", onTyping);
             mSocket.on("server_error", onServerError);
+            mSocket.on("got category chats", onReceivedMessagesList);
             mSocket.connect();
         }
     }
@@ -170,9 +176,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.off("incoming agent message", onMessageReceived);
             mSocket.off("agents offline", agentOffline);
             mSocket.off("agents online", agentOnline);
+            mSocket.on("earlier messages", loadMoreMessages);
             mSocket.off("typing", onTyping);
             mSocket.off("server_error", onServerError);
             mSocket.off("reset connection", reset_connection);
+            mSocket.off("got category chats", onReceivedMessagesList);
         }
     }
 
@@ -335,6 +343,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mixPanelBuild("Socket Reset Connection");
             mixpanelDataAdd.put("Socket", "Reset Connection");
             mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("token", sharedPreferences.getString(DataFields.TOKEN, null));
+                jsonObject.put("timestamp", System.currentTimeMillis());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit("get category chats", jsonObject);
             setChatStatus(true);
         }
     };
@@ -354,6 +370,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
+
+
 
     private void setChatStatus(boolean status) {
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
@@ -531,6 +549,18 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         }
     };
 
+    private Emitter.Listener onReceivedMessagesList = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(args[0]);
+                }
+            });
+        }
+    };
+
     private Emitter.Listener onServerError = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -543,4 +573,109 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
+
+    private Emitter.Listener loadMoreMessages = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<Messages> chatArrayList = new ArrayList<>();
+                    try {
+                        logging.LogV(args[0].toString());
+                        JSONObject mainTopArray = new JSONObject(args[0].toString());
+                        JSONArray array = mainTopArray.getJSONArray("messages");
+                        for (int i = 0; i < array.length(); i++) {
+                            int cid = 0;
+                            int aid = 0;
+                            int category = 0;
+                            String text = "";
+                            int status = 0;
+                            int sender_id = 0;
+                            long created_at = 0;
+                            long updated_at = 0;
+                            String id = "";
+                            double lng = 0;
+                            double lat = 0;
+                            String url = "";
+                            try {
+                                JSONObject jsonObject = new JSONObject(array.get(i).toString());
+                                if (jsonObject.has("cid")) {
+                                    cid = jsonObject.getInt("cid");
+                                }
+                                if (jsonObject.has("_id")) {
+                                    id = jsonObject.getString("_id");
+                                }
+                                if (jsonObject.has("message")) {
+                                    JSONObject message = jsonObject.getJSONObject("message");
+                                    if (message.has("category")) {
+                                        category = message.getInt("category");
+                                    }
+                                    if (message.has("status")) {
+                                        status = message.getInt("status");
+                                    }
+                                    if (message.has("sender_id")) {
+                                        sender_id = message.getInt("sender_id");
+                                    }
+                                    if (message.has("created_at")) {
+                                        created_at = message.getLong("created_at");
+                                    }
+                                    if (message.has("updated_at")) {
+                                        updated_at = message.getLong("updated_at");
+                                    }
+                                    if (message.has("category_value")) {
+                                        JSONObject category_value = message.getJSONObject("category_value");
+                                        if (category == 1) {
+                                            if (category_value.has("text"))
+                                                text = category_value.getString("text");
+                                        } else if (category == 2) {
+                                            if (category_value.has("lng"))
+                                                lng = category_value.getDouble("lng");
+                                            if (category_value.has("lat"))
+                                                lat = category_value.getDouble("lat");
+                                            if (category_value.has("text"))
+                                                text = category_value.getString("text");
+                                        } else if (category == 3) {
+                                            if (category_value.has("text"))
+                                                text = category_value.getString("text");
+                                            if (category_value.has("url"))
+                                                url = category_value.getString("url");
+                                        }
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
+                            MessageValues messageValues = null;
+                            if (chat.getCategory() == 1) {
+                                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+                            }
+                            if (chat.getCategory() == 2) {
+                                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
+                            }
+                            if (chat.getCategory() == 3) {
+                                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
+                            }
+                            if (chat.getCategory() == 5) {
+                                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+                            }
+
+                            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+                            dbDataSource.addNormal(messageObject);
+                            chatArrayList.add(messageObject);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mBus.post(new ChatArray(chatArrayList));
+                }
+            });
+        }
+    };
+
+    public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
+        mSocket.emit("load earlier messages", jsonObject);
+    }
 }

@@ -72,7 +72,7 @@
     <string name="mapservicemissing">MAP SERVICE MISSING</string>
     <string name="mapupdate">MAP UPDATE REQUIRED</string>
     <string name="sendcurrentlocation">Send your location</string>
-    <string name="favorites">My Favorites</string>
+    <string name="favorites">My Favorites (Tap to send/ long press to delete)</string>
     <string name="mapapikey">AIzaSyAKq3vK3ugt7_Guk7a1uIdygRoHefAB_bM</string>
     <string name="errorinaccessinglocation">Error in accessing location</string>
     <string name="alerttopmessage">You can save this location as favorites. Helps you to use it in future.</string>
@@ -324,4 +324,7 @@
     <string name="isoffline">SuperGenie is Offline</string>
     <string name="isonline">SuperGenie is Online</string>
     <string name="paymentpageload">Loading Payment Page</string>
+    <string name="plus91">+91</string>
+    <string name="bysigining">By Signing, I agree to SuperGenie app&#160;</string>
+    <string name="termsandservices"><u>Terms and Conditions</u></string>
 </resources>

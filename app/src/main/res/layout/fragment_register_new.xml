@@ -27,8 +27,7 @@
             android:id="@+id/parentLoadingView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/e3f2fd"
-            android:padding="@dimen/_10sdp"
+
             app:lv_color="@android:color/holo_red_dark"
             app:lv_loading="false"
             app:lv_title="@string/loading">
@@ -39,79 +38,77 @@
                 android:gravity="top"
                 android:orientation="vertical">
 
-                <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
-                    android:id="@+id/topText"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="@string/topText"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textIsSelectable="false"
-                    android:textSize="@dimen/_36sdp"
-                    android:visibility="gone" />
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_10sdp">
 
-                <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
-                    android:id="@+id/subText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_30sdp"
-                    android:layout_marginRight="@dimen/_30sdp"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="@string/subText"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textIsSelectable="false"
-                    android:textSize="@dimen/_16sdp"
-                    android:visibility="gone" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_minus5sdp"
-                    android:layout_marginRight="@dimen/_5sdp"
-                    android:layout_marginStart="@dimen/_minus5sdp"
-                    android:hint="@string/name"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords"
-                    android:textSize="@dimen/_18sdp"
-                    android:maxLength="50"
-                    android:singleLine="true"
-                    android:textColorHighlight="@color/colorPrimaryDark"
-                    app:met_baseColor="@color/color444"
-                    app:met_floatingLabel="highlight"
-                    app:met_iconLeft="@drawable/ic_person_white_24dp"
-                    app:met_iconPadding="0dp"
-                    app:met_maxCharacters="50"
-                    app:met_primaryColor="@color/color444"
-                    app:met_textColorHint="@color/colorPrimaryDark" />
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginLeft="@dimen/_minus5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:layout_marginStart="@dimen/_minus5sdp"
+                        android:hint="@string/name"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:maxLength="50"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/colorPrimaryDark"
+                        android:textSize="@dimen/_18sdp"
+                        app:met_baseColor="@color/color444"
+                        app:met_floatingLabel="highlight"
+                        app:met_iconLeft="@drawable/ic_person_white_24dp"
+                        app:met_iconPadding="0dp"
+                        app:met_maxCharacters="50"
+                        app:met_primaryColor="@color/color444"
+                        app:met_textColorHint="@color/colorPrimaryDark" />
 
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_marginLeft="@dimen/_minus5sdp"
-                    android:layout_marginRight="@dimen/_5sdp"
-                    android:layout_marginStart="@dimen/_minus5sdp"
-                    android:background="@drawable/background_button_rectangle"
-                    android:hint="@string/number"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    android:maxLength="10"
-                    android:singleLine="true"
-                    android:textSize="@dimen/_18sdp"
-                    android:textColorHighlight="@color/colorPrimaryDark"
-                    app:met_baseColor="@color/color444"
-                    app:met_floatingLabel="highlight"
-                    app:met_iconLeft="@drawable/plus91"
-                    app:met_iconPadding="0dp"
-                    app:met_maxCharacters="10"
-                    app:met_primaryColor="@color/color444"
-                    app:met_textColorHint="@color/colorPrimaryDark" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/areacode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="10dp"
+                            android:background="@android:color/transparent"
+                            android:editable="false"
+                            android:gravity="center"
+                            android:hint="@string/plus91"
+                            android:textColorHighlight="@color/color999"
+                            android:textSize="@dimen/_18sdp" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/number"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_weight="1"
+                            android:hint="@string/number"
+                            android:imeOptions="actionDone"
+                            android:inputType="phone"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:textColorHighlight="@color/colorPrimaryDark"
+                            android:textSize="@dimen/_18sdp"
+                            app:met_baseColor="@color/color444"
+                            app:met_floatingLabel="highlight"
+                            app:met_maxCharacters="10"
+                            app:met_primaryColor="@color/color444"
+                            app:met_textColorHint="@color/colorPrimaryDark" />
+                    </LinearLayout>
+                </LinearLayout>
+
 
                 <com.getgenieapp.android.CustomViews.Button.ButtonRectangle
                     android:id="@+id/getStarted"
@@ -119,11 +116,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
                     android:inputType="text"
-                    android:textColor="@color/color999"
-                    android:text="@string/getstarted" />
+                    android:text="@string/getstarted"
+                    android:textColor="@color/color999" />
             </LinearLayout>
 
         </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="@string/bysigining"
+                android:textSize="@dimen/_7sdp" />
+
+            <Button
+                android:id="@+id/terms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="@string/termsandservices"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </LinearLayout>
 

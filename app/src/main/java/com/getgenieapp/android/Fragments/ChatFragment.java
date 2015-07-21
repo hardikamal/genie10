@@ -147,7 +147,8 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
-        displayMessages();
+        displayMessages(true);
+
         message.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -194,8 +195,10 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
-    private void displayMessages() {
+    private void displayMessages(boolean status) {
+        System.out.println("Hide Time : "+hide_time);
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
+        System.out.println("Messages Size "+ messages.size());
         mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
         String present = "";
         String now = "";
@@ -216,15 +219,17 @@ public class ChatFragment extends GenieFragment {
             present = now;
         }
 
-        if (hide_time != 0) {
+        if (hide_time != 0 && status) {
             messages.add(0, new Messages("0", 1, 1, 8, id, new MessageValues(), 0, 0, 0, 0));
         }
 
+        recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
         recyclerView.setAdapter(chatAdapter);
-        scroll();
+        if (status)
+            scroll();
         Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_100);
         recyclerView.setAnimation(anim);
         anim.start();
@@ -273,7 +278,7 @@ public class ChatFragment extends GenieFragment {
     public void onResume() {
         super.onResume();
         logging.LogV("on Resume Chat");
-        displayMessages();
+        displayMessages(true);
     }
 
     @Override
@@ -301,6 +306,15 @@ public class ChatFragment extends GenieFragment {
             System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
             Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, viewGroup).show();
             // todo add notification
+        }
+    }
+
+    @Subscribe
+    public void onPreviousMessagesReceived(final ArrayList<Messages> messageObject) {
+        if (messageObject.size() == 15) {
+            displayMessages(true);
+        } else {
+            displayMessages(false);
         }
     }
 

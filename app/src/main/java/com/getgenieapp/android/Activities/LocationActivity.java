@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,9 +94,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     Button pickplacebutton;
     @InjectView(R.id.autocomplete_places)
     AutoCompleteTextView mAutocompleteView;
-    @InjectView(R.id.save)
-    CircularButton save;
+    @InjectView(R.id.searchlayout)
+    LinearLayout searchLayout;
 
+    private MessageValues messageValues = null;
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     private int LOCATIONRESULT = 1;
@@ -122,7 +124,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         logging.LogI("On Destroy");
         mixPanelTimerStop(LocationActivity.class.getName());
         mixPanelBuildHashMap("General Run " + LocationActivity.class.getName(), mixpanelDataAdd);
-        super.onDestroy();
+        super.
+
+                onDestroy();
+
     }
 
     @Override
@@ -142,15 +147,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
                 .getMap();
-
-        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
-        recyclerView.setAdapter(chatAdapter);
-        dialog = new AlertDialog.Builder(this);
-
+        displayFavLocations();
         checkLocationStatus();
 
         new Thread(new Runnable() {
@@ -174,25 +171,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        mAutocompleteView.addTextChangedListener(new TextWatcher() {
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mAutocompleteView.getText().toString().trim().length() > 0) {
-                    save.setVisibility(View.VISIBLE);
-                } else {
-                    save.setVisibility(View.GONE);
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            public void afterTextChanged(Editable s) {
-            }
-
-        });
-
         // Register a listener that receives callbacks when a suggestion has been selected
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
 
@@ -211,10 +189,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
                 if (String.valueOf(place.getAddress()).length() > 0) {
-                    MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+                    messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
                     showSaveLaterBox(messageValues);
                 } else {
-                    MessageValues messageValues = new MessageValues(3, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
+                    messageValues = new MessageValues(3, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
                     showSaveLaterBox(messageValues);
                 }
             }
@@ -288,7 +266,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @OnClick(R.id.refreshLocation)
     public void onClickRefresh() {
         mixpanelDataAdd.put("Pressed", "Refresh Button");
-        MessageValues messageValues = getLocation();
+        messageValues = getLocation();
         LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
 
         map.addMarker(new MarkerOptions().position(currentLocation)
@@ -298,7 +276,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
 
         // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
+        map.animateCamera(CameraUpdateFactory.zoomTo(18), 3000, null);
     }
 
     @OnClick(R.id.pickplaces)
@@ -328,16 +306,9 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         locationButton.performClick();
     }
 
-    @OnClick(R.id.save)
-    public void onClickSave() {
-        mixpanelDataAdd.put("Pressed", "Save Button");
-        if (mAutocompleteView.getText().toString().trim().length() > 0) {
-            showSaveLaterBoxNoAlert(new MessageValues(3, "Location : " + mAutocompleteView.getText().toString(), 0.00, 0.00));
-        }
-    }
-
     @OnClick(R.id.search)
     public void onClickSearch() {
+        searchLayout.setBackgroundColor(getResources().getColor(R.color.white));
         mixpanelDataAdd.put("Pressed", "Search Button");
         mixPanelBuild("Search Location Button Clicked");
         mAutocompleteView.setVisibility(View.VISIBLE);
@@ -350,7 +321,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     public void onClickLocationButton() {
         mixpanelDataAdd.put("Pressed", "Share my Location Button");
         mixPanelBuild("Share My Location Button Clicked");
-        MessageValues messageValues = getLocation();
+        if (messageValues == null)
+            messageValues = getLocation();
         showSaveLaterBox(messageValues);
     }
 
@@ -374,6 +346,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setView(promptsView)
                     .setTitle("Save as Favorite Place")
+                    .setCancelable(true)
                     .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
@@ -541,7 +514,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             // Get the Place object from the buffer.
             final Place place = places.get(0);
 
-            MessageValues messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+            messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
             LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
 
             map.addMarker(new MarkerOptions().position(currentLocation)
@@ -552,8 +525,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
             // Zoom in, animating the camera.
             map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
-            showSaveLaterBox(messageValues);
+
             mixpanelDataAdd.put("Google Location Search", "Returned Results");
+
+            hideKeyboard(LocationActivity.this);
             places.release();
         }
     };
@@ -590,4 +565,21 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             mixPanelBuild("Google Location Service Resulted shared");
         }
     };
+
+    public void deletePlace(MessageValues messageValues) {
+        dbDataSource.deleteFav(messageValues);
+        displayFavLocations();
+    }
+
+    private void displayFavLocations() {
+        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
+        recyclerView.removeAllViews();
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
+        recyclerView.setAdapter(chatAdapter);
+        dialog = new AlertDialog.Builder(this);
+
+    }
 }

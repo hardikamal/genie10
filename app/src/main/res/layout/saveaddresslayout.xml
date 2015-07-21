@@ -6,14 +6,6 @@
     android:padding="@dimen/_20sdp">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_5sdp"
-        android:text="@string/alerttopmessage"
-        android:textColor="#000000"
-        android:textSize="@dimen/_15sdp" />
-
-    <TextView
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

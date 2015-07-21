@@ -202,6 +202,7 @@ public class MainFragment extends GenieFragment {
     private void setupCategories(ArrayList<Categories> categoriesList) {
         loadingView.setLoading(false);
         logging.LogV("Close Loading View and Set Recycler");
+        recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         customAdapter = new CustomAdapter(categoriesList, getActivity());

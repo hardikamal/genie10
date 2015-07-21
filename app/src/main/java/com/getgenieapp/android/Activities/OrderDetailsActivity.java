@@ -83,6 +83,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     private void setupOrders(ArrayList<Order> orders) {
         loadingView.setLoading(false);
         mixpanelDataAdd.put("Size Orders", "Returned Size " + orders.size());
+        orderList.removeAllViews();
         orderList.setHasFixedSize(true);
         orderList.setLayoutManager(new LinearLayoutManager(this));
         orderList.setAdapter(new CustomOrderAdapter(orders, this));

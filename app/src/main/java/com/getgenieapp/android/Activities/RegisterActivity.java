@@ -109,7 +109,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
         // clear all previous users data
         dbDataSource.cleanAll();
 
-        getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
+//        getWindow().setBackgroundDrawableResource(R.drawable.pattern_signup);
         // 60 seconds timer reset
         time = 61;
 
