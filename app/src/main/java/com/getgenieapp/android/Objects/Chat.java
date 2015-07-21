@@ -4,12 +4,11 @@ package com.getgenieapp.android.Objects;
  * Created by Raviteja on 7/18/2015.
  */
 public class Chat {
-    int cid;
-    int aid;
-    int category;
+    int category_Id;
+    int direction;
     String text;
     int status;
-    int sender_id;
+    int type;
     long created_at;
     long updated_at;
     String id;
@@ -17,43 +16,56 @@ public class Chat {
     double lat;
     String url;
 
-    public Chat(int cid, int aid, int category, String text, int status, int sender_id, long created_at, long updated_at, String id, double lng, double lat, String url) {
-        this.cid = cid;
-        this.aid = aid;
-        this.category = category;
+    public Chat(String id, int category_Id, int direction, int status, long created_at, long updated_at, int type, String text) {
+        this.category_Id = category_Id;
+        this.direction = direction;
         this.text = text;
         this.status = status;
-        this.sender_id = sender_id;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.id = id;
-        this.lng = lng;
-        this.lat = lat;
+        this.type = type;
+    }
+
+    public Chat(String id, int category_Id, int direction, int status, long created_at, long updated_at, int type, String url, String text) {
+        this.category_Id = category_Id;
+        this.direction = direction;
+        this.text = text;
         this.url = url;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.id = id;
+        this.type = type;
     }
 
-    public int getCid() {
-        return cid;
+    public Chat(String id, int category_Id, int direction, int status, long created_at, long updated_at, int type, String text, double lng, double lat) {
+        this.category_Id = category_Id;
+        this.direction = direction;
+        this.text = text;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.id = id;
+        this.type = type;
+        this.lat = lat;
+        this.lng = lng;
     }
 
-    public void setCid(int cid) {
-        this.cid = cid;
+    public int getCategory_Id() {
+        return category_Id;
     }
 
-    public int getAid() {
-        return aid;
+    public void setCategory_Id(int category_Id) {
+        this.category_Id = category_Id;
     }
 
-    public void setAid(int aid) {
-        this.aid = aid;
+    public int getDirection() {
+        return direction;
     }
 
-    public int getCategory() {
-        return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public String getText() {
@@ -72,12 +84,12 @@ public class Chat {
         this.status = status;
     }
 
-    public int getSender_id() {
-        return sender_id;
+    public int getType() {
+        return type;
     }
 
-    public void setSender_id(int sender_id) {
-        this.sender_id = sender_id;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public long getCreated_at() {

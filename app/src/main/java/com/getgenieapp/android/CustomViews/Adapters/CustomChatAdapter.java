@@ -24,6 +24,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Activities.BaseActivity;
 import com.getgenieapp.android.CustomViews.Button.ButtonFlat;
 import com.getgenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
+import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.Fragments.ChatFragment;
 import com.getgenieapp.android.Fragments.PaymentFragment;
@@ -147,14 +148,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolderMain viewHolderMain;
         Messages currentMessage = messagesList.get(viewType);
-        if (currentMessage.getMessageType() == 8) {
+        if (currentMessage.getMessageType() == DataFields.LOADMORE) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.loadearliermessages, parent, false), context);
-        } else if (currentMessage.getMessageType() == 9) {
+        } else if (currentMessage.getMessageType() == DataFields.DATESHOW) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.datelayout, parent, false), context);
-        } else if (currentMessage.getMessageType() == 5) {
+        } else if (currentMessage.getMessageType() == DataFields.PAYNOW) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
         } else {
-            if (messagesList.get(viewType).getDirection() == 1)
+            if (messagesList.get(viewType).getDirection() == DataFields.INCOMING)
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
             else
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
@@ -168,7 +169,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
         final MessageValues messageValues = messages.getMessageValues();
 
-        if (messages.getMessageType() == 8) {
+        if (messages.getMessageType() == DataFields.LOADMORE) {
             GradientDrawable gd = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -186,6 +187,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     JSONObject jsonObject = new JSONObject();
                     try {
                         for (Messages msg : messagesList) {
+                            //todo remove this
 //                            if (msg.getMessageType() == 1 || msg.getMessageType() == 2 || msg.getMessageType() == 3 || msg.getMessageType() == 5) {
 //                                jsonObject.put("cid", msg.getCategory());
 //                                jsonObject.put("timestamp", msg.getCreatedAt());

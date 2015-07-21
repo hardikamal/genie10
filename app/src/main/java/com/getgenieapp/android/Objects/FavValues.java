@@ -4,9 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Raviteja on 6/16/2015.
+ * Created by Raviteja on 7/22/2015.
  */
-public class MessageValues {
+public class FavValues {
     private int _id;
     private String text;
     private String url;
@@ -14,25 +14,12 @@ public class MessageValues {
     private double lat;
     private String name;
 
-    public MessageValues() {
-    }
-
-    public MessageValues(int _id, String text) {
-        this._id = _id;
-        this.text = text;
-    }
-
-    public MessageValues(int _id, String url, String text) {
-        this._id = _id;
-        this.url = url;
-        this.text = text;
-    }
-
-    public MessageValues(int _id, String text, double lng, double lat) {
+    public FavValues(int _id, String text, double lng, double lat, String name) {
         this._id = _id;
         this.text = text;
         this.lng = lng;
         this.lat = lat;
+        this.name = name;
     }
 
     public String getName() {

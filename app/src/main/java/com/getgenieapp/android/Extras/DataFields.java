@@ -53,12 +53,19 @@ public class DataFields {
     public static final int CAMERA_CAPTURE = 1;
     public static final int PICK_IMAGE = 1;
     public static final int PIC_CROP = 2;
+
     public static final int TEXT = 1;
     public static final int LOCATION = 2;
     public static final int IMAGE = 3;
     public static final int PAYNOW = 5;
+
     public static final int ALERTMSG = 2;
-    public static int NotificationId = 1;
+    public static final int NotificationId = 1;
+
+    public static final int INCOMING = 1;
+    public static final int OUTGOING = 0;
+    public static final int LOADMORE = 8;
+    public static final int DATESHOW = 9;
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

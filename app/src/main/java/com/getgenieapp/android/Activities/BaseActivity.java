@@ -372,7 +372,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     };
 
 
-
     private void setChatStatus(boolean status) {
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
@@ -398,41 +397,32 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mixpanelDataAdd.put("Message", "Received" + args[0]);
                     setChatStatus(true);
                     logging.LogV(args[0].toString());
-                    int cid = 0;
-                    int aid = 0;
-                    int category = 0;
-                    String text = "";
-                    int status = 0;
-                    int sender_id = 0;
-                    long created_at = 0;
-                    long updated_at = 0;
-                    String id = "";
-                    double lng = 0;
-                    double lat = 0;
-                    String url = "";
+                    int status = 0, categoryId = 0, messageType = 0;
+                    String id = "", url = "", text = "";
+                    long created_at = 0, updated_at = 0;
+                    double lng = 0, lat = 0;
+                    int direction = DataFields.OUTGOING;
+
                     try {
                         JSONObject jsonObject = new JSONObject(args[0].toString());
                         if (jsonObject.has("cid")) {
-                            cid = jsonObject.getInt("cid");
+                            categoryId = jsonObject.getInt("cid");
                         }
                         if (jsonObject.has("_id")) {
                             id = jsonObject.getString("_id");
                         }
                         if (jsonObject.has("chat")) {
                             JSONObject chat = jsonObject.getJSONObject("chat");
-                            if (chat.has("aid")) {
-                                aid = chat.getInt("aid");
-                            }
                             if (chat.has("message")) {
                                 JSONObject message = chat.getJSONObject("message");
                                 if (message.has("category")) {
-                                    category = message.getInt("category");
+                                    messageType = message.getInt("category");
                                 }
                                 if (message.has("status")) {
                                     status = message.getInt("status");
                                 }
                                 if (message.has("sender_id")) {
-                                    sender_id = message.getInt("sender_id");
+                                    direction = DataFields.INCOMING;
                                 }
                                 if (message.has("created_at")) {
                                     created_at = message.getLong("created_at");
@@ -442,17 +432,17 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 }
                                 if (message.has("category_value")) {
                                     JSONObject category_value = message.getJSONObject("category_value");
-                                    if (category == 1) {
+                                    if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
                                         if (category_value.has("text"))
                                             text = category_value.getString("text");
-                                    } else if (category == 2) {
+                                    } else if (messageType == DataFields.LOCATION) {
                                         if (category_value.has("lng"))
                                             lng = category_value.getDouble("lng");
                                         if (category_value.has("lat"))
                                             lat = category_value.getDouble("lat");
                                         if (category_value.has("text"))
                                             text = category_value.getString("text");
-                                    } else if (category == 3) {
+                                    } else if (messageType == DataFields.IMAGE) {
                                         if (category_value.has("text"))
                                             text = category_value.getString("text");
                                         if (category_value.has("url"))
@@ -465,35 +455,44 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         e.printStackTrace();
                     }
 
-                    Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
-                    MessageValues messageValues = null;
-                    if (chat.getCategory() == 1) {
-                        messageValues = new MessageValues(chat.getCategory(), chat.getText());
-                    }
-                    if (chat.getCategory() == 2) {
-                        messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-                    }
-                    if (chat.getCategory() == 3) {
-                        messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-                    }
-                    if (chat.getCategory() == 5) {
-                        messageValues = new MessageValues(chat.getCategory(), chat.getText());
+                    Chat chat = null;
+                    if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                        chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+                    } else if (messageType == DataFields.LOCATION) {
+                        chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+                    } else if (messageType == DataFields.IMAGE) {
+                        chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
                     }
 
-                    Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
-                    dbDataSource.addNormal(messageObject);
-                    mBus.post(messageObject);
-                    FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
-                    List<Fragment> fragments = fragmentManager.getFragments();
-                    for (Fragment fragment : fragments) {
-                        if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
-                            mixpanelDataAdd.put("Message", "Received in category Screen");
-                            mixPanelBuild("Notification Set from category page");
-                            Crouton.cancelAllCroutons();
-                            Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
-                            Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-                            dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-                            ((MainFragment) fragment).refreshDataFromLocal();
+                    if (chat != null) {
+                        MessageValues messageValues = null;
+                        if (chat.getType() == DataFields.TEXT) {
+                            messageValues = new MessageValues(DataFields.TEXT, chat.getText());
+                        }
+                        if (chat.getType() == DataFields.LOCATION) {
+                            messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
+                        }
+                        if (chat.getType() == DataFields.IMAGE) {
+                            messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
+                        }
+                        if (chat.getType() == DataFields.PAYNOW) {
+                            messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                        }
+                        Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                        dbDataSource.addNormal(messageObject);
+                        mBus.post(messageObject);
+                        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                        List<Fragment> fragments = fragmentManager.getFragments();
+                        for (Fragment fragment : fragments) {
+                            if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                                mixpanelDataAdd.put("Message", "Received in category Screen");
+                                mixPanelBuild("Notification Set from category page");
+                                Crouton.cancelAllCroutons();
+                                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                                dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                                ((MainFragment) fragment).refreshDataFromLocal();
+                            }
                         }
                     }
                 }
@@ -647,24 +646,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 e.printStackTrace();
                             }
 
-                            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
-                            MessageValues messageValues = null;
-                            if (chat.getCategory() == 1) {
-                                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-                            }
-                            if (chat.getCategory() == 2) {
-                                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-                            }
-                            if (chat.getCategory() == 3) {
-                                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-                            }
-                            if (chat.getCategory() == 5) {
-                                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-                            }
-
-                            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
-                            dbDataSource.addNormal(messageObject);
-                            chatArrayList.add(messageObject);
+                            //todo impelement
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

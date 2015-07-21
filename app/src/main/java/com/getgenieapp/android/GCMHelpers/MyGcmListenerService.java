@@ -130,40 +130,30 @@ public class MyGcmListenerService extends GcmListenerService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
-            MessageValues messageValues = null;
-            if (chat.getCategory() == 1) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-            }
-            if (chat.getCategory() == 2) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-            }
-            if (chat.getCategory() == 3) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-            }
-            if (chat.getCategory() == 5) {
-                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-            }
+//            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
+//            MessageValues messageValues = null;
+//            if (chat.getCategory() == 1) {
+//                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+//            }
+//            if (chat.getCategory() == 2) {
+//                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
+//            }
+//            if (chat.getCategory() == 3) {
+//                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
+//            }
+//            if (chat.getCategory() == 5) {
+//                messageValues = new MessageValues(chat.getCategory(), chat.getText());
+//            }
+//
+//            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
+//            DBDataSource dbDataSource = new DBDataSource(this);
+//            dbDataSource.addNormal(messageObject);
+//            Log.d(TAG, "From: " + from);
+//            Log.d(TAG, "Messages: " + data.toString());
+//            dbDataSource.UpdateCatNotification(chat.getCid(), dbDataSource.getCategories(chat.getCid()).getNotification_count() + 1);
 
-            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
-            DBDataSource dbDataSource = new DBDataSource(this);
-            dbDataSource.addNormal(messageObject);
-            Log.d(TAG, "From: " + from);
-            Log.d(TAG, "Messages: " + data.toString());
-            dbDataSource.UpdateCatNotification(chat.getCid(), dbDataSource.getCategories(chat.getCid()).getNotification_count() + 1);
-
-            /**
-             * Production applications would usually process the message here.
-             * Eg: - Syncing with server.
-             *     - Store message in local database.
-             *     - Update UI.
-             */
-
-            /**
-             * In some cases it may be useful to show a notification indicating to the user
-             * that a message was received.
-             */
-            new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), chat.getCid());
+            // todo
+//            new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), chat.getCid());
         } else {
             Log.v("GCM PUSH", data.toString());
             sendNotification("Unhandled Push Notification Received");
@@ -171,16 +161,16 @@ public class MyGcmListenerService extends GcmListenerService {
     }
 
     private String showMessage(MessageValues messageValues) {
-        if (messageValues.get_id() == 1) {
+        if (messageValues.get_id() == DataFields.TEXT) {
             return messageValues.getText();
         }
-        if (messageValues.get_id() == 2) {
+        if (messageValues.get_id() == DataFields.LOCATION) {
             return messageValues.getText();
         }
-        if (messageValues.get_id() == 3) {
+        if (messageValues.get_id() == DataFields.IMAGE) {
             return getString(R.string.imagereceived);
         }
-        if (messageValues.get_id() == 5) {
+        if (messageValues.get_id() == DataFields.PAYNOW) {
             return getString(R.string.paynow);
         }
         return getString(R.string.imagereceived);

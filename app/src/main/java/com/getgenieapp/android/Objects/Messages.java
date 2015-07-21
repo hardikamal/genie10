@@ -3,10 +3,14 @@ package com.getgenieapp.android.Objects;
 /**
  * Created by Raviteja on 6/16/2015.
  */
-public class Messages {
+public class Messages implements Comparable<Messages> {
+
+    @Override
+    public int compareTo(Messages obj) {
+        return Long.valueOf(this.createdAt).compareTo(obj.createdAt);
+    }
+
     private String _id;
-    private int agentId;
-    private int senderId;
     private int messageType;
     private int category;
     private MessageValues messageValues;
@@ -15,10 +19,8 @@ public class Messages {
     private long updatedAt;
     private int direction;
 
-    public Messages(String _id, int agentId, int senderId, int messageType, int category, MessageValues messageValues, int status, long createdAt, long updatedAt, int direction) {
+    public Messages(String _id, int messageType, int category, MessageValues messageValues, int status, long createdAt, long updatedAt, int direction) {
         this._id = _id;
-        this.agentId = agentId;
-        this.senderId = senderId;
         this.messageType = messageType;
         this.category = category;
         this.messageValues = messageValues;
@@ -34,22 +36,6 @@ public class Messages {
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public int getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
-    }
-
-    public int getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
     }
 
     public int getMessageType() {

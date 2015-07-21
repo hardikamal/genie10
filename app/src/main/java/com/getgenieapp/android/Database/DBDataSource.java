@@ -7,7 +7,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.Objects.Categories;
+import com.getgenieapp.android.Objects.FavValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.Objects.MessageValues;
 
@@ -63,9 +65,6 @@ public class DBDataSource {
         ContentValues values = new ContentValues();
 
         values.put(DBHandler.message_id, String.valueOf(message.get_id()));
-        values.put(DBHandler.agent_id, String.valueOf(message.getAgentId()));
-        values.put(DBHandler.sender_id, String.valueOf(message.getSenderId()));
-        values.put(DBHandler.message_type, String.valueOf(message.getMessageType()));
         values.put(DBHandler.category_id, String.valueOf(message.getCategory()));
         values.put(DBHandler.message_values, String.valueOf(message.getMessageValues().toString()));
         values.put(DBHandler.status, String.valueOf(message.getStatus()));
@@ -98,11 +97,10 @@ public class DBDataSource {
 
     public void addFast(ArrayList<Messages> data) {
         open();
-        String sql = "INSERT OR REPLACE INTO " + DBHandler.TABLE + " ( " + DBHandler.message_id + ", "
-                + DBHandler.agent_id + ", " + DBHandler.sender_id + " , " + DBHandler.message_type +
-                DBHandler.category_id + ", " + DBHandler.message_values + " , " + DBHandler.status +
+        String sql = "INSERT OR REPLACE INTO " + DBHandler.TABLE + " ( " + DBHandler.message_id + ", " +
+                DBHandler.category_id + ", " + DBHandler.message_values + " , " + DBHandler.status + ", " +
                 DBHandler.created_at + ", " + DBHandler.updated_at + " , " + DBHandler.direction +
-                " ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+                " ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
         database.beginTransactionNonExclusive();
         // db.beginTransaction();
@@ -111,15 +109,12 @@ public class DBDataSource {
         for (Messages message : data) {
 
             stmt.bindString(1, String.valueOf(message.get_id()));
-            stmt.bindString(2, String.valueOf(message.getAgentId()));
-            stmt.bindString(3, String.valueOf(message.getSenderId()));
-            stmt.bindString(4, String.valueOf(message.getMessageType()));
-            stmt.bindString(5, String.valueOf(message.getCategory()));
-            stmt.bindString(6, String.valueOf(message.getMessageValues().toString()));
-            stmt.bindString(7, String.valueOf(message.getStatus()));
-            stmt.bindString(8, String.valueOf(message.getCreatedAt()));
-            stmt.bindString(9, String.valueOf(message.getUpdatedAt()));
-            stmt.bindString(10, String.valueOf(message.getDirection()));
+            stmt.bindString(2, String.valueOf(message.getCategory()));
+            stmt.bindString(3, String.valueOf(message.getMessageValues().toString()));
+            stmt.bindString(4, String.valueOf(message.getStatus()));
+            stmt.bindString(5, String.valueOf(message.getCreatedAt()));
+            stmt.bindString(6, String.valueOf(message.getUpdatedAt()));
+            stmt.bindString(7, String.valueOf(message.getDirection()));
 
             stmt.execute();
             stmt.clearBindings();
@@ -213,8 +208,7 @@ public class DBDataSource {
     public ArrayList<Messages> getAllMessages() {
         open();
         Cursor cursor = database.query(DBHandler.TABLE,
-                new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
-                        , DBHandler.message_type, DBHandler.category_id
+                new String[]{DBHandler.message_id, DBHandler.category_id
                         , DBHandler.message_values, DBHandler.status
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
@@ -232,25 +226,24 @@ public class DBDataSource {
                 JSONObject jsonObject;
                 MessageValues messageValues = new MessageValues();
                 try {
-                    jsonObject = new JSONObject(cursor.getString(5));
+                    jsonObject = new JSONObject(cursor.getString(2));
                     if (jsonObject.has("id")) {
-                        if (jsonObject.getInt("id") == 1) {
+                        if (jsonObject.getInt("id") == DataFields.TEXT) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == 2) {
+                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == 3) {
+                        } else if (jsonObject.getInt("id") == DataFields.IMAGE) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
-                        } else if (jsonObject.getInt("id") == 5) {
+                        } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)),
-                        Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), messageValues,
-                        Integer.parseInt(cursor.getString(6)), Long.parseLong(cursor.getString(7)),
-                        Long.parseLong(cursor.getString(8)), Integer.parseInt(cursor.getString(9))));
+                labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), messageValues.get_id(), messageValues,
+                        Integer.parseInt(cursor.getString(3)), Long.parseLong(cursor.getString(4)),
+                        Long.parseLong(cursor.getString(5)), Integer.parseInt(cursor.getString(6))));
             } while (cursor.moveToNext());
         }
         return labels;
@@ -275,26 +268,25 @@ public class DBDataSource {
                 JSONObject jsonObject;
                 MessageValues messageValues = new MessageValues();
                 try {
-                    jsonObject = new JSONObject(cursor.getString(5));
+                    jsonObject = new JSONObject(cursor.getString(2));
                     if (jsonObject.has("id")) {
-                        if (jsonObject.getInt("id") == 1) {
+                        if (jsonObject.getInt("id") == DataFields.TEXT) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == 2) {
+                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == 3) {
+                        } else if (jsonObject.getInt("id") == DataFields.IMAGE) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
-                        } else if (jsonObject.getInt("id") == 5) {
+                        } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (Long.parseLong(cursor.getString(7)) > hide_time) {
-                    labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), Integer.parseInt(cursor.getString(2)),
-                            Integer.parseInt(cursor.getString(3)), Integer.parseInt(cursor.getString(4)), messageValues,
-                            Integer.parseInt(cursor.getString(6)), Long.parseLong(cursor.getString(7)),
-                            Long.parseLong(cursor.getString(8)), Integer.parseInt(cursor.getString(9))));
+                if (Long.parseLong(cursor.getString(4)) > hide_time) {
+                    labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), messageValues.get_id(), messageValues,
+                            Integer.parseInt(cursor.getString(3)), Long.parseLong(cursor.getString(4)),
+                            Long.parseLong(cursor.getString(5)), Integer.parseInt(cursor.getString(6))));
                 }
             } while (cursor.moveToNext());
         }
@@ -304,8 +296,7 @@ public class DBDataSource {
     public ArrayList<Messages> getAllListBasedOnCategory(String category_id) {
         open();
         Cursor cursor = database.query(DBHandler.TABLE,
-                new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
-                        , DBHandler.message_type, DBHandler.category_id
+                new String[]{DBHandler.message_id, DBHandler.category_id
                         , DBHandler.message_values, DBHandler.status
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
@@ -319,8 +310,7 @@ public class DBDataSource {
     public ArrayList<Messages> getAllListBasedOnCategoryWithHideTime(String category_id, long hide_time) {
         open();
         Cursor cursor = database.query(DBHandler.TABLE,
-                new String[]{DBHandler.message_id, DBHandler.agent_id, DBHandler.sender_id
-                        , DBHandler.message_type, DBHandler.category_id
+                new String[]{DBHandler.message_id, DBHandler.category_id
                         , DBHandler.message_values, DBHandler.status
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
@@ -331,28 +321,28 @@ public class DBDataSource {
         return labels;
     }
 
-    public void addFavNormal(MessageValues messageValues) {
+    public void addFavNormal(FavValues favValues) {
         open();
         ContentValues values = new ContentValues();
-        values.put(DBHandler.address, messageValues.getText());
-        values.put(DBHandler.lat, String.valueOf(messageValues.getLat()));
-        values.put(DBHandler.lng, String.valueOf(messageValues.getLng()));
-        values.put(DBHandler.name, messageValues.getName());
+        values.put(DBHandler.address, favValues.getText());
+        values.put(DBHandler.lat, String.valueOf(favValues.getLat()));
+        values.put(DBHandler.lng, String.valueOf(favValues.getLng()));
+        values.put(DBHandler.name, favValues.getName());
         database.insert(DBHandler.FAVTABLE, null, values);
         close();
     }
 
-    public ArrayList<MessageValues> getAllFav() {
+    public ArrayList<FavValues> getAllFav() {
         open();
         Cursor cursor = database.query(DBHandler.FAVTABLE,
                 new String[]{DBHandler.name, DBHandler.address, DBHandler.lat
                         , DBHandler.lng},
                 null, null, null, null, null);
-        ArrayList<MessageValues> labels = new ArrayList<>();
+        ArrayList<FavValues> labels = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
-                labels.add(new MessageValues(3, cursor.getString(1), Double.parseDouble(cursor.getString(3)),
+                labels.add(new FavValues(3, cursor.getString(1), Double.parseDouble(cursor.getString(3)),
                         Double.parseDouble(cursor.getString(2)), cursor.getString(0)));
             } while (cursor.moveToNext());
         }
@@ -391,9 +381,9 @@ public class DBDataSource {
         cleanTable();
     }
 
-    public void deleteFav(MessageValues messageValues) {
+    public void deleteFav(FavValues favValues) {
         open();
-        database.delete(DBHandler.FAVTABLE, DBHandler.name + " == '" + messageValues.getName() + "'", null);
+        database.delete(DBHandler.FAVTABLE, DBHandler.name + " == '" + favValues.getName() + "'", null);
         cleanTable();
     }
 }

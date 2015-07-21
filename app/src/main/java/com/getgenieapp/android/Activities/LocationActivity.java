@@ -16,11 +16,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +35,7 @@ import com.getgenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
 import com.getgenieapp.android.Extras.DataFields;
 import com.getgenieapp.android.GenieBaseActivity;
+import com.getgenieapp.android.Objects.FavValues;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Place.PlaceAutocompleteAdapter;
 import com.getgenieapp.android.R;
@@ -100,7 +98,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     private MessageValues messageValues = null;
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
-    private int LOCATIONRESULT = 1;
     int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
     AlertDialog.Builder dialog;
@@ -331,6 +328,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         intent.putExtra("lat", messageValues.getLat());
         intent.putExtra("lng", messageValues.getLng());
         intent.putExtra("address", messageValues.getText());
+        int LOCATIONRESULT = 1;
         setResult(LOCATIONRESULT, intent);
         finish();
     }
@@ -353,7 +351,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                             mixpanelDataAdd.put("Location", "Saved as a Fav");
                             mixPanelBuild("Save as Fav location button clicked");
                             if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
-                                dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
+                                dbDataSource.addFavNormal(new FavValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
                                         , messageValues.getLat(), saveas.getText().toString().trim()));
                                 setResultBackToActivity(messageValues);
                             } else {
@@ -409,7 +407,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                     public void onClick(DialogInterface dialog, int id) {
                         mixpanelDataAdd.put("Location", "Saved as a Fav");
                         if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
-                            dbDataSource.addFavNormal(new MessageValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
+                            dbDataSource.addFavNormal(new FavValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
                                     , messageValues.getLat(), saveas.getText().toString().trim()));
                             setResultBackToActivity(messageValues);
                         } else {
@@ -566,18 +564,18 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         }
     };
 
-    public void deletePlace(MessageValues messageValues) {
-        dbDataSource.deleteFav(messageValues);
+    public void deletePlace(FavValues favValues) {
+        dbDataSource.deleteFav(favValues);
         displayFavLocations();
     }
 
     private void displayFavLocations() {
-        ArrayList<MessageValues> messageValues = dbDataSource.getAllFav();
+        ArrayList<FavValues> favValues = dbDataSource.getAllFav();
         recyclerView.removeAllViews();
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(messageValues, this);
+        CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(favValues, this);
         recyclerView.setAdapter(chatAdapter);
         dialog = new AlertDialog.Builder(this);
 

@@ -18,7 +18,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.getgenieapp.android.Activities.LocationActivity;
 import com.getgenieapp.android.GenieApplication;
-import com.getgenieapp.android.Objects.MessageValues;
+import com.getgenieapp.android.Objects.FavValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
 
@@ -33,18 +33,18 @@ import de.keyboardsurfer.android.widget.crouton.Style;
  * Created by Raviteja on 7/10/2015.
  */
 public class CustomPlaceAdapter extends RecyclerView.Adapter {
-    private ArrayList<MessageValues> messagesList;
+    private ArrayList<FavValues> messagesList;
     private Context context;
 
-    public ArrayList<MessageValues> getMessages() {
+    public ArrayList<FavValues> getMessages() {
         return messagesList;
     }
 
-    public void setMessages(ArrayList<MessageValues> messagesList) {
+    public void setMessages(ArrayList<FavValues> messagesList) {
         this.messagesList = messagesList;
     }
 
-    public CustomPlaceAdapter(ArrayList<MessageValues> messagesList, Context context) {
+    public CustomPlaceAdapter(ArrayList<FavValues> messagesList, Context context) {
         this.messagesList = messagesList;
         this.context = context;
     }
@@ -75,7 +75,7 @@ public class CustomPlaceAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final MessageValues messages = messagesList.get(position);
+        final FavValues messages = messagesList.get(position);
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
         viewHolderMain.title.setText(messages.getName());
         viewHolderMain.address.setText(messages.getText());
