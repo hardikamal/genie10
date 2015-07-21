@@ -148,7 +148,7 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
-        displayMessages(true);
+        displayMessages(true, true);
 
         message.addTextChangedListener(new TextWatcher() {
 
@@ -196,7 +196,7 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
-    private void displayMessages(boolean status) {
+    public void displayMessages(boolean status, boolean scroll) {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
         Collections.sort(messages);
         mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
@@ -212,8 +212,7 @@ public class ChatFragment extends GenieFragment {
             now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
             if (!present.equals("") && !present.equals(now)) {
                 messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
-            }
-            if (i == 0) {
+            } else if (i == 0) {
                 messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
             }
             present = now;
@@ -228,11 +227,9 @@ public class ChatFragment extends GenieFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
         recyclerView.setAdapter(chatAdapter);
-        if (status)
+        if (scroll) {
             scroll();
-        Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center_100);
-        recyclerView.setAnimation(anim);
-        anim.start();
+        }
     }
 
     @Override
@@ -278,7 +275,7 @@ public class ChatFragment extends GenieFragment {
     public void onResume() {
         super.onResume();
         logging.LogV("on Resume Chat");
-        displayMessages(true);
+        displayMessages(true, true);
     }
 
     @Override
@@ -306,15 +303,6 @@ public class ChatFragment extends GenieFragment {
             System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
             Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, viewGroup).show();
             // todo add notification
-        }
-    }
-
-    @Subscribe
-    public void onPreviousMessagesReceived(final ArrayList<Messages> messageObject) {
-        if (messageObject.size() == 15) {
-            displayMessages(true);
-        } else {
-            displayMessages(false);
         }
     }
 
@@ -346,8 +334,8 @@ public class ChatFragment extends GenieFragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                MessageValues messageValues2 = new MessageValues(5, "www.google.com", jsonObject.toString());
-                Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis() / 1000L, 0, 0);
+                MessageValues messageValues2 = new MessageValues(DataFields.PAYNOW, "www.google.com", jsonObject.toString());
+                Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis() / 1000L, 0, DataFields.INCOMING);
                 messages.add(messageObject2);
                 dbDataSource.addNormal(messageObject2);
                 chatAdapter.notifyDataSetChanged();

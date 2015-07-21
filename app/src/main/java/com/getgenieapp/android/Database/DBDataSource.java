@@ -272,9 +272,9 @@ public class DBDataSource {
                     if (jsonObject.has("id")) {
                         if (jsonObject.getInt("id") == DataFields.TEXT) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         } else if (jsonObject.getInt("id") == DataFields.IMAGE) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));

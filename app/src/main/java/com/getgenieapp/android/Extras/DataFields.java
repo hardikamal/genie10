@@ -64,8 +64,13 @@ public class DataFields {
 
     public static final int INCOMING = 1;
     public static final int OUTGOING = 0;
+
     public static final int LOADMORE = 8;
     public static final int DATESHOW = 9;
+
+    public static int DELIVERED = 2;
+    public static int SENT = 1;
+    public static int SEEN = 3;
 
     public static String getServerUrl() {
         return StagingServer + API + Version;

@@ -187,12 +187,11 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     JSONObject jsonObject = new JSONObject();
                     try {
                         for (Messages msg : messagesList) {
-                            //todo remove this
-//                            if (msg.getMessageType() == 1 || msg.getMessageType() == 2 || msg.getMessageType() == 3 || msg.getMessageType() == 5) {
-//                                jsonObject.put("cid", msg.getCategory());
-//                                jsonObject.put("timestamp", msg.getCreatedAt());
-//                                break;
-//                            }
+                            if (msg.getMessageType() == 1 || msg.getMessageType() == 2 || msg.getMessageType() == 3 || msg.getMessageType() == 5) {
+                                jsonObject.put("cid", msg.getCategory());
+                                jsonObject.put("timestamp", msg.getCreatedAt());
+                                break;
+                            }
                         }
                         if (!jsonObject.has("cid") && messagesList.size() > 0) {
                             jsonObject.put("cid", messagesList.get(0).getCategory());
@@ -205,12 +204,12 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         ((BaseActivity) context).sendLoadMoreMessagesCall(jsonObject);
                 }
             });
-        } else if (messages.getMessageType() == 9) {
+        } else if (messages.getMessageType() == DataFields.DATESHOW) {
             Utils utils = new Utils(context);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
             viewHolderMain.date.setText(utils.getIfItsToday(utils.convertLongToDate(messages.getCreatedAt(), simpleDateFormat), simpleDateFormat));
             viewHolderMain.date.setTextColor(Color.parseColor(color));
-        } else if (messages.getMessageType() == 5) {
+        } else if (messages.getMessageType() == DataFields.PAYNOW) {
             try {
                 JSONObject object = new JSONObject(messageValues.getText());
                 if (object.has("companyname"))
@@ -259,7 +258,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             }
         } else {
             viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
-            if (messages.getMessageType() == 2) {
+            if (messages.getMessageType() == DataFields.LOCATION) {
                 String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
                         + messageValues.getLat()
                         + ","
@@ -282,7 +281,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 //                });
                 }
 
-                if (messages.getDirection() == 1) {
+                if (messages.getDirection() == DataFields.INCOMING) {
                     GradientDrawable gd = new GradientDrawable(
                             GradientDrawable.Orientation.TOP_BOTTOM,
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -305,7 +304,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            if (messages.getMessageType() == 3) {
+            if (messages.getMessageType() == DataFields.IMAGE) {
                 viewHolderMain.mapView.setVisibility(View.VISIBLE);
 //                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
                 viewHolderMain.mapView.setImageUrl(messageValues.getUrl(), imageLoader);
@@ -316,7 +315,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     }
                 });
 
-                if (messages.getDirection() == 1) {
+                if (messages.getDirection() == DataFields.INCOMING) {
                     GradientDrawable gd = new GradientDrawable(
                             GradientDrawable.Orientation.TOP_BOTTOM,
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -339,7 +338,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            if (messages.getDirection() == 1) {
+            if (messages.getDirection() == DataFields.INCOMING) {
 //            if (position % 2 == 0) {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));
                 GradientDrawable gd = new GradientDrawable(
@@ -355,13 +354,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space12char));
                 viewHolderMain.text.setTextColor(Color.parseColor(color));
                 viewHolderMain.time.setTextColor(Color.parseColor(color));
-                if (messages.getStatus() == 1) {
-                    viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_black_24dp);
-                } else if (messages.getStatus() == 2) {
-                    viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_all_black_24dp);
-                } else if (messages.getStatus() == 3) {
-                    viewHolderMain.tick.setBackgroundResource(R.drawable.check_all);
-                }
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
@@ -370,6 +362,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.text.setBackground(gd);
                 } else {
                     viewHolderMain.text.setBackgroundDrawable(gd);
+                }
+                viewHolderMain.tick.setVisibility(View.VISIBLE);
+                if (messages.getStatus() == DataFields.SENT) {
+                    viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_black_24dp);
+                } else if (messages.getStatus() == DataFields.DELIVERED) {
+                    viewHolderMain.tick.setBackgroundResource(R.drawable.ic_done_all_black_24dp);
+                } else if (messages.getStatus() == DataFields.SEEN) {
+                    viewHolderMain.tick.setBackgroundResource(R.drawable.check_all);
                 }
             }
         }

@@ -554,7 +554,112 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println(args[0]);
+                    System.out.println("onReceivedMessagesList " + args[0]);
+                    try {
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (jsonObject.has("payload")) {
+                            System.out.println("onReceivedMessagesList " + jsonObject.getString("payload"));
+                            JSONObject payload = jsonObject.getJSONObject("payload");
+                            ArrayList<Categories> categoriesArrayList = dbDataSource.getAllCategories();
+                            ArrayList<Messages> messagesArrayList = new ArrayList<Messages>();
+                            for (Categories cats : categoriesArrayList) {
+                                if (payload.has(String.valueOf(cats.getId()))) {
+                                    System.out.println("onReceivedMessagesList " + payload.getString(String.valueOf(cats.getId())));
+                                    JSONArray catJSONArray = payload.getJSONArray(String.valueOf(cats.getId()));
+                                    for (int i = 0; i < catJSONArray.length(); i++) {
+                                        System.out.println(catJSONArray.get(i));
+                                        JSONObject chatMessage = catJSONArray.getJSONObject(i);
+                                        int status = 0, categoryId = 0, messageType = 0;
+                                        String id = "", url = "", text = "";
+                                        long created_at = 0, updated_at = 0;
+                                        double lng = 0, lat = 0;
+                                        int direction = DataFields.INCOMING;
+                                        if (chatMessage.has("cid")) {
+                                            categoryId = chatMessage.getInt("cid");
+                                        }
+                                        if (chatMessage.has("_id")) {
+                                            id = chatMessage.getString("_id");
+                                        }
+                                        if (chatMessage.has("message")) {
+                                            JSONObject message = chatMessage.getJSONObject("message");
+                                            if (message.has("category")) {
+                                                messageType = message.getInt("category");
+                                            }
+                                            if (message.has("status")) {
+                                                status = message.getInt("status");
+                                            }
+                                            if (message.has("sender_id")) {
+                                                direction = DataFields.OUTGOING;
+                                            }
+                                            if (message.has("created_at")) {
+                                                created_at = message.getLong("created_at");
+                                            }
+                                            if (message.has("updated_at")) {
+                                                updated_at = message.getLong("updated_at");
+                                            }
+                                            if (message.has("category_value")) {
+                                                JSONObject category_value = message.getJSONObject("category_value");
+                                                if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                                    if (category_value.has("text"))
+                                                        text = category_value.getString("text");
+                                                } else if (messageType == DataFields.LOCATION) {
+                                                    if (category_value.has("lng"))
+                                                        lng = category_value.getDouble("lng");
+                                                    if (category_value.has("lat"))
+                                                        lat = category_value.getDouble("lat");
+                                                    if (category_value.has("text"))
+                                                        text = category_value.getString("text");
+                                                } else if (messageType == DataFields.IMAGE) {
+                                                    if (category_value.has("text"))
+                                                        text = category_value.getString("text");
+                                                    if (category_value.has("url"))
+                                                        url = category_value.getString("url");
+                                                }
+                                            }
+
+                                        }
+                                        Chat chat = null;
+                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+                                        } else if (messageType == DataFields.LOCATION) {
+                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+                                        } else if (messageType == DataFields.IMAGE) {
+                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
+                                        }
+
+                                        if (chat != null) {
+                                            MessageValues messageValues = null;
+                                            if (chat.getType() == DataFields.TEXT) {
+                                                messageValues = new MessageValues(DataFields.TEXT, chat.getText());
+                                            }
+                                            if (chat.getType() == DataFields.LOCATION) {
+                                                messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
+                                            }
+                                            if (chat.getType() == DataFields.IMAGE) {
+                                                messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
+                                            }
+                                            if (chat.getType() == DataFields.PAYNOW) {
+                                                messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                                            }
+                                            Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                                            messagesArrayList.add(messageObject);
+                                        }
+                                    }
+                                }
+                            }
+                            dbDataSource.cleanTable();
+                            dbDataSource.addFast(messagesArrayList);
+                            FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                            List<Fragment> fragments = fragmentManager.getFragments();
+                            for (Fragment fragment : fragments) {
+                                if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                                    ((ChatFragment) fragment).displayMessages(true, true);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -579,42 +684,37 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayList<Messages> chatArrayList = new ArrayList<>();
+                    System.out.println("Previous " + args[0]);
                     try {
-                        logging.LogV(args[0].toString());
-                        JSONObject mainTopArray = new JSONObject(args[0].toString());
-                        JSONArray array = mainTopArray.getJSONArray("messages");
-                        for (int i = 0; i < array.length(); i++) {
-                            int cid = 0;
-                            int aid = 0;
-                            int category = 0;
-                            String text = "";
-                            int status = 0;
-                            int sender_id = 0;
-                            long created_at = 0;
-                            long updated_at = 0;
-                            String id = "";
-                            double lng = 0;
-                            double lat = 0;
-                            String url = "";
-                            try {
-                                JSONObject jsonObject = new JSONObject(array.get(i).toString());
-                                if (jsonObject.has("cid")) {
-                                    cid = jsonObject.getInt("cid");
+                        JSONObject jsonObject = new JSONObject(args[0].toString());
+                        if (jsonObject.has("messages")) {
+                            System.out.println("Previous " + jsonObject.getString("messages"));
+                            ArrayList<Messages> messagesArrayList = new ArrayList<Messages>();
+                            JSONArray catJSONArray = jsonObject.getJSONArray("messages");
+                            for (int i = 0; i < catJSONArray.length(); i++) {
+                                System.out.println(catJSONArray.get(i));
+                                JSONObject chatMessage = catJSONArray.getJSONObject(i);
+                                int status = 0, categoryId = 0, messageType = 0;
+                                String id = "", url = "", text = "";
+                                long created_at = 0, updated_at = 0;
+                                double lng = 0, lat = 0;
+                                int direction = DataFields.INCOMING;
+                                if (chatMessage.has("cid")) {
+                                    categoryId = chatMessage.getInt("cid");
                                 }
-                                if (jsonObject.has("_id")) {
-                                    id = jsonObject.getString("_id");
+                                if (chatMessage.has("_id")) {
+                                    id = chatMessage.getString("_id");
                                 }
-                                if (jsonObject.has("message")) {
-                                    JSONObject message = jsonObject.getJSONObject("message");
+                                if (chatMessage.has("message")) {
+                                    JSONObject message = chatMessage.getJSONObject("message");
                                     if (message.has("category")) {
-                                        category = message.getInt("category");
+                                        messageType = message.getInt("category");
                                     }
                                     if (message.has("status")) {
                                         status = message.getInt("status");
                                     }
                                     if (message.has("sender_id")) {
-                                        sender_id = message.getInt("sender_id");
+                                        direction = DataFields.OUTGOING;
                                     }
                                     if (message.has("created_at")) {
                                         created_at = message.getLong("created_at");
@@ -624,34 +724,68 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (message.has("category_value")) {
                                         JSONObject category_value = message.getJSONObject("category_value");
-                                        if (category == 1) {
+                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
                                             if (category_value.has("text"))
                                                 text = category_value.getString("text");
-                                        } else if (category == 2) {
+                                        } else if (messageType == DataFields.LOCATION) {
                                             if (category_value.has("lng"))
                                                 lng = category_value.getDouble("lng");
                                             if (category_value.has("lat"))
                                                 lat = category_value.getDouble("lat");
                                             if (category_value.has("text"))
                                                 text = category_value.getString("text");
-                                        } else if (category == 3) {
+                                        } else if (messageType == DataFields.IMAGE) {
                                             if (category_value.has("text"))
                                                 text = category_value.getString("text");
                                             if (category_value.has("url"))
                                                 url = category_value.getString("url");
                                         }
                                     }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
 
-                            //todo impelement
+                                }
+                                Chat chat = null;
+                                if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                    chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+                                } else if (messageType == DataFields.LOCATION) {
+                                    chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+                                } else if (messageType == DataFields.IMAGE) {
+                                    chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
+                                }
+
+                                if (chat != null) {
+                                    MessageValues messageValues = null;
+                                    if (chat.getType() == DataFields.TEXT) {
+                                        messageValues = new MessageValues(DataFields.TEXT, chat.getText());
+                                    }
+                                    if (chat.getType() == DataFields.LOCATION) {
+                                        messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
+                                    }
+                                    if (chat.getType() == DataFields.IMAGE) {
+                                        messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
+                                    }
+                                    if (chat.getType() == DataFields.PAYNOW) {
+                                        messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                                    }
+                                    Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                                    messagesArrayList.add(messageObject);
+                                }
+                            }
+                            dbDataSource.addFast(messagesArrayList);
+                            FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                            List<Fragment> fragments = fragmentManager.getFragments();
+                            for (Fragment fragment : fragments) {
+                                if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                                    if (messagesArrayList.size() == 15) {
+                                        ((ChatFragment) fragment).displayMessages(true, false);
+                                    } else {
+                                        ((ChatFragment) fragment).displayMessages(false, false);
+                                    }
+                                }
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    mBus.post(new ChatArray(chatArrayList));
                 }
             });
         }

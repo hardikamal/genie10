@@ -186,10 +186,10 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
                 if (String.valueOf(place.getAddress()).length() > 0) {
-                    messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+                    messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
                     showSaveLaterBox(messageValues);
                 } else {
-                    messageValues = new MessageValues(3, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
+                    messageValues = new MessageValues(DataFields.LOCATION, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
                     showSaveLaterBox(messageValues);
                 }
             }
@@ -512,7 +512,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             // Get the Place object from the buffer.
             final Place place = places.get(0);
 
-            messageValues = new MessageValues(3, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+            messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
             LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
 
             map.addMarker(new MarkerOptions().position(currentLocation)
