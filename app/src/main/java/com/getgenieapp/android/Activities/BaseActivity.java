@@ -63,7 +63,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 startFragment(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
             } else if (getIntent().getStringExtra("page").contains("message")) {
-                getIntent().removeExtra("page");
                 mixpanelDataAdd.put("Page", "Go to Chat Screen");
                 int id = sharedPreferences.getInt("catid", 0);
                 mixpanelDataAdd.put("Page", "Go to Category " + id);
@@ -77,6 +76,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mToolbar.setTitle("");
                 } else {
+                    sharedPreferences.edit().putInt("catid", 0).apply();
                     categorie_selected = dbDataSource.getCategories(id);
                     if (categorie_selected != null) {
                         mixpanelDataAdd.put("Page", "Open Category " + categorie_selected.getName());
@@ -682,13 +682,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             for (Categories categories : dbDataSource.getAllCategories()) {
                                 dbDataSource.UpdateMessages(categories.getId(), categories.getHide_chats_time());
                             }
-                            boolean isChatOpen = false;
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                                     ((ChatFragment) fragment).displayMessages(true, false);
-                                    isChatOpen = true;
                                 }
                             }
                         }
