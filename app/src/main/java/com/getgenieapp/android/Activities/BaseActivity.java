@@ -490,7 +490,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 Crouton.cancelAllCroutons();
                                 Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
                                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-                                dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                                if (categories != null)
+                                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
                                 ((MainFragment) fragment).refreshDataFromLocal();
                             }
                         }
@@ -647,6 +648,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                 }
                             }
+                            // todo get unsysnced
                             dbDataSource.cleanTable();
                             dbDataSource.addFast(messagesArrayList);
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();

@@ -185,7 +185,10 @@ public class DBDataSource {
                         , DBHandler.description, DBHandler.bg_color
                         , DBHandler.hide_chats_time},
                 DBHandler.cat_id + "== " + catId, null, null, null, null);
-        Categories labels = parseCursorCat(cursor).get(0);
+        ArrayList<Categories> list = parseCursorCat(cursor);
+        Categories labels = null;
+        if (list.size() > 0)
+            labels = list.get(0);
         cursor.close();
         close();
         return labels;
@@ -230,9 +233,9 @@ public class DBDataSource {
                     if (jsonObject.has("id")) {
                         if (jsonObject.getInt("id") == DataFields.TEXT) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
                         } else if (jsonObject.getInt("id") == DataFields.IMAGE) {
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                        } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
@@ -241,7 +244,7 @@ public class DBDataSource {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), messageValues.get_id(), messageValues,
+                labels.add(new Messages(cursor.getString(0), messageValues.get_id(), Integer.parseInt(cursor.getString(1)), messageValues,
                         Integer.parseInt(cursor.getString(3)), Long.parseLong(cursor.getString(4)),
                         Long.parseLong(cursor.getString(5)), Integer.parseInt(cursor.getString(6))));
             } while (cursor.moveToNext());
@@ -284,7 +287,7 @@ public class DBDataSource {
                     e.printStackTrace();
                 }
                 if (Long.parseLong(cursor.getString(4)) > hide_time) {
-                    labels.add(new Messages(cursor.getString(0), Integer.parseInt(cursor.getString(1)), messageValues.get_id(), messageValues,
+                    labels.add(new Messages(cursor.getString(0), messageValues.get_id(), Integer.parseInt(cursor.getString(1)), messageValues,
                             Integer.parseInt(cursor.getString(3)), Long.parseLong(cursor.getString(4)),
                             Long.parseLong(cursor.getString(5)), Integer.parseInt(cursor.getString(6))));
                 }

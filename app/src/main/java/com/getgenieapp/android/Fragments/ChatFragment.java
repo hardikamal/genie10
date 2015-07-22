@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
@@ -196,9 +197,12 @@ public class ChatFragment extends GenieFragment {
         return rootView;
     }
 
+
     public void displayMessages(boolean status, boolean scroll) {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
-        Collections.sort(messages);
+
+        // todo sort always
+
         mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
         String present = "";
         String now = "";
@@ -210,10 +214,15 @@ public class ChatFragment extends GenieFragment {
 
         for (int i = messages.size() - 1; i >= 0; i--) {
             now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
-            if (!present.equals("") && !present.equals(now)) {
-                messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+            System.out.println("Now     position " + i + " : " + now);
+            System.out.println("Present position " + i + " : " + present);
+
+            if (!present.equals("") && !present.equals(now) && i != 0) {
+                System.out.println("Show Date " + utils.convertLongToDate(messages.get(i + 1).getCreatedAt(), new SimpleDateFormat("yyyy MM dd")));
+//                messages.add(i + 1, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i + 1).getCreatedAt(), 0, 0));
             } else if (i == 0) {
-                messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+                System.out.println("Show at 0 " + utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd")));
+//                messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
             }
             present = now;
         }
@@ -242,12 +251,10 @@ public class ChatFragment extends GenieFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data.getExtras() != null) {
             mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
-            MessageValues messageValues = new MessageValues(3, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+            MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
             Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
-            messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
-            chatAdapter.notifyDataSetChanged();
-            scroll();
+            displayMessages(true, true);
             JSONObject valueJSON = new JSONObject();
             try {
                 valueJSON.put("text", messageValues.getText());
@@ -292,17 +299,15 @@ public class ChatFragment extends GenieFragment {
         mixpanelDataAdd.put("Chat Message", "Received");
         if (messageObject.getCategory() == id) {
             mixpanelDataAdd.put("Chat Message", "Updated");
-            messages.add(messageObject);
-            chatAdapter.notifyDataSetChanged();
-            scroll();
+            displayMessages(true, true);
         } else {
             mixPanelBuild("Message received when user is in different category");
             mixpanelDataAdd.put("Message", "Different Category");
             Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-            dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+            if (categories != null)
+                dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
             System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
             Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, viewGroup).show();
-            // todo add notification
         }
     }
 
@@ -320,10 +325,8 @@ public class ChatFragment extends GenieFragment {
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
             Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
-            messages.add(messageObject);
             dbDataSource.addNormal(messageObject);
-            chatAdapter.notifyDataSetChanged();
-            scroll();
+            displayMessages(true, true);
             if (typedMessage.equalsIgnoreCase("Pay Now")) {
                 JSONObject jsonObject = new JSONObject();
                 try {
@@ -336,10 +339,8 @@ public class ChatFragment extends GenieFragment {
                 }
                 MessageValues messageValues2 = new MessageValues(DataFields.PAYNOW, "www.google.com", jsonObject.toString());
                 Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis() / 1000L, 0, DataFields.INCOMING);
-                messages.add(messageObject2);
                 dbDataSource.addNormal(messageObject2);
-                chatAdapter.notifyDataSetChanged();
-                scroll();
+                displayMessages(true, true);
             }
             JSONObject valueJSON = new JSONObject();
             try {

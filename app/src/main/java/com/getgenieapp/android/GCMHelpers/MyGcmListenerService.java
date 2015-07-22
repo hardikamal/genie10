@@ -32,6 +32,7 @@ import com.getgenieapp.android.Extras.GetDate;
 import com.getgenieapp.android.Extras.NotificationHandler;
 import com.getgenieapp.android.Extras.Utils;
 import com.getgenieapp.android.GenieApplication;
+import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
@@ -62,43 +63,33 @@ public class MyGcmListenerService extends GcmListenerService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        if (data.containsKey("msg")) {
-            int cid = 0;
-            int aid = 0;
-            int category = 0;
-            String text = "";
-            int status = 0;
-            int sender_id = 0;
-            long created_at = 0;
-            long updated_at = 0;
-            String id = "";
-            double lng = 0;
-            double lat = 0;
-            String url = "";
+        } else if (data.containsKey("msg")) {
+            int status = 0, categoryId = 0, messageType = 0;
+            String id = "", url = "", text = "";
+            long created_at = 0, updated_at = 0;
+            double lng = 0, lat = 0;
+            int direction = DataFields.OUTGOING;
+
             try {
                 JSONObject jsonObject = new JSONObject(data.getString("msg"));
                 if (jsonObject.has("cid")) {
-                    cid = jsonObject.getInt("cid");
+                    categoryId = jsonObject.getInt("cid");
                 }
                 if (jsonObject.has("_id")) {
                     id = jsonObject.getString("_id");
                 }
                 if (jsonObject.has("chat")) {
                     JSONObject chat = jsonObject.getJSONObject("chat");
-                    if (chat.has("aid")) {
-                        aid = chat.getInt("aid");
-                    }
                     if (chat.has("message")) {
                         JSONObject message = chat.getJSONObject("message");
                         if (message.has("category")) {
-                            category = message.getInt("category");
+                            messageType = message.getInt("category");
                         }
                         if (message.has("status")) {
                             status = message.getInt("status");
                         }
                         if (message.has("sender_id")) {
-                            sender_id = message.getInt("sender_id");
+                            direction = DataFields.INCOMING;
                         }
                         if (message.has("created_at")) {
                             created_at = message.getLong("created_at");
@@ -108,17 +99,17 @@ public class MyGcmListenerService extends GcmListenerService {
                         }
                         if (message.has("category_value")) {
                             JSONObject category_value = message.getJSONObject("category_value");
-                            if (category == 1) {
+                            if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
                                 if (category_value.has("text"))
                                     text = category_value.getString("text");
-                            } else if (category == 2) {
+                            } else if (messageType == DataFields.LOCATION) {
                                 if (category_value.has("lng"))
                                     lng = category_value.getDouble("lng");
                                 if (category_value.has("lat"))
                                     lat = category_value.getDouble("lat");
                                 if (category_value.has("text"))
                                     text = category_value.getString("text");
-                            } else if (category == 3) {
+                            } else if (messageType == DataFields.IMAGE) {
                                 if (category_value.has("text"))
                                     text = category_value.getString("text");
                                 if (category_value.has("url"))
@@ -130,30 +121,40 @@ public class MyGcmListenerService extends GcmListenerService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            Chat chat = new Chat(cid, aid, category, text, status, sender_id, created_at, updated_at, id, lng, lat, url);
-//            MessageValues messageValues = null;
-//            if (chat.getCategory() == 1) {
-//                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-//            }
-//            if (chat.getCategory() == 2) {
-//                messageValues = new MessageValues(chat.getCategory(), chat.getText(), chat.getLng(), chat.getLat());
-//            }
-//            if (chat.getCategory() == 3) {
-//                messageValues = new MessageValues(chat.getCategory(), chat.getUrl(), chat.getText());
-//            }
-//            if (chat.getCategory() == 5) {
-//                messageValues = new MessageValues(chat.getCategory(), chat.getText());
-//            }
-//
-//            Messages messageObject = new Messages(chat.getId(), chat.getAid(), chat.getSender_id(), chat.getCategory(), chat.getCid(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), 1);
-//            DBDataSource dbDataSource = new DBDataSource(this);
-//            dbDataSource.addNormal(messageObject);
-//            Log.d(TAG, "From: " + from);
-//            Log.d(TAG, "Messages: " + data.toString());
-//            dbDataSource.UpdateCatNotification(chat.getCid(), dbDataSource.getCategories(chat.getCid()).getNotification_count() + 1);
 
-            // todo
-//            new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), chat.getCid());
+            Chat chat = null;
+            if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+            } else if (messageType == DataFields.LOCATION) {
+                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+            } else if (messageType == DataFields.IMAGE) {
+                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
+            }
+
+            if (chat != null) {
+                MessageValues messageValues = null;
+                if (chat.getType() == DataFields.TEXT) {
+                    messageValues = new MessageValues(DataFields.TEXT, chat.getText());
+                }
+                if (chat.getType() == DataFields.LOCATION) {
+                    messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
+                }
+                if (chat.getType() == DataFields.IMAGE) {
+                    messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
+                }
+                if (chat.getType() == DataFields.PAYNOW) {
+                    messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                }
+                Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                DBDataSource dbDataSource = new DBDataSource(this);
+                dbDataSource.addNormal(messageObject);
+
+                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                if (categories != null)
+                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+
+                new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
+            }
         } else {
             Log.v("GCM PUSH", data.toString());
             sendNotification("Unhandled Push Notification Received");
