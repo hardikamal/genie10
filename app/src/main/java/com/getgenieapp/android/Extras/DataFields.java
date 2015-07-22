@@ -2,14 +2,17 @@ package com.getgenieapp.android.Extras;
 
 import android.os.Environment;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
 
 public class DataFields {
-    public static final int ServerSelection = 3;
-    // 1 for Staging
-    // 2 for Test
-    // 3 for Local
-
     public static final int SplashScreenGeneralTimeOut = 3000;
     public static final int VerifyTimeOut = 2000;
     public static final int small400TimeOut = 400;
@@ -21,6 +24,7 @@ public class DataFields {
     public static final File root = Environment.getExternalStorageDirectory();
     public static final File mainFolder = new File(root.getAbsolutePath() + "/GetGenie");
     public static final String profilePicturePath = mainFolder.getAbsolutePath() + "/me.jpg";
+    public static final String configPath = mainFolder.getAbsolutePath() + "/config.txt";
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
 
@@ -38,8 +42,11 @@ public class DataFields {
     private static final String TestServer = "http://staging0.getgenieapp.com";
     private static final String TestSocket = "http://staging0chat.getgenieapp.com";
 
-    private static final String LocalServer = "http://192.168.1.27:3000";
-    private static final String LocalSocket = "http://192.168.1.27:3004";
+    private static final String LocalServer = "http://192.168.1.7:3000";
+    private static final String LocalSocket = "http://192.168.1.7:3004";
+
+    private static final String LocalServer1 = "http://114.143.44.164";
+    private static final String LocalSocket1 = "http://114.143.44.164:3004";
 
     private static final String API = "/api";
     private static final String Version = "/v1";
@@ -70,10 +77,54 @@ public class DataFields {
     public static int SEEN = 3;
 
     public static String getServerUrl() {
-        return StagingServer + API + Version;
+        String server = LocalServer1;
+        String serverApi = API;
+        String serverVersion = Version;
+        if (new File(configPath).exists()) {
+            try {
+                HashMap<String, String> map = readFile();
+                if (map.containsKey("server"))
+                    server = map.get("server");
+                if (map.containsKey("serverport"))
+                    server += map.get("serverport");
+                if (map.containsKey("api"))
+                    serverApi = map.get("api");
+                if (map.containsKey("version"))
+                    serverVersion = map.get("version");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return server + serverApi + serverVersion;
     }
 
     public static String getChatUrl() {
-        return StagingSocket;
+        String socket = LocalSocket1;
+        if (new File(configPath).exists()) {
+            try {
+                HashMap<String, String> map = readFile();
+                if (map.containsKey("socket"))
+                    socket = map.get("socket");
+                if (map.containsKey("socketport"))
+                    socket += map.get("socketport");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return socket;
+    }
+
+    private static HashMap<String, String> readFile() throws IOException {
+        HashMap<String, String> map = new HashMap<>();
+        FileInputStream fis = new FileInputStream(configPath);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            String[] brakeLines = line.split("-");
+            map.put(brakeLines[0], brakeLines[1]);
+        }
+        br.close();
+        return map;
     }
 }
