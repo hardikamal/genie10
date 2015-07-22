@@ -201,8 +201,7 @@ public class ChatFragment extends GenieFragment {
 
     public void displayMessages(boolean status, boolean scroll) {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
-        System.out.println("Size : " + messages.size());
-        // todo sort always
+        Collections.sort(messages);
 
         mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
         String present = "";
