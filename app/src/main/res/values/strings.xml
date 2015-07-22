@@ -50,7 +50,7 @@
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
     <string name="servererrortryagain">Error. Try Again</string>
-    <string name="error_toast">Unfortunately Genie Crashed. Sending crash reports to Genie</string>
+    <string name="error_toast">Unfortunately SuperGenie Crashed.</string>
     <string name="redoregistration">Redo Registration</string>
     <string name="gettinglocation">Getting Location</string>
     <string name="updatinguserinformation">Updating User information..</string>

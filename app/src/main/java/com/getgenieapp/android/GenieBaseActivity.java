@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.getgenieapp.android.Database.DBDataSource;
 import com.getgenieapp.android.Extras.FontChangeCrawler;
 import com.getgenieapp.android.Extras.Logging;
@@ -38,6 +39,7 @@ public class GenieBaseActivity extends AppCompatActivity {
     public Utils utils;
     public DBDataSource dbDataSource;
     public MixpanelAPI mixpanel;
+    public ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -53,6 +55,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         dbDataSource = new DBDataSource(this);
         mixpanel.identify(utils.getDeviceSerialNumber());
         mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
+        imageLoader = genieApplication.getImageLoader();
     }
 
     public void startFragment(int container, Fragment fragment) {

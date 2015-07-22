@@ -66,22 +66,6 @@
                         android:enabled="false" />
 
                     <EditText
-                        android:id="@+id/countrycode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@android:color/transparent"
-                        android:enabled="false"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@string/code91"
-                        android:textColor="#000"
-                        android:textColorHint="@color/colorPrimaryDark"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/_15sdp" />
-
-                    <EditText
                         android:id="@+id/number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -90,11 +74,9 @@
                         android:editable="false"
                         android:enabled="false"
                         android:inputType="number"
-                        android:maxLength="10"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/defaultnumber"
-                        android:textColor="@color/text_color"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/colorPrimaryDark"
                         android:textIsSelectable="false"
                         android:textSize="@dimen/_15sdp" />

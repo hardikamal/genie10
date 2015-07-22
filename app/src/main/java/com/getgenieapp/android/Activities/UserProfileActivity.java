@@ -20,6 +20,7 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
@@ -34,6 +35,7 @@ import android.widget.EditText;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.getgenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.getgenieapp.android.CustomViews.Button.CircularButton;
@@ -48,6 +50,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -66,8 +70,8 @@ public class UserProfileActivity extends GenieBaseActivity {
     EditText email;
     @InjectView(R.id.address)
     EditText address;
-    @InjectView(R.id.countrycode)
-    EditText countrycode;
+    @InjectView(R.id.number)
+    EditText number;
     @InjectView(R.id.userIcon)
     CircularButton userIcon;
     @InjectView(R.id.update)
@@ -118,14 +122,95 @@ public class UserProfileActivity extends GenieBaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        logging.LogV("User Profile Activity");
-        name.setText("Genie Admin");
-        email.setText("admin@getgenieapp.com");
-        address.setText("India");
         radius = userIcon.getLayoutParams().width;
-        getPicture();
-
+        getUserData();
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    private void getUserData() {
+        final ProgressDialog progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(true);
+        progressBar.setMessage(getString(R.string.updatinguserinformation));
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.show();
+
+        mixpanelDataAdd.put("Server Call", "Get User Profile");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.USERPROFILE);
+        JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.USERPROFILE,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        progressBar.dismiss();
+                        progressBar.cancel();
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
+                        mixpanelDataAdd.put("Server Call", "User data Success");
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
+                        try {
+                            if (response.has("phone")) {
+                                number.setText(response.getString("phone"));
+                            }
+                            if (response.has("name")) {
+                                name.setText(response.getString("name"));
+                            }
+                            if (response.has("email") && response.getString("email") != null && response.getString("email").length() > 0) {
+                                email.setText(response.getString("email"));
+                            }
+                            if (response.has("address") && response.getString("address") != null && response.getString("address").length() > 0) {
+                                address.setText(response.getString("address"));
+                            }
+                            if (new File(DataFields.profilePicturePath).exists()) {
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                                Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
+                                GraphicsUtil graphicUtil = new GraphicsUtil();
+                                userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
+                            } else if (response.has("image_url") && response.getString("image_url") != null && response.getString("image_url").length() > 0) {
+                                new AsyncTask<String, Void, Bitmap>() {
+                                    @Override
+                                    protected Bitmap doInBackground(String... url) {
+                                        String imageLink = null;
+                                        Bitmap bitmap = null;
+                                        if (url[0] != null) {
+                                            try {
+                                                bitmap = BitmapFactory.decodeStream(new URL(imageLink).openStream());
+                                            } catch (MalformedURLException e) {
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        return bitmap;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Bitmap res) {
+                                        userIcon.setImageBitmap(res);
+                                    }
+                                }.execute(response.getString("image_url"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressBar.dismiss();
+                progressBar.cancel();
+                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
+                mixpanelDataAdd.put("Server Call", "Users Server 500 Error");
+                mixPanelBuild(DataFields.getServerUrl() + DataFields.USERPROFILE + " 500 Error");
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                return params;
+            }
+        };
+        genieApplication.addToRequestQueue(req);
     }
 
     @Override
@@ -329,6 +414,8 @@ public class UserProfileActivity extends GenieBaseActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        progressBar.dismiss();
+                        progressBar.cancel();
                         Crouton.makeText(UserProfileActivity.this, getString(R.string.errorwhileupdatinguserinformation), Style.INFO, R.id.body).show();
                     }
                 }) {
@@ -358,16 +445,6 @@ public class UserProfileActivity extends GenieBaseActivity {
             ostream.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void getPicture() {
-        if (new File(DataFields.profilePicturePath).exists()) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
-            GraphicsUtil graphicUtil = new GraphicsUtil();
-            userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
         }
     }
 

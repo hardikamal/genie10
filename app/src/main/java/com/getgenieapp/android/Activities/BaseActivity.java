@@ -136,6 +136,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.on("reset connection", reset_connection);
             mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
             mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+            mSocket.on(Socket.EVENT_RECONNECT, onReconnect);
             mSocket.on("agents offline", agentOffline);
             mSocket.on("agents online", agentOnline);
             mSocket.on("earlier messages", loadMoreMessages);
@@ -174,6 +175,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
         mSocket.off("incoming agent message", onMessageReceived);
         mSocket.off("agents offline", agentOffline);
+        mSocket.off(Socket.EVENT_RECONNECT, onReconnect);
         mSocket.off("agents online", agentOnline);
         mSocket.off("earlier messages", loadMoreMessages);
         mSocket.off("typing", onTyping);
@@ -701,6 +703,20 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         }
     };
 
+    private Emitter.Listener onReconnect = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mixpanelDataAdd.put("Socket", "Server Reconnect");
+                    mixPanelBuild("Socket Server Reconnect");
+                    setChatStatus(true);
+                }
+            });
+        }
+    };
+
     private Emitter.Listener loadMoreMessages = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -829,14 +845,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     };
 
     private ArrayList<Messages> validateList(ArrayList<Messages> messagesArrayList) {
-        ArrayList<Messages> finalList = messagesArrayList;
+        ArrayList<Messages> finalList = new ArrayList<>();
         ArrayList<Messages> messagesFromDB = dbDataSource.getAllListBasedOnCategory(String.valueOf(messagesArrayList.get(0).getCategory()));
         if (messagesFromDB.size() > 0) {
             for (Messages messages : messagesArrayList) {
-                for (Messages dbMessages : messagesFromDB) {
-                    if (messages.getCreatedAt() == dbMessages.getCreatedAt() && messages.get_id().equals(dbMessages.get_id())) {
-                        finalList.remove(messages);
-                    }
+                if (!messagesFromDB.contains(messages)) {
+                    finalList.add(messages);
                 }
             }
         }

@@ -6,6 +6,17 @@ package com.getgenieapp.android.Objects;
 public class Messages implements Comparable<Messages> {
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Messages))
+            return false;
+        Messages u = (Messages) obj;
+
+        return this.getCreatedAt() == u.getCreatedAt() && this.get_id().equals(u.get_id());
+    }
+
+    @Override
     public int compareTo(Messages obj) {
         return Long.valueOf(this.createdAt).compareTo(obj.createdAt);
     }

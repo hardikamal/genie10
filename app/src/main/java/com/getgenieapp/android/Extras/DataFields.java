@@ -52,6 +52,7 @@ public class DataFields {
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";
+    public static final String USERPROFILE = "/userprofile";
     public static final String UPDATEUSER = "/updateuser";
 
     public static final String DBName = "getgenieapp";
@@ -77,7 +78,7 @@ public class DataFields {
     public static int SEEN = 3;
 
     public static String getServerUrl() {
-        String server = LocalServer1;
+        String server = StagingServer;
         String serverApi = API;
         String serverVersion = Version;
         if (new File(configPath).exists()) {
@@ -99,7 +100,7 @@ public class DataFields {
     }
 
     public static String getChatUrl() {
-        String socket = LocalSocket1;
+        String socket = StagingSocket;
         if (new File(configPath).exists()) {
             try {
                 HashMap<String, String> map = readFile();
