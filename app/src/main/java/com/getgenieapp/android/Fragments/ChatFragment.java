@@ -200,7 +200,7 @@ public class ChatFragment extends GenieFragment {
 
     public void displayMessages(boolean status, boolean scroll) {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
-
+        System.out.println("Size : " + messages.size());
         // todo sort always
 
         mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
@@ -227,9 +227,9 @@ public class ChatFragment extends GenieFragment {
             present = now;
         }
 
-        if (hide_time != 0 && status) {
-            messages.add(0, new Messages("0", DataFields.LOADMORE, id, new MessageValues(), 0, 0, 0, 0));
-        }
+//        if (hide_time != 0 && status) {
+//            messages.add(0, new Messages("0", DataFields.LOADMORE, id, new MessageValues(), 0, 0, 0, 0));
+//        }
 
         recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
@@ -252,7 +252,7 @@ public class ChatFragment extends GenieFragment {
         if (data.getExtras() != null) {
             mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
             MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
+            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
             displayMessages(true, true);
             JSONObject valueJSON = new JSONObject();
@@ -324,7 +324,7 @@ public class ChatFragment extends GenieFragment {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
-            Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, System.currentTimeMillis() / 1000L, 0, 0);
+            Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
             displayMessages(true, true);
             if (typedMessage.equalsIgnoreCase("Pay Now")) {
@@ -338,7 +338,7 @@ public class ChatFragment extends GenieFragment {
                     e.printStackTrace();
                 }
                 MessageValues messageValues2 = new MessageValues(DataFields.PAYNOW, "www.google.com", jsonObject.toString());
-                Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis() / 1000L, 0, DataFields.INCOMING);
+                Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis(), 0, DataFields.INCOMING);
                 dbDataSource.addNormal(messageObject2);
                 displayMessages(true, true);
             }

@@ -286,7 +286,8 @@ public class DBDataSource {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (Long.parseLong(cursor.getString(4)) > hide_time) {
+                long createdTime = Long.parseLong(cursor.getString(4));
+                if (createdTime > hide_time) {
                     labels.add(new Messages(cursor.getString(0), messageValues.get_id(), Integer.parseInt(cursor.getString(1)), messageValues,
                             Integer.parseInt(cursor.getString(3)), Long.parseLong(cursor.getString(4)),
                             Long.parseLong(cursor.getString(5)), Integer.parseInt(cursor.getString(6))));
@@ -303,7 +304,7 @@ public class DBDataSource {
                         , DBHandler.message_values, DBHandler.status
                         , DBHandler.created_at, DBHandler.updated_at
                         , DBHandler.direction},
-                DBHandler.category_id + "== " + category_id, null, null, null, null);
+                DBHandler.category_id + " == " + category_id, null, null, null, null);
         ArrayList<Messages> labels = parseCursor(cursor);
         cursor.close();
         close();
@@ -387,6 +388,6 @@ public class DBDataSource {
     public void deleteFav(FavValues favValues) {
         open();
         database.delete(DBHandler.FAVTABLE, DBHandler.name + " == '" + favValues.getName() + "'", null);
-        cleanTable();
+        close();
     }
 }

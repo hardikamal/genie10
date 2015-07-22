@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -21,7 +20,6 @@ import com.getgenieapp.android.Fragments.PaymentFragment;
 import com.getgenieapp.android.GenieBaseActivity;
 import com.getgenieapp.android.Objects.Categories;
 import com.getgenieapp.android.Objects.Chat;
-import com.getgenieapp.android.Objects.ChatArray;
 import com.getgenieapp.android.Objects.MessageValues;
 import com.getgenieapp.android.Objects.Messages;
 import com.getgenieapp.android.R;
@@ -563,10 +561,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             JSONObject payload = jsonObject.getJSONObject("payload");
                             ArrayList<Categories> categoriesArrayList = dbDataSource.getAllCategories();
                             ArrayList<Messages> messagesArrayList = new ArrayList<Messages>();
+                            ArrayList<Messages> messagesArrayListUnSynced = new ArrayList<Messages>();
                             for (Categories cats : categoriesArrayList) {
                                 if (payload.has(String.valueOf(cats.getId()))) {
                                     System.out.println("onReceivedMessagesList " + payload.getString(String.valueOf(cats.getId())));
                                     JSONArray catJSONArray = payload.getJSONArray(String.valueOf(cats.getId()));
+                                    Messages lastMessage = null;
                                     for (int i = 0; i < catJSONArray.length(); i++) {
                                         System.out.println(catJSONArray.get(i));
                                         JSONObject chatMessage = catJSONArray.getJSONObject(i);
@@ -644,11 +644,17 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             }
                                             Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                                             messagesArrayList.add(messageObject);
+                                            lastMessage = messageObject;
                                         }
+                                    }
+                                    if (lastMessage != null) {
+                                        ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
+                                        messagesArrayListUnSynced.addAll(holdMessages);
+                                        // todo emit unsend msg
                                     }
                                 }
                             }
-                            // todo get unsysnced
+                            messagesArrayList.addAll(messagesArrayListUnSynced);
                             dbDataSource.cleanTable();
                             dbDataSource.addFast(messagesArrayList);
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
