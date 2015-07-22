@@ -50,10 +50,6 @@ public class DataFields {
     public static final String DBName = "getgenieapp";
     public static final int DBVersion = 1;
 
-    public static final int CAMERA_CAPTURE = 1;
-    public static final int PICK_IMAGE = 1;
-    public static final int PIC_CROP = 2;
-
     public static final int TEXT = 1;
     public static final int LOCATION = 2;
     public static final int IMAGE = 3;

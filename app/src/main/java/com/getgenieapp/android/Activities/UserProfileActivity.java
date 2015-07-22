@@ -18,6 +18,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -72,10 +73,10 @@ public class UserProfileActivity extends GenieBaseActivity {
     @InjectView(R.id.update)
     ButtonRectangle update;
     int radius;
+
     final int CAMERA_CAPTURE = 1;
-    final int PICK_IMAGE = 1;
-    final int PIC_CROP = 2;
-    private Uri picUri;
+    final int PICK_IMAGE = 2;
+
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
     boolean canClose = false;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
@@ -168,116 +169,91 @@ public class UserProfileActivity extends GenieBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            deletePicture();
             // user is returning from capturing an image using the camera
             if (requestCode == CAMERA_CAPTURE) {
                 mixpanelDataAdd.put("Pressed", "Take a picture");
-                picUri = data.getData();
-                // carry out the crop operation
-                performCrop();
-            }
-            // user is returning from cropping the image
-            else if (requestCode == PIC_CROP) {
-                // get the returned data
                 Bundle extras = data.getExtras();
-                // get the cropped bitmap
-                Bitmap thePic = extras.getParcelable("data");
-                // retrieve a reference to the ImageView
-                // display the returned cropped image
+                Bitmap bitmap = (Bitmap) extras.get("data");
+                ThumbnailUtils.extractThumbnail(bitmap, radius * 2, radius * 2);
                 GraphicsUtil graphicUtil = new GraphicsUtil();
-                //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
-                userIcon.setImageBitmap(graphicUtil.getCircleBitmap(thePic, radius));
-                setPicture();
-            } else if (requestCode == DataFields.PICK_IMAGE) {
-                mixpanelDataAdd.put("Pressed", "Pick picture");
+                userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
                 try {
-                    ContentResolver resolver = getContentResolver();
-                    Uri actualUri = data.getData();
-                    List<String> uriPath = actualUri.getPathSegments();
-                    long imageId = Long.parseLong(uriPath.get(uriPath.size() - 1));
-                    Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MICRO_KIND, null);
-                    //There is no thumb-nail with this Image
-                    if (thumb == null) {
-                        Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT, R.id.body).show();
-                        //so create thumb-nail from image itself
-                        Cursor cursor = resolver
-                                .query(actualUri,
-                                        new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
-                                        null, null, null);
-                        cursor.moveToFirst();
-                        final String imageFilePath = cursor.getString(0);
-                        cursor.close();
-                        GraphicsUtil graphicUtil = new GraphicsUtil();
-                        //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
-                        userIcon.setImageBitmap(graphicUtil.getCircleBitmap(this.createImageThumbnail(imageFilePath,
-                                255, 255), radius));
-                        setPicture();
-                    }
-                    //We got the thumb-nail from gallery, rotate if needed else use on ImageView
-                    else {
-                        String thumbPath = getFilePath(actualUri);
-                        ExifInterface exif;
-                        try {
-                            exif = new ExifInterface(thumbPath);
-                            int orientation = exif.getAttributeInt(
-                                    ExifInterface.TAG_ORIENTATION, 0);
-                            Matrix matrix = new Matrix();
-                            if (orientation == 6) {
-                                matrix.postRotate(90);
-                            } else if (orientation == 3) {
-                                matrix.postRotate(180);
-                            } else if (orientation == 8) {
-                                matrix.postRotate(270);
-                            }
-                            if (bitmap != null) {
-                                bitmap.recycle();
-                                bitmap = null;
-                            }
-                            bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(),
-                                    thumb.getHeight(), matrix, true);
-                            if (thumb != bitmap) {
-                                thumb.recycle();
-                                thumb = null;
-                            }
-                            GraphicsUtil graphicUtil = new GraphicsUtil();
-                            userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, radius));
-                            setPicture();
-                        } catch (Exception e) {
-                        }
-                    }
+                    FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                    ostream.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            } else if (requestCode == PICK_IMAGE) {
+                mixpanelDataAdd.put("Pressed", "Pick picture");
+                ContentResolver resolver = getContentResolver();
+                Uri actualUri = data.getData();
+                List<String> uriPath = actualUri.getPathSegments();
+                long imageId = Long.parseLong(uriPath.get(uriPath.size() - 1));
+                Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                //There is no thumb-nail with this Image
+                if (thumb != null) {
+                    Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT, R.id.body).show();
+                    //so create thumb-nail from image itself
+                    Cursor cursor = resolver
+                            .query(actualUri,
+                                    new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
+                                    null, null, null);
+                    cursor.moveToFirst();
+                    final String imageFilePath = cursor.getString(0);
+                    cursor.close();
+                    GraphicsUtil graphicUtil = new GraphicsUtil();
+                    //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
+                    userIcon.setImageBitmap(graphicUtil.getCircleBitmap(this.createImageThumbnail(imageFilePath,
+                            255, 255), radius));
+                    try {
+                        FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
+                        thumb.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                        ostream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String thumbPath = getFilePath(actualUri);
+                    ExifInterface exif;
+                    try {
+                        exif = new ExifInterface(thumbPath);
+                        int orientation = exif.getAttributeInt(
+                                ExifInterface.TAG_ORIENTATION, 0);
+                        Matrix matrix = new Matrix();
+                        if (orientation == 6) {
+                            matrix.postRotate(90);
+                        } else if (orientation == 3) {
+                            matrix.postRotate(180);
+                        } else if (orientation == 8) {
+                            matrix.postRotate(270);
+                        }
+                        Bitmap bitmap = null;
+                        if (bitmap != null) {
+                            bitmap.recycle();
+                            bitmap = null;
+                        }
+                        bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(),
+                                thumb.getHeight(), matrix, true);
+                        if (thumb != bitmap) {
+                            thumb.recycle();
+                            thumb = null;
+                        }
+                        GraphicsUtil graphicUtil = new GraphicsUtil();
+                        userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
+                        try {
+                            FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                            ostream.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } catch (Exception e) {
+                    }
+                }
             }
-        }
-    }
-
-
-    private void performCrop() {
-        mixpanelDataAdd.put("Pressed", "Crop it.");
-        // take care of exceptions
-        try {
-            // call the standard crop action intent (the user device may not
-            // support it)
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
-            cropIntent.setDataAndType(picUri, "image/*");
-            // set crop properties
-            cropIntent.putExtra("crop", "true");
-            // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
-            cropIntent.putExtra("outputX", 256);
-            cropIntent.putExtra("outputY", 256);
-            // retrieve data on return
-            cropIntent.putExtra("return-data", true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, DataFields.PIC_CROP);
-        }
-        // respond to users whose devices do not support the crop action
-        catch (ActivityNotFoundException anfe) {
-            // display an error message
-            Crouton.makeText(this, getString(R.string.devicedoesnotsupportmessage), Style.INFO, R.id.body).show();
         }
     }
 
@@ -292,28 +268,32 @@ public class UserProfileActivity extends GenieBaseActivity {
                 if (options[item].equals("Take Photo")) {
                     try {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(captureIntent, DataFields.CAMERA_CAPTURE);
+                        startActivityForResult(captureIntent, CAMERA_CAPTURE);
                     } catch (ActivityNotFoundException anfe) {
                         Crouton.makeText(UserProfileActivity.this, getString(R.string.devicedoesnotsupportmessage), Style.INFO, R.id.body).show();
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickIntent = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickIntent, DataFields.PICK_IMAGE);
+                    startActivityForResult(pickIntent, PICK_IMAGE);
                 } else if (options[item].equals("Remove Picture")) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp, UserProfileActivity.this.getTheme()));
-                    } else {
-                        userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp));
-                    }
-                    if (new File(DataFields.profilePicturePath).exists())
-                        new File(DataFields.profilePicturePath).delete();
+                    deletePicture();
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
+    }
+
+    private void deletePicture() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp, UserProfileActivity.this.getTheme()));
+        } else {
+            userIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_person_white_48dp));
+        }
+        if (new File(DataFields.profilePicturePath).exists())
+            new File(DataFields.profilePicturePath).delete();
     }
 
     @OnClick(R.id.update)
@@ -387,7 +367,7 @@ public class UserProfileActivity extends GenieBaseActivity {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
             GraphicsUtil graphicUtil = new GraphicsUtil();
-            userIcon.setImageBitmap(graphicUtil.getCircleBitmap(bitmap, radius));
+            userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
         }
     }
 
@@ -429,8 +409,6 @@ public class UserProfileActivity extends GenieBaseActivity {
         progressBar.cancel();
     }
 
-    private Bitmap bitmap = null;
-
     public Bitmap createImageThumbnail(String imagePath, int width, int height) {
         BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
         bmpFactoryOptions.inJustDecodeBounds = true;
@@ -447,7 +425,7 @@ public class UserProfileActivity extends GenieBaseActivity {
             }
         }
         bmpFactoryOptions.inJustDecodeBounds = false;
-
+        Bitmap bitmap = null;
         if (bitmap != null) {
             bitmap.recycle();
             bitmap = null;
