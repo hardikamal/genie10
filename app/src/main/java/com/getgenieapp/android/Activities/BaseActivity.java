@@ -77,19 +77,21 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mToolbar.setTitle("");
                 } else {
                     categorie_selected = dbDataSource.getCategories(id);
-                    mixpanelDataAdd.put("Page", "Open Category " + categorie_selected.getName());
-                    mixPanelBuild(categorie_selected.getName() + " Opened from notifications");
-                    setSupportActionBar(mToolbar);
-                    ActionBar actionBar = getSupportActionBar();
-                    if (actionBar != null) {
-                        actionBar.setHomeButtonEnabled(true);
-                        actionBar.setDisplayHomeAsUpEnabled(true);
-                        actionBar.setTitle(categorie_selected.getName());
+                    if (categorie_selected != null) {
+                        mixpanelDataAdd.put("Page", "Open Category " + categorie_selected.getName());
+                        mixPanelBuild(categorie_selected.getName() + " Opened from notifications");
+                        setSupportActionBar(mToolbar);
+                        ActionBar actionBar = getSupportActionBar();
+                        if (actionBar != null) {
+                            actionBar.setHomeButtonEnabled(true);
+                            actionBar.setDisplayHomeAsUpEnabled(true);
+                            actionBar.setTitle(categorie_selected.getName());
+                        }
+                        mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+                        mToolbar.setTitle(categorie_selected.getName());
+                        mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+                        onReceive(categorie_selected);
                     }
-                    mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-                    mToolbar.setTitle(categorie_selected.getName());
-                    mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
-                    onReceive(categorie_selected);
                 }
             }
         }
@@ -127,7 +129,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     public void onResume() {
         super.onResume();
         mixpanelDataAdd.put("Activity", "Resumed");
-        logging.LogV("Socket Checking");
+        logging.LogV("Socket Checking to on");
         if (!mSocket.connected()) {
             mixpanelDataAdd.put("Socket", "Opened");
             logging.LogV("Socket Opened");
@@ -141,7 +143,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.on("typing", onTyping);
             mSocket.on("server_error", onServerError);
             mSocket.on("got category chats", onReceivedMessagesList);
-            mSocket.connect();
+            genieApplication.connectToSocket();
         }
     }
 
@@ -164,22 +166,20 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     protected void onPause() {
         super.onPause();
         mixpanelDataAdd.put("Activity", "Paused");
-        logging.LogV("Socket Checking");
-        if (mSocket.connected()) {
-            mixpanelDataAdd.put("Socket", "Closed");
-            logging.LogV("Socket Closed");
-            mSocket.disconnect();
-            mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
-            mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-            mSocket.off("incoming agent message", onMessageReceived);
-            mSocket.off("agents offline", agentOffline);
-            mSocket.off("agents online", agentOnline);
-            mSocket.on("earlier messages", loadMoreMessages);
-            mSocket.off("typing", onTyping);
-            mSocket.off("server_error", onServerError);
-            mSocket.off("reset connection", reset_connection);
-            mSocket.off("got category chats", onReceivedMessagesList);
-        }
+        logging.LogV("Socket Checking to off");
+        mixpanelDataAdd.put("Socket", "Closed");
+        logging.LogV("Socket Closed");
+        genieApplication.disconnectToSocket();
+        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.off("incoming agent message", onMessageReceived);
+        mSocket.off("agents offline", agentOffline);
+        mSocket.off("agents online", agentOnline);
+        mSocket.off("earlier messages", loadMoreMessages);
+        mSocket.off("typing", onTyping);
+        mSocket.off("server_error", onServerError);
+        mSocket.off("reset connection", reset_connection);
+        mSocket.off("got category chats", onReceivedMessagesList);
     }
 
     @Override
@@ -348,6 +348,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            System.out.println("JSON for get all " + jsonObject.toString());
             mSocket.emit("get category chats", jsonObject);
             setChatStatus(true);
         }
@@ -368,7 +369,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
-
 
     private void setChatStatus(boolean status) {
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
@@ -574,12 +574,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                         String id = "", url = "", text = "";
                                         long created_at = 0, updated_at = 0;
                                         double lng = 0, lat = 0;
+                                        int uid = 0, aid = 0;
                                         int direction = DataFields.INCOMING;
                                         if (chatMessage.has("cid")) {
                                             categoryId = chatMessage.getInt("cid");
                                         }
                                         if (chatMessage.has("_id")) {
                                             id = chatMessage.getString("_id");
+                                        }
+                                        if (chatMessage.has("uid")) {
+                                            uid = chatMessage.getInt("uid");
+                                        }
+                                        if (chatMessage.has("aid")) {
+                                            aid = chatMessage.getInt("aid");
                                         }
                                         if (chatMessage.has("message")) {
                                             JSONObject message = chatMessage.getJSONObject("message");
@@ -590,7 +597,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                 status = message.getInt("status");
                                             }
                                             if (message.has("sender_id")) {
-                                                direction = DataFields.OUTGOING;
+                                                if (uid == message.getInt("sender_id")) {
+                                                    direction = DataFields.OUTGOING;
+                                                } else if (aid == message.getInt("sender_id")) {
+                                                    direction = DataFields.INCOMING;
+                                                }
                                             }
                                             if (message.has("created_at")) {
                                                 created_at = message.getLong("created_at");
@@ -617,7 +628,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                         url = category_value.getString("url");
                                                 }
                                             }
-
                                         }
                                         Chat chat = null;
                                         if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
@@ -649,7 +659,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
-                                        messagesArrayListUnSynced.addAll(holdMessages);
+//                                        messagesArrayListUnSynced.addAll(holdMessages);
+                                        // todo add this later
                                         // todo emit unsend msg
                                     }
                                 }
@@ -664,7 +675,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    ((ChatFragment) fragment).displayMessages(false, true);
+                                    ((ChatFragment) fragment).displayMessages(true, false);
                                 }
                             }
                         }
@@ -709,12 +720,19 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 String id = "", url = "", text = "";
                                 long created_at = 0, updated_at = 0;
                                 double lng = 0, lat = 0;
+                                int uid = 0, aid = 0;
                                 int direction = DataFields.INCOMING;
                                 if (chatMessage.has("cid")) {
                                     categoryId = chatMessage.getInt("cid");
                                 }
                                 if (chatMessage.has("_id")) {
                                     id = chatMessage.getString("_id");
+                                }
+                                if (chatMessage.has("uid")) {
+                                    uid = chatMessage.getInt("uid");
+                                }
+                                if (chatMessage.has("aid")) {
+                                    aid = chatMessage.getInt("aid");
                                 }
                                 if (chatMessage.has("message")) {
                                     JSONObject message = chatMessage.getJSONObject("message");
@@ -725,7 +743,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                         status = message.getInt("status");
                                     }
                                     if (message.has("sender_id")) {
-                                        direction = DataFields.OUTGOING;
+                                        if (uid == message.getInt("sender_id")) {
+                                            direction = DataFields.OUTGOING;
+                                        } else if (aid == message.getInt("sender_id")) {
+                                            direction = DataFields.INCOMING;
+                                        }
                                     }
                                     if (message.has("created_at")) {
                                         created_at = message.getLong("created_at");
@@ -781,6 +803,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     messagesArrayList.add(messageObject);
                                 }
                             }
+                            if (messagesArrayList.size() > 0) {
+                                messagesArrayList = validateList(messagesArrayList);
+                            }
                             dbDataSource.addFast(messagesArrayList);
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
                             List<Fragment> fragments = fragmentManager.getFragments();
@@ -801,6 +826,21 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             });
         }
     };
+
+    private ArrayList<Messages> validateList(ArrayList<Messages> messagesArrayList) {
+        ArrayList<Messages> finalList = messagesArrayList;
+        ArrayList<Messages> messagesFromDB = dbDataSource.getAllListBasedOnCategory(String.valueOf(messagesArrayList.get(0).getCategory()));
+        if (messagesFromDB.size() > 0) {
+            for (Messages messages : messagesArrayList) {
+                for (Messages dbMessages : messagesFromDB) {
+                    if (messages.getCreatedAt() == dbMessages.getCreatedAt() && messages.get_id().equals(dbMessages.get_id())) {
+                        finalList.remove(messages);
+                    }
+                }
+            }
+        }
+        return finalList;
+    }
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
         mSocket.emit("load earlier messages", jsonObject);

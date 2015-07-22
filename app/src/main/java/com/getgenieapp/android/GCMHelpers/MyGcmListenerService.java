@@ -69,7 +69,6 @@ public class MyGcmListenerService extends GcmListenerService {
             long created_at = 0, updated_at = 0;
             double lng = 0, lat = 0;
             int direction = DataFields.OUTGOING;
-
             try {
                 JSONObject jsonObject = new JSONObject(data.getString("msg"));
                 if (jsonObject.has("cid")) {

@@ -143,6 +143,15 @@ public class GenieApplication extends Application {
         super.onConfigurationChanged(newConfig);
     }
 
+    public void connectToSocket() {
+        if (!mSocket.connected())
+            mSocket.connect();
+    }
+
+    public void disconnectToSocket() {
+        mSocket.disconnect();
+    }
+
     private static final class MyComponentsLifecycleCallbacks implements ComponentCallbacks2 {
         @Override
         public void onConfigurationChanged(Configuration newConfig) {

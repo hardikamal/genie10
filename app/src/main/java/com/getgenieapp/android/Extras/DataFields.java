@@ -34,8 +34,6 @@ public class DataFields {
     public static final String UPDATEGCMURL = "/updategcm";
     public static final String REGISTERURL = "/users";
 
-    private static final String CHAT_SERVER_URL = "http://chat.socket.io";
-
     private static final String StagingServer = "http://staging0.getgenieapp.com";
     private static final String StagingSocket = "http://staging0chat.getgenieapp.com";
 
@@ -50,10 +48,12 @@ public class DataFields {
 
     private static final String API = "/api";
     private static final String Version = "/v1";
+
     public static final String VERIFYURL = "/verifyuser";
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";
     public static final String UPDATEUSER = "/updateuser";
+
     public static final String DBName = "getgenieapp";
     public static final int DBVersion = 1;
 
@@ -77,7 +77,7 @@ public class DataFields {
     public static int SEEN = 3;
 
     public static String getServerUrl() {
-        String server = LocalServer1;
+        String server = StagingServer;
         String serverApi = API;
         String serverVersion = Version;
         if (new File(configPath).exists()) {
@@ -99,7 +99,7 @@ public class DataFields {
     }
 
     public static String getChatUrl() {
-        String socket = LocalSocket1;
+        String socket = StagingSocket;
         if (new File(configPath).exists()) {
             try {
                 HashMap<String, String> map = readFile();

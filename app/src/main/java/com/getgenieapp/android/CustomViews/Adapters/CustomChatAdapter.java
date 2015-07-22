@@ -200,8 +200,10 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (jsonObject.has("cid"))
+                    if (jsonObject.has("cid")) {
+                        System.out.println("JSON for get all " + jsonObject.toString());
                         ((BaseActivity) context).sendLoadMoreMessagesCall(jsonObject);
+                    }
                 }
             });
         } else if (messages.getMessageType() == DataFields.DATESHOW) {
