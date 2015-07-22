@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -207,29 +208,26 @@ public class ChatFragment extends GenieFragment {
         String present = "";
         String now = "";
 
-        ArrayList<Integer> messageTypes = new ArrayList<>();
-        messageTypes.add(1);
-        messageTypes.add(2);
-        messageTypes.add(3);
-
-        for (int i = messages.size() - 1; i >= 0; i--) {
-            now = utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
-            System.out.println("Now     position " + i + " : " + now);
-            System.out.println("Present position " + i + " : " + present);
-
-            if (!present.equals("") && !present.equals(now) && i != 0) {
-                System.out.println("Show Date " + utils.convertLongToDate(messages.get(i + 1).getCreatedAt(), new SimpleDateFormat("yyyy MM dd")));
-//                messages.add(i + 1, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i + 1).getCreatedAt(), 0, 0));
-            } else if (i == 0) {
-                System.out.println("Show at 0 " + utils.convertLongToDate(messages.get(i).getCreatedAt(), new SimpleDateFormat("yyyy MM dd")));
-//                messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+        int i = 0;
+        int lenght = messages.size();
+        do {
+            if (lenght > 0) {
+                Messages handleMessageObject = messages.get(i);
+                now = utils.convertLongToDate(handleMessageObject.getCreatedAt(), new SimpleDateFormat("yyyy MM dd"));
+                if (handleMessageObject.getMessageType() != DataFields.DATESHOW) {
+                    if (present.equals("") || !present.equals(now)) {
+                        messages.add(i, new Messages("0", DataFields.DATESHOW, id, new MessageValues(), 0, messages.get(i).getCreatedAt(), 0, 0));
+                        lenght = messages.size();
+                    }
+                    present = now;
+                }
+                i++;
             }
-            present = now;
-        }
+        } while (i != lenght);
 
-//        if (hide_time != 0 && status) {
-//            messages.add(0, new Messages("0", DataFields.LOADMORE, id, new MessageValues(), 0, 0, 0, 0));
-//        }
+        if (hide_time != 0 && status) {
+            messages.add(0, new Messages("0", DataFields.LOADMORE, id, new MessageValues(), 0, 0, 0, 0));
+        }
 
         recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
