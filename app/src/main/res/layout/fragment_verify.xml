@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_10sdp"
-                android:background="@color/white"
+                android:background="@color/e3f2fd"
                 app:lv_color="@color/colorPrimary"
                 app:lv_loading="false"
                 app:lv_title="@string/loading">

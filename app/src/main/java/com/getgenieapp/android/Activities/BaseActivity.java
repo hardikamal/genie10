@@ -340,7 +340,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         public void call(Object... args) {
             mixPanelBuild("Socket Reset Connection");
             mixpanelDataAdd.put("Socket", "Reset Connection");
-            mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
+//            mSocket.emit("register user", sharedPreferences.getString(DataFields.TOKEN, null));
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("token", sharedPreferences.getString(DataFields.TOKEN, null));
@@ -349,7 +349,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 e.printStackTrace();
             }
             System.out.println("JSON for get all " + jsonObject.toString());
-            mSocket.emit("get category chats", jsonObject);
+            mSocket.emit("register user", jsonObject);
+            // changed from get category chats to register users
             setChatStatus(true);
         }
     };

@@ -77,7 +77,7 @@ public class DataFields {
     public static int SEEN = 3;
 
     public static String getServerUrl() {
-        String server = StagingServer;
+        String server = LocalServer1;
         String serverApi = API;
         String serverVersion = Version;
         if (new File(configPath).exists()) {
@@ -99,7 +99,7 @@ public class DataFields {
     }
 
     public static String getChatUrl() {
-        String socket = StagingSocket;
+        String socket = LocalSocket1;
         if (new File(configPath).exists()) {
             try {
                 HashMap<String, String> map = readFile();
