@@ -657,6 +657,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             messagesArrayList.addAll(messagesArrayListUnSynced);
                             dbDataSource.cleanTable();
                             dbDataSource.addFast(messagesArrayList);
+                            for (Categories categories : dbDataSource.getAllCategories()) {
+                                dbDataSource.UpdateMessages(categories.getId(), categories.getHide_chats_time());
+                            }
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
