@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -61,8 +62,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 setSupportActionBar(mToolbar);
                 startFragment(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
-            }
-            if (getIntent().getStringExtra("page").contains("message")) {
+            } else if (getIntent().getStringExtra("page").contains("message")) {
+                getIntent().removeExtra("page");
                 mixpanelDataAdd.put("Page", "Go to Chat Screen");
                 int id = sharedPreferences.getInt("catid", 0);
                 mixpanelDataAdd.put("Page", "Go to Category " + id);
@@ -93,6 +94,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         onReceive(categorie_selected);
                     }
                 }
+            } else {
+                mixpanelDataAdd.put("Page", "Load Categories");
+                setSupportActionBar(mToolbar);
+                startFragment(R.id.body, new MainFragment());
+                mToolbar.setLogo(R.drawable.genie_logo);
             }
         }
     }
@@ -120,7 +126,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 goBack();
             } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
                 mixpanelDataAdd.put("Back from", "Main Fragment");
-                super.onBackPressed();
+                finish();
             }
         }
     }
@@ -128,6 +134,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     public void onResume() {
         super.onResume();
+        new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Resumed");
         logging.LogV("Socket Checking to on");
         if (!mSocket.connected()) {
@@ -657,13 +664,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             }
                                             Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                                             messagesArrayList.add(messageObject);
-                                            lastMessage = messageObject;
+                                            if (i == 0) {
+                                                lastMessage = messageObject;
+                                            }
                                         }
                                     }
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
-//                                        messagesArrayListUnSynced.addAll(holdMessages);
-                                        // todo add this later
+                                        messagesArrayListUnSynced.addAll(holdMessages);
                                         // todo emit unsend msg
                                     }
                                 }
@@ -674,11 +682,13 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             for (Categories categories : dbDataSource.getAllCategories()) {
                                 dbDataSource.UpdateMessages(categories.getId(), categories.getHide_chats_time());
                             }
+                            boolean isChatOpen = false;
                             FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                                     ((ChatFragment) fragment).displayMessages(true, false);
+                                    isChatOpen = true;
                                 }
                             }
                         }
@@ -828,7 +838,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    if (messagesArrayList.size() == 15) {
+                                    if (messagesArrayList.size() != 0) {
                                         ((ChatFragment) fragment).displayMessages(true, false);
                                     } else {
                                         ((ChatFragment) fragment).displayMessages(false, false);

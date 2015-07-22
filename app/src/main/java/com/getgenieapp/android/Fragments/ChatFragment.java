@@ -102,13 +102,13 @@ public class ChatFragment extends GenieFragment {
             mixpanelDataAdd.put("Chat Enable", false);
         } else {
             mixpanelDataAdd.put("Chat Enable", true);
+            send.setButtonColor(Color.parseColor(color));
+            send.setShadowColor(Color.parseColor(color));
+            message.setTextColor(Color.parseColor(color));
         }
 
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
         dbDataSource.UpdateCatNotification(id, 0);
-        send.setButtonColor(Color.parseColor(color));
-        send.setShadowColor(Color.parseColor(color));
-        message.setTextColor(Color.parseColor(color));
 
         message.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -410,7 +410,6 @@ public class ChatFragment extends GenieFragment {
             public void run() {
                 if (!message.isEnabled()) {
                     Crouton.cancelAllCroutons();
-
                     message.setHint(genieApplication.getString(R.string.typeamessage));
                     message.setEnabled(true);
                 }

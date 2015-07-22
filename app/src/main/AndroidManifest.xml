@@ -112,12 +112,13 @@
         <activity
             android:name=".Activities.BaseActivity"
             android:label="@string/title_activity_main"
+            android:noHistory="true"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/MyMaterialTheme"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Slides.WalkThroughActivity"
-            android:label="@string/title_activity_walk_through"/>
+            android:label="@string/title_activity_walk_through" />
     </application>
 
 </manifest>

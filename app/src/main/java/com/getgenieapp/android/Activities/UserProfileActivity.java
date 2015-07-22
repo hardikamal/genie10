@@ -280,8 +280,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                 Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
                 //There is no thumb-nail with this Image
                 if (thumb != null) {
-                    Crouton.makeText(this, getString(R.string.failedtogetthumbnail), Style.ALERT, R.id.body).show();
-                    //so create thumb-nail from image itself
                     Cursor cursor = resolver
                             .query(actualUri,
                                     new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
@@ -291,7 +289,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                     cursor.close();
                     GraphicsUtil graphicUtil = new GraphicsUtil();
                     //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
-                    userIcon.setImageBitmap(graphicUtil.getCircleBitmap(this.createImageThumbnail(imageFilePath,
+                    userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(this.createImageThumbnail(imageFilePath,
                             255, 255), radius));
                     try {
                         FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);

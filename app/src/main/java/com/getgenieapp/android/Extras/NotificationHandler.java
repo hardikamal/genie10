@@ -26,10 +26,11 @@ public class NotificationHandler {
     static int previousChatId = -1;
 
     static String[] msgEvents = null;
-    public static boolean keep = true;
 
     public void resetNotification() {
         previousChatId = -1;
+        size = 0;
+        msgEvents = null;
     }
 
     public void notification(int mId, String msg) {
