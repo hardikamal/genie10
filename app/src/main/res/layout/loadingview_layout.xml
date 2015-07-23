@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-        <com.getgenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate
+        <com.supergenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate
             android:id="@+id/progressBar"
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"

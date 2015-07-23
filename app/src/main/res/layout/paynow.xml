@@ -110,7 +110,7 @@
                         android:layout_weight="2"
                         android:orientation="horizontal">
 
-                        <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                        <com.supergenieapp.android.CustomViews.Button.ButtonFlat
                             android:id="@+id/payascod"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                             android:textIsSelectable="false"
                             android:textSize="@dimen/_12sdp" />
 
-                        <com.getgenieapp.android.CustomViews.Button.ButtonFlat
+                        <com.supergenieapp.android.CustomViews.Button.ButtonFlat
                             android:id="@+id/paynow"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

@@ -16,7 +16,7 @@
             android:layout_alignParentBottom="true"
             android:background="@color/generalTextColor" />
 
-        <com.getgenieapp.android.CustomViews.Button.CircularButton
+        <com.supergenieapp.android.CustomViews.Button.CircularButton
             android:id="@+id/userIcon"
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"
@@ -213,7 +213,7 @@
                 android:layout_weight="1.5"
                 android:gravity="end">
 
-                <com.getgenieapp.android.CustomViews.Button.ButtonRectangle
+                <com.supergenieapp.android.CustomViews.Button.ButtonRectangle
                     android:id="@+id/update"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="@dimen/_50sdp"

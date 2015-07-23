@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/splashcreenbackgroundcolor"
     android:layout_gravity="center"
+    android:background="@color/splashcreenbackgroundcolor"
     android:gravity="center"
     android:orientation="vertical">
-//DB4E4B
-    //
-    <com.getgenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.getgenieapp.android"
+
+    <com.supergenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.supergenieapp.android"
         android:id="@+id/splash_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:orientation="horizontal"
-    tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
+    tools:context="com.supergenieapp.android.Fragments.RegisterFragment">
 
     <Space
         android:layout_width="0dp"
@@ -21,7 +21,7 @@
             android:layout_width="@dimen/_1sdp"
             android:layout_height="@dimen/_20sdp" />
 
-        <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.supergenieapp.android.CustomViews.ProgressBar.LoadingView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/parentLoadingView"
@@ -109,7 +109,7 @@
                 </LinearLayout>
 
 
-                <com.getgenieapp.android.CustomViews.Button.ButtonRectangle
+                <com.supergenieapp.android.CustomViews.Button.ButtonRectangle
                     android:id="@+id/getStarted"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
 
-                    <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+                    <com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:inputType="text"
@@ -148,7 +148,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-        </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
+        </com.supergenieapp.android.CustomViews.ProgressBar.LoadingView>
 
     </LinearLayout>
 

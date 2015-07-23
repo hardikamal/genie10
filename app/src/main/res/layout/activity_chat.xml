@@ -49,7 +49,7 @@
                 android:textSize="@dimen/_11sdp" />
         </LinearLayout>
 
-        <com.getgenieapp.android.CustomViews.Button.CircularButton
+        <com.supergenieapp.android.CustomViews.Button.CircularButton
             android:id="@+id/send"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"

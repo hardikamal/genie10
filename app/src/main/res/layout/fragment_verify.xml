@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:orientation="horizontal"
-    tools:context="com.getgenieapp.android.Fragments.RegisterFragment">
+    tools:context="com.supergenieapp.android.Fragments.RegisterFragment">
 
     <Space
         android:layout_width="0dp"
@@ -26,7 +26,7 @@
                 android:layout_width="@dimen/_1sdp"
                 android:layout_height="@dimen/_20sdp" />
 
-            <com.getgenieapp.android.CustomViews.ProgressBar.LoadingView
+            <com.supergenieapp.android.CustomViews.ProgressBar.LoadingView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -45,7 +45,7 @@
                     android:orientation="vertical">
 
 
-                    <com.getgenieapp.android.CustomViews.TextView.AutoResizeTextView
+                    <com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView
                         android:id="@+id/subText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                         android:textSize="@dimen/_15sdp" />
                 </LinearLayout>
 
-            </com.getgenieapp.android.CustomViews.ProgressBar.LoadingView>
+            </com.supergenieapp.android.CustomViews.ProgressBar.LoadingView>
 
         </LinearLayout>
 

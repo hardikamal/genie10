@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.getgenieapp.android.Activities.LocationActivity">
+    tools:context="com.supergenieapp.android.Activities.LocationActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
+            <com.supergenieapp.android.CustomViews.Button.CircularButton
                 android:id="@+id/search"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
@@ -50,7 +50,7 @@
 
         </LinearLayout>
 
-        <com.getgenieapp.android.CustomViews.Button.CircularButton
+        <com.supergenieapp.android.CustomViews.Button.CircularButton
             android:id="@+id/refreshLocation"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
@@ -78,7 +78,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
+            <com.supergenieapp.android.CustomViews.Button.CircularButton
                 android:id="@+id/location"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
@@ -113,7 +113,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <com.getgenieapp.android.CustomViews.Button.CircularButton
+            <com.supergenieapp.android.CustomViews.Button.CircularButton
                 android:id="@+id/pickplaces"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"

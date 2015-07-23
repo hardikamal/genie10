@@ -25,7 +25,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
-        applicationId "com.getgenieapp.android"
+        applicationId "com.supergenieapp.android"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
@@ -50,7 +50,7 @@ android {
     productFlavors {
         betaConfig {
             minSdkVersion 14
-            applicationId 'com.getgenieapp.android'
+            applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
             versionCode 2
@@ -58,7 +58,7 @@ android {
         }
         releaseConfig {
             minSdkVersion 14
-            applicationId 'com.getgenieapp.android'
+            applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
             versionCode 2
