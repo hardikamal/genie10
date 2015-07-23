@@ -103,8 +103,7 @@ public class GenieFragment extends Fragment {
         map.put("Memory Consumption", mi.availMem / 1048576L);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             map.put("Memory Total", mi.totalMem / 1048576L);
-            long percentAvail = mi.availMem / mi.totalMem;
-            map.put("Memory free percentage", percentAvail);
+            map.put("Memory free percentage", (mi.availMem * 100) / mi.totalMem);
         }
     }
 }
