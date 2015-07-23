@@ -1,8 +1,10 @@
 package com.supergenieapp.android;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,6 +112,7 @@ public class GenieActivity extends Activity {
     }
 
     public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
+        memoryConsumption(myValues);
         mixpanel.trackMap(eventName, myValues);
     }
 
@@ -137,5 +140,21 @@ public class GenieActivity extends Activity {
     protected void onDestroy() {
         mixpanel.flush();
         super.onDestroy();
+    }
+
+    public void memoryConsumption(HashMap<String, Object> map) {
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(mi);
+        if (mi.lowMemory) {
+            mixPanelBuild("Low Memory Detected");
+        }
+        map.put("Is Memory Low", mi.lowMemory);
+        map.put("Memory Consumption", mi.availMem / 1048576L);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            map.put("Memory Total", mi.totalMem / 1048576L);
+            long percentAvail = mi.availMem / mi.totalMem;
+            map.put("Memory free percentage", percentAvail);
+        }
     }
 }
