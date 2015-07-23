@@ -126,7 +126,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 goBack();
             } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
                 mixpanelDataAdd.put("Back from", "Main Fragment");
-                finish();
+                fragmentManager.popBackStack();
+                Intent startMain = new Intent(Intent.ACTION_MAIN);
+                startMain.addCategory(Intent.CATEGORY_HOME);
+                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(startMain);
             }
         }
     }
@@ -688,11 +692,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    if (getIntent().getStringExtra("page").contains("message") && sharedPreferences.getInt("catid", 0) != 0) {
-                                        ((ChatFragment) fragment).displayMessages(true, true);
-                                    } else {
-                                        ((ChatFragment) fragment).displayMessages(true, false);
-                                    }
+                                    ((ChatFragment) fragment).displayMessages(true, true);
                                 }
                             }
                         }
