@@ -117,11 +117,12 @@ public class MainFragment extends GenieFragment {
                         mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                         System.out.println(response.toString());
                         if (response.length() > 0) {
+                            ArrayList<Categories> localCategories = dbDataSource.getAllCategories();
                             ArrayList<Categories> catList = new ArrayList<>();
                             for (int i = 0; i < response.length(); i++) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
-                                    Categories categories = new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
+                                    Categories categories = new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
                                             jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
                                             jsonObject.getLong("hide_chats_time"));
                                     catList.add(categories);
@@ -173,13 +174,14 @@ public class MainFragment extends GenieFragment {
             refreshDataFromLocal();
         } else {
             if (getActivity().getIntent().getExtras() != null && getActivity().getIntent().hasExtra("category")) {
+                ArrayList<Categories> localCategories = dbDataSource.getAllCategories();
                 ArrayList<String> rawList = getActivity().getIntent().getStringArrayListExtra("category");
                 if (rawList.size() > 0)
                     categoriesList.clear();
                 for (String raw : rawList) {
                     try {
                         JSONObject jsonObject = new JSONObject(raw);
-                        categoriesList.add(new Categories(jsonObject.getInt("id"), jsonObject.getInt("notification_count"),
+                        categoriesList.add(new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
                                 jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
                                 jsonObject.getLong("hide_chats_time")));
                     } catch (JSONException e) {
@@ -194,6 +196,18 @@ public class MainFragment extends GenieFragment {
         }
 
         setupCategories(categoriesList);
+    }
+
+    private int caculateNotificationCount(ArrayList<Categories> localCategories, int id, int notification_count) {
+        if (notification_count != 0 || id == 0)
+            return notification_count;
+        if (localCategories.size() == 0)
+            return notification_count;
+        for (Categories cat : localCategories) {
+            if (cat.getId() == id)
+                return cat.getNotification_count();
+        }
+        return 0;
     }
 
     /**

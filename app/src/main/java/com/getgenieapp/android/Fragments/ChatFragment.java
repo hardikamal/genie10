@@ -110,26 +110,6 @@ public class ChatFragment extends GenieFragment {
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
         dbDataSource.UpdateCatNotification(id, 0);
 
-        message.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            Thread.sleep(DataFields.small400TimeOut);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run() {
-                                scroll();
-                            }
-                        });
-                    }
-                }).start();
-            }
-        });
-
         message.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 new Thread(new Runnable() {

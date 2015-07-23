@@ -216,7 +216,8 @@ public class SplashScreenActivity extends GenieActivity {
                                         try {
                                             categoriesList.add(response.getJSONObject(i).toString());
                                             JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
-                                            dbDataSource.UpdateMessages(jsonObject.getInt("id"), jsonObject.getLong("hide_chats_time"));
+                                            if (jsonObject.getLong("notification_count") != 0)
+                                                dbDataSource.UpdateMessages(jsonObject.getInt("id"), jsonObject.getLong("hide_chats_time"));
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }

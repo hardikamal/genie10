@@ -374,7 +374,7 @@ public class DBDataSource {
 
     public void UpdateMessages(int id, long hide_chats_time) {
         open();
-        long time = (System.currentTimeMillis() - (hide_chats_time)) / 1000;
+        long time = (System.currentTimeMillis() - (hide_chats_time));
         database.delete(DBHandler.TABLE, DBHandler.category_id + "=" + id + " AND " + DBHandler.created_at + "<" + time, null);
         close();
     }
