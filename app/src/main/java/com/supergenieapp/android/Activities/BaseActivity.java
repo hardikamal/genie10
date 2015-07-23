@@ -688,7 +688,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    if (getIntent().getStringExtra("page").contains("message")) {
+                                    if (getIntent().getStringExtra("page").contains("message") && sharedPreferences.getInt("catid", 0) != 0) {
                                         ((ChatFragment) fragment).displayMessages(true, true);
                                     } else {
                                         ((ChatFragment) fragment).displayMessages(true, false);

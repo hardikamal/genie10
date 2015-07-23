@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-import com.supergenieapp.android.CustomViews.ProgressBar.EaseInOutCubicInterpolator;
 import com.supergenieapp.android.R;
 
 public class SplashScreenProgressCircle extends View {
