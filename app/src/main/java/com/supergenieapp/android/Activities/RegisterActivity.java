@@ -146,7 +146,6 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Register register) {
-        sharedPreferences.edit().putString(DataFields.TOKEN, register.getToken());
         VerifyFragment verifyFragment = new VerifyFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("runtimer", true);

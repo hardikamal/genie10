@@ -54,17 +54,8 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered ");
         mixpanelDataAdd.put("Splash Screen", "Entered");
 
-        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
-        init();
-    }
-
-    private void init() {
 
         // Start Database
         new DBHandler(this);
@@ -91,6 +82,12 @@ public class SplashScreenActivity extends GenieActivity {
             }
         };
 
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
             logging.LogD("Internet", "Available");

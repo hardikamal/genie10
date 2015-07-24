@@ -1,7 +1,5 @@
 package com.supergenieapp.android.Objects;
 
-import com.google.gson.JsonElement;
-
 /**
  * Created by Raviteja on 6/8/2015.
  */
