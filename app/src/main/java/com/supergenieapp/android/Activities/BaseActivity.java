@@ -691,7 +691,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
                                         messagesArrayListUnSynced.addAll(holdMessages);
-                                        // todo emit unsend msg
+                                        mixPanelBuild("Unsent items detected");
+                                        // todo resend
                                     }
                                 }
                             }

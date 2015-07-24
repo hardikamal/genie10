@@ -327,4 +327,7 @@
     <string name="plus91">+91</string>
     <string name="bysigining">By Signing, I agree to SuperGenie app&#160;</string>
     <string name="termsandservices"><u>Terms and Conditions</u></string>
+    <string name="rateit">Rate It</string>
+    <string name="remindmelater">Remind me later</string>
+    <string name="dontaskagain">Don\'t ask</string>
 </resources>

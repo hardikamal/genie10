@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.ViewGroup;
 
@@ -52,8 +54,17 @@ public class SplashScreenActivity extends GenieActivity {
         logging.LogD("Splash Screen", "Entered ");
         mixpanelDataAdd.put("Splash Screen", "Entered");
 
-        // Butter knife injects all the elements in to objects
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         ButterKnife.inject(this);
+        init();
+    }
+
+    private void init() {
 
         // Start Database
         new DBHandler(this);
@@ -103,7 +114,6 @@ public class SplashScreenActivity extends GenieActivity {
             mixpanelDataAdd.put("Internet not found", "Show Alert");
             showAlertToUser();
         }
-        fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
 
     @Override
@@ -193,7 +203,21 @@ public class SplashScreenActivity extends GenieActivity {
 
     void runToMainPage(boolean verified) {
         if (verified) {
-            getCategories();
+            int visitedCount = sharedPreferences.getInt("visitedcount", 0);
+            if (visitedCount > DataFields.RATEWHENCOUNT) {
+                try {
+                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
+                    Thread.sleep(Math.max(DataFields.VerifyTimeOut - (System.currentTimeMillis() - start), 0));
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+                showRatingAlert();
+            } else {
+                if (sharedPreferences.getBoolean("trackvisitcount", true)) {
+                    sharedPreferences.edit().putInt("visitedcount", visitedCount + 1).apply();
+                }
+                getCategories();
+            }
         } else {
             goToVerify();
         }
@@ -230,6 +254,7 @@ public class SplashScreenActivity extends GenieActivity {
                                         err.printStackTrace();
                                     }
                                     mixpanelDataAdd.put("Activity", "MainActivity");
+
                                     Intent intent = new Intent(SplashScreenActivity.this, BaseActivity.class);
                                     intent.putExtra("page", "categories");
                                     intent.putStringArrayListExtra("category", categoriesList);
@@ -261,6 +286,37 @@ public class SplashScreenActivity extends GenieActivity {
             }
         };
         genieApplication.addToRequestQueue(req);
+    }
+
+    private void showRatingAlert() {
+        AlertDialog.Builder alertDialogBuilder;
+        AlertDialog alert;
+        alertDialogBuilder = new AlertDialog.Builder(this);
+
+        alertDialogBuilder.setMessage("If you enjoy using " + getString(R.string.app_name) + ", please take a moment to rate it. Thanks for your support!")
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.rateit), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.supergenieapp.android")));
+                        sharedPreferences.edit().putBoolean("trackvisitcount", false).apply();
+                        sharedPreferences.edit().putInt("visitedcount", 0).apply();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton(getString(R.string.remindmelater), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                sharedPreferences.edit().putInt("visitedcount", DataFields.RATEREMINDMERESET).apply();
+                getCategories();
+            }
+        }).setNeutralButton(getString(R.string.dontaskagain), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                sharedPreferences.edit().putBoolean("trackvisitcount", false).apply();
+                dialog.dismiss();
+                getCategories();
+            }
+        });
+        alert = alertDialogBuilder.create();
+        alert.show();
     }
 
 

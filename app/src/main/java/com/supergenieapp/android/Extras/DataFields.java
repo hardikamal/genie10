@@ -71,6 +71,8 @@ public class DataFields {
 
     public static final int LOADMORE = 8;
     public static final int DATESHOW = 9;
+    public static final int RATEWHENCOUNT = 5;
+    public static final int RATEREMINDMERESET = 3;
 
     public static int QUEUE = 0;
     public static int SENT = 1;
