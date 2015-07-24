@@ -75,8 +75,6 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     private void getUserOrders() {
         loadingView.setLoading(true);
         ArrayList<Order> orders = new ArrayList<>();
-        orders.add(new Order(12, "Playdoh", new OrderCategory(2, "#4caf50", "shopping"), "Flipkart", "Playdoh combo set.", 1241251281, 2, 123, 243.00, "_1as121as21"));
-        orders.add(new Order(12, "Bus Ticket Hyderabad to Pune", new OrderCategory(7, "#ec407a", "travel"), "Red Bus", "Bus ticket from Hyderbad to Pune, 26th January", 1241251281, 2, 121, 950.00, "_12jh1bi1"));
         setupOrders(orders);
     }
 

@@ -3,6 +3,7 @@ package com.supergenieapp.android.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -48,6 +49,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private Socket mSocket;
     private static Categories categorie_selected = null;
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    long startRxBytes = 0;
+    long startTxBytes = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,12 +166,24 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     protected void onStart() {
         super.onStart();
         mixPanelTimerStart(BaseActivity.class.getName());
+        startRxBytes = TrafficStats.getUidRxBytes(getApplicationInfo().uid);
+        startTxBytes = TrafficStats.getUidTxBytes(getApplicationInfo().uid);
         logging.LogI("On Start");
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
+        if (startRxBytes != 0 && startTxBytes != 0) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("Received Bytes ", TrafficStats.getUidRxBytes(getApplicationInfo().uid) - startRxBytes);
+                jsonObject.put("Transmited Bytes ", TrafficStats.getUidTxBytes(getApplicationInfo().uid) - startTxBytes);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mixPanelBuildJSON("Data Usage " + BaseActivity.class.getName(), jsonObject);
+        }
         mixPanelTimerStop(BaseActivity.class.getName());
         mixPanelBuildHashMap("General Run " + BaseActivity.class.getName(), mixpanelDataAdd);
         super.onDestroy();
