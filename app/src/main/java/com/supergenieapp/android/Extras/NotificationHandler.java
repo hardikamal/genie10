@@ -22,6 +22,7 @@ public class NotificationHandler {
         this.sharedPreferences = GenieApplication.getInstance().getSecurePrefs();
     }
 
+    static int total = 0;
     static int size = 0;
     static int previousChatId = -1;
 
@@ -30,6 +31,7 @@ public class NotificationHandler {
     public void resetNotification() {
         previousChatId = -1;
         size = 0;
+        total = 0;
         msgEvents = null;
     }
 
@@ -40,7 +42,7 @@ public class NotificationHandler {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.supergenie_1440)
+                        .setSmallIcon(R.drawable.genie_android_icons_97x97)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msg)
                         .setAutoCancel(true)
@@ -59,6 +61,7 @@ public class NotificationHandler {
                 previousChatId = 0;
             }
         }
+        total++;
         Intent intent = new Intent(context, BaseActivity.class);
         intent.putExtra("page", "message" + "," + previousChatId);
         sharedPreferences.edit().putInt("catid", previousChatId).apply();
@@ -82,10 +85,11 @@ public class NotificationHandler {
         msgEvents = events;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.supergenie_1440)
+                        .setSmallIcon(R.drawable.genie_android_icons_97x97)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msgExtra)
                         .setStyle(inboxStyle)
+                        .setNumber(total)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent);
 
@@ -112,6 +116,7 @@ public class NotificationHandler {
                         previousChatId = 0;
                     }
                 }
+                total++;
                 Intent intent = new Intent(context, BaseActivity.class);
                 intent.putExtra("page", "message" + "," + previousChatId);
                 sharedPreferences.edit().putInt("catid", previousChatId).apply();
@@ -159,10 +164,11 @@ public class NotificationHandler {
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.supergenie_1440)
+                                .setSmallIcon(R.drawable.genie_android_icons_97x97)
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)
+                                .setNumber(total)
                                 .setAutoCancel(true)
                                 .setContentIntent(pendingIntent);
 
@@ -220,12 +226,17 @@ public class NotificationHandler {
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.supergenie_1440)
+                                .setSmallIcon(R.drawable.genie_android_icons_97x97)
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)
+                                .setNumber(total)
                                 .setAutoCancel(true)
                                 .setContentIntent(pendingIntent);
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    mBuilder.setFullScreenIntent(pendingIntent, true);
+                }
 
                 NotificationManager mNotificationManager =
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
