@@ -330,4 +330,8 @@
     <string name="rateit">Rate It</string>
     <string name="remindmelater">Remind me later</string>
     <string name="dontaskagain">Don\'t ask</string>
+    <string name="contactus">Contact Us</string>
+    <string name="subjecttoemail">Share your thoughts with us</string>
+    <string name="supportemailaddress">support@getgenieapp.com</string>
+    <string name="sendemail">Send email...</string>
 </resources>
