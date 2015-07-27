@@ -42,7 +42,7 @@ public class NotificationHandler {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.genie_android_icons_97x97)
+                        .setSmallIcon(R.drawable.genie_logo)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msg)
                         .setAutoCancel(true)
@@ -85,7 +85,7 @@ public class NotificationHandler {
         msgEvents = events;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.genie_android_icons_97x97)
+                        .setSmallIcon(R.drawable.genie_logo)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msgExtra)
                         .setStyle(inboxStyle)
@@ -164,7 +164,7 @@ public class NotificationHandler {
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.genie_android_icons_97x97)
+                                .setSmallIcon(R.drawable.genie_logo)
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)
@@ -226,7 +226,7 @@ public class NotificationHandler {
 
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.genie_android_icons_97x97)
+                                .setSmallIcon(R.drawable.genie_logo)
                                 .setContentTitle(context.getString(R.string.app_name))
                                 .setContentText(msg)
                                 .setStyle(inboxStyle)

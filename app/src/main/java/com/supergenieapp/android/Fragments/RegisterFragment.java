@@ -1,6 +1,5 @@
 package com.supergenieapp.android.Fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -30,11 +29,9 @@ import com.supergenieapp.android.Activities.RegisterActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
-import com.supergenieapp.android.Extras.UIHelpers;
 import com.supergenieapp.android.GCMHelpers.QuickstartPreferences;
 import com.supergenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.supergenieapp.android.GenieFragment;
-import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Register;
 import com.supergenieapp.android.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -52,7 +49,6 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class RegisterFragment extends GenieFragment {
 
-    UIHelpers uiHelpers;
     @InjectView(R.id.name)
     MaterialEditText name;
     @InjectView(R.id.number)
@@ -135,8 +131,6 @@ public class RegisterFragment extends GenieFragment {
                 }
             }
         };
-
-        uiHelpers = new UIHelpers();
 
         number.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

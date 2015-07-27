@@ -6,10 +6,10 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.supergenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.supergenieapp.android"
-        android:id="@+id/splash_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/_50sdp"
-        custom:gif="@drawable/supergenie" />
+    <!--<com.supergenieapp.android.CustomViews.Misc.GifMovieView xmlns:custom="http://schemas.android.com/apk/res/com.supergenieapp.android"-->
+        <!--android:id="@+id/splash_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:padding="@dimen/_50sdp"-->
+        <!--custom:gif="@drawable/supergenie" />-->
 </RelativeLayout>

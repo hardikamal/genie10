@@ -184,7 +184,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.genie_android_icons_97x97)
+                .setSmallIcon(R.drawable.supergenie_512)
                 .setContentTitle("SuperGenie GCM Messages")
                 .setContentText(message)
                 .setAutoCancel(true)

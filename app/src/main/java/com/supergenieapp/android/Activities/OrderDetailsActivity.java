@@ -85,7 +85,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         orderList.setHasFixedSize(true);
         orderList.setLayoutManager(new LinearLayoutManager(this));
         orderList.setAdapter(new CustomOrderAdapter(orders, this));
-        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center_200);
+        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center);
         orderList.setAnimation(anim);
         anim.start();
     }
