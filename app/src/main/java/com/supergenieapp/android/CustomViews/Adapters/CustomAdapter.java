@@ -57,8 +57,6 @@ public class CustomAdapter extends RecyclerView.Adapter {
         RelativeLayout topbar;
         @InjectView(R.id.middleBar)
         LinearLayout middlebar;
-        @InjectView(R.id.lowerBar)
-        LinearLayout lowerbar;
         @InjectView(R.id.title)
         TextView title;
         @InjectView(R.id.image)
@@ -72,27 +70,27 @@ public class CustomAdapter extends RecyclerView.Adapter {
             ButterKnife.inject(this, itemView);
             vto = itemView.getViewTreeObserver();
         }
-
-        void showText(final String lastmessage) {
-            if (vto.isAlive()) {
-                vto.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged() {
-                        line1.setText(lastmessage);
-                        Layout layout = line1.getLayout();
-                        int lastLine = layout.getLineCount();
-                        if (lastLine > 1) {
-                            int lastlineindex = layout.getLineStart(1);
-                            line1.setText(lastmessage.substring(0, lastlineindex));
-                            line2.setText(lastmessage.substring(lastlineindex, lastmessage.length()));
-                        } else {
-                            line1.setText("");
-                            line2.setText(lastmessage);
-                        }
-                    }
-                });
-            }
-        }
+//
+//        void showText(final String lastmessage) {
+//            if (vto.isAlive()) {
+//                vto.addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+//                    @Override
+//                    public void onScrollChanged() {
+//                        line1.setText(lastmessage);
+//                        Layout layout = line1.getLayout();
+//                        int lastLine = layout.getLineCount();
+//                        if (lastLine > 1) {
+//                            int lastlineindex = layout.getLineStart(1);
+//                            line1.setText(lastmessage.substring(0, lastlineindex));
+//                            line2.setText(lastmessage.substring(lastlineindex, lastmessage.length()));
+//                        } else {
+//                            line1.setText("");
+//                            line2.setText(lastmessage);
+//                        }
+//                    }
+//                });
+//            }
+//        }
     }
 
     @Override
@@ -123,16 +121,9 @@ public class CustomAdapter extends RecyclerView.Adapter {
                 goToChatActivity(category);
             }
         });
-        viewHolderMain.lowerbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToChatActivity(category);
-            }
-        });
 
         viewHolderMain.topbar.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.middlebar.setBackgroundColor(Color.parseColor(category.getBg_color()));
-        viewHolderMain.lowerbar.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.title.setBackgroundColor(Color.parseColor(category.getBg_color()));
         viewHolderMain.title.setText(category.getName());
 
