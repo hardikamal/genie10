@@ -117,6 +117,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Slides.WalkThroughActivity"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/MyMaterialTheme"
             android:label="@string/title_activity_walk_through" />
     </application>
 

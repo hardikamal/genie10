@@ -49,10 +49,6 @@ public class CustomAdapter extends RecyclerView.Adapter {
     }
 
     static class ViewHolderMain extends RecyclerView.ViewHolder {
-        @InjectView(R.id.line1)
-        TextView line1;
-        @InjectView(R.id.line2)
-        TextView line2;
         @InjectView(R.id.topbar)
         RelativeLayout topbar;
         @InjectView(R.id.middleBar)

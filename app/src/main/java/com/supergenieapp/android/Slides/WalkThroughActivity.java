@@ -16,9 +16,9 @@ public class WalkThroughActivity extends AppIntro {
     @Override
     public void init(Bundle savedInstanceState) {
         mixpanelAPI = MixpanelAPI.getInstance(this, getString(R.string.projectId));
-//        addSlide(SampleSlide.newInstance(R.layout.slide1));
-//        addSlide(SampleSlide.newInstance(R.layout.slide2));
-//        addSlide(SampleSlide.newInstance(R.layout.slide3));
+        addSlide(SampleSlide.newInstance(R.layout.slide1));
+        addSlide(SampleSlide.newInstance(R.layout.slide2));
+        addSlide(SampleSlide.newInstance(R.layout.slide3));
     }
 
     private void loadMainActivity() {
