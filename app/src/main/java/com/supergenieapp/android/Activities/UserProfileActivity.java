@@ -164,6 +164,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                                 Bitmap bitmap = BitmapFactory.decodeFile(DataFields.profilePicturePath, options);
                                 GraphicsUtil graphicUtil = new GraphicsUtil();
                                 userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
+                                setPicture();
                             } else if (response.has("image_url") && response.getString("image_url") != null && response.getString("image_url").length() > 0) {
                                 new AsyncTask<String, Void, Bitmap>() {
                                     @Override

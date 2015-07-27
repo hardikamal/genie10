@@ -19,23 +19,14 @@
             android:layout_weight="1"
             android:gravity="center">
 
-            <ImageView
+            <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/categoryimage"
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:layout_marginBottom="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:adjustViewBounds="false"
-                android:contentDescription="@string/desc"
-                android:scaleType="fitXY" />
-            <!--<com.android.volley.toolbox.NetworkImageView-->
-            <!--android:id="@+id/categoryimage"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="50dp"-->
-            <!--android:layout_marginBottom="50dp"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:layout_gravity="center" />-->
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginBottom="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:padding="5dp"
+                android:scaleType="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -104,9 +95,9 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical|end"
                     android:text="@string/repeatorder"
-                    android:visibility="gone"
                     android:textColor="@color/colorPrimary"
-                    android:textIsSelectable="false" />
+                    android:textIsSelectable="false"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </LinearLayout>

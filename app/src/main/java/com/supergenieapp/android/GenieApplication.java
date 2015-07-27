@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import de.halfbit.tinybus.TinyBus;
 
 @ReportsCrashes(
-        formUri = "https://supergenieapp.cloudant.com/acra-supergenieapp/_design/acra-storage/_update/report",
+        formUri = "https://getgenieapp.cloudant.com/acra-supergenieapp/_design/acra-storage/_update/report",
         reportType = HttpSender.Type.JSON,
         httpMethod = HttpSender.Method.POST,
         formUriBasicAuthLogin = "handermentlyoughtsepried",

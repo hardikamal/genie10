@@ -1,7 +1,6 @@
 package com.supergenieapp.android.CustomViews.Adapters;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -9,20 +8,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.OrderDetailsActivity;
+import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.Logging;
 import com.supergenieapp.android.GenieApplication;
+import com.supergenieapp.android.Objects.Categories;
 import com.supergenieapp.android.Objects.Order;
-import com.supergenieapp.android.Objects.OrderCategory;
 import com.supergenieapp.android.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -33,11 +36,13 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     private ArrayList<Order> orders;
     private Context context;
     private Logging logging;
+    private ImageLoader imageLoader;
 
     public CustomOrderAdapter(ArrayList<Order> orders, Context context) {
         this.orders = orders;
         this.context = context;
         this.logging = GenieApplication.getInstance().getLoggingBuilder().setUp();
+        this.imageLoader = GenieApplication.getInstance().getImageLoader();
     }
 
     @Override
@@ -46,21 +51,22 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     }
 
     static class ViewHolderMain extends RecyclerView.ViewHolder {
+        @InjectView(R.id.category)
         LinearLayout category;
-        ImageView categoryimage;
+        @InjectView(R.id.categoryimage)
+        NetworkImageView categoryimage;
+        @InjectView(R.id.companyname)
         TextView companyname;
+        @InjectView(R.id.rate)
         TextView rate;
+        @InjectView(R.id.orderdetailstext)
         TextView orderdetailstext;
+        @InjectView(R.id.repeatorder)
         Button repeatorder;
 
         public ViewHolderMain(View itemView) {
             super(itemView);
-            category = (LinearLayout) itemView.findViewById(R.id.category);
-            categoryimage = (ImageView) itemView.findViewById(R.id.categoryimage);
-            companyname = (TextView) itemView.findViewById(R.id.companyname);
-            rate = (TextView) itemView.findViewById(R.id.rate);
-            orderdetailstext = (TextView) itemView.findViewById(R.id.orderdetailstext);
-            repeatorder = (Button) itemView.findViewById(R.id.repeatorder);
+            ButterKnife.inject(this, itemView);
         }
     }
 
@@ -73,17 +79,16 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Order order = orders.get(position);
-        OrderCategory currentOrderCategory = order.getCategory();
+        Categories currentOrderCategory = new DBDataSource(context).getCategories(Integer.parseInt(order.getCategory_id()));
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
 
         viewHolderMain.category.setBackgroundColor(Color.parseColor(currentOrderCategory.getBg_color()));
 
-        int id = context.getResources().getIdentifier(currentOrderCategory.getImage_url(), "drawable", context.getPackageName());
-        viewHolderMain.categoryimage.setBackgroundResource(id);
+        viewHolderMain.categoryimage.setImageUrl(currentOrderCategory.getImage_url(), imageLoader);
 
         viewHolderMain.companyname.setText(order.getService_provider());
         DecimalFormat df = new DecimalFormat("#.00");
-        viewHolderMain.rate.setText("Rs " + df.format(order.getCost()));
+        viewHolderMain.rate.setText("Rs. " + df.format(Double.parseDouble(order.getCost())));
         viewHolderMain.orderdetailstext.setText(order.getDescription());
         viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +98,8 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
                 showToast("Just Clicked Repeat Order", Style.INFO);
             }
         });
+
+
     }
 
     public void showToast(String message, Style style) {

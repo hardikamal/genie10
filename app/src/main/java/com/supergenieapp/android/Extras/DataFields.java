@@ -53,6 +53,7 @@ public class DataFields {
     public static final String RESENDURL = "/startverification";
     public static final String CATEGORIES = "/categories";
     public static final String USERPROFILE = "/userprofile";
+    public static final String ORDERS = "/orders";
     public static final String UPDATEUSER = "/updateuser";
 
     public static final String DBName = "supergenieapp";

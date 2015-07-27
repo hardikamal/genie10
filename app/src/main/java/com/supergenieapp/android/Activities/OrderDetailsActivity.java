@@ -11,15 +11,24 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.supergenieapp.android.CustomViews.Adapters.CustomOrderAdapter;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
+import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GenieBaseActivity;
 import com.supergenieapp.android.Objects.Order;
-import com.supergenieapp.android.Objects.OrderCategory;
 import com.supergenieapp.android.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -74,8 +83,92 @@ public class OrderDetailsActivity extends GenieBaseActivity {
 
     private void getUserOrders() {
         loadingView.setLoading(true);
-        ArrayList<Order> orders = new ArrayList<>();
-        setupOrders(orders);
+        final ArrayList<Order> orders = new ArrayList<>();
+        mixpanelDataAdd.put("Server Call", "Get Orders");
+        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.ORDERS);
+        JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.ORDERS,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(final JSONArray response) {
+                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.ORDERS);
+                        mixpanelDataAdd.put("Server Call", "ORDERS data Success");
+                        System.out.print(response.toString());
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String payment_url = null;
+                                String id = null;
+                                String title = null;
+                                String updated_at = null;
+                                String service_provider = null;
+                                String description = null;
+                                String created_at = null;
+                                String category_id = null;
+                                String user_id = null;
+                                String agent_id = null;
+                                String cost = null;
+                                String last_message_id = null;
+                                if (jsonObject.has("payment_url")) {
+                                    payment_url = jsonObject.getString("payment_url");
+                                }
+                                if (jsonObject.has("id")) {
+                                    id = jsonObject.getString("id");
+                                }
+                                if (jsonObject.has("title")) {
+                                    title = jsonObject.getString("title");
+                                }
+                                if (jsonObject.has("updated_at")) {
+                                    updated_at = jsonObject.getString("updated_at");
+                                }
+                                if (jsonObject.has("service_provider")) {
+                                    service_provider = jsonObject.getString("service_provider");
+                                }
+                                if (jsonObject.has("description")) {
+                                    description = jsonObject.getString("description");
+                                }
+                                if (jsonObject.has("created_at")) {
+                                    created_at = jsonObject.getString("created_at");
+                                }
+                                if (jsonObject.has("category_id")) {
+                                    category_id = jsonObject.getString("category_id");
+                                }
+                                if (jsonObject.has("user_id")) {
+                                    user_id = jsonObject.getString("user_id");
+                                }
+                                if (jsonObject.has("agent_id")) {
+                                    agent_id = jsonObject.getString("agent_id");
+                                }
+                                if (jsonObject.has("cost")) {
+                                    cost = jsonObject.getString("cost");
+                                }
+                                if (jsonObject.has("last_message_id")) {
+                                    last_message_id = jsonObject.getString("last_message_id");
+                                }
+                                if (id != null)
+                                    orders.add(new Order(id, payment_url, title, updated_at, service_provider, description, created_at, category_id, user_id, agent_id, cost, last_message_id));
+                            }
+                            setupOrders(orders);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.ORDERS);
+                mixpanelDataAdd.put("Server Call", "ORDERS Server 500 Error");
+                mixPanelBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
+                error.printStackTrace();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                return params;
+            }
+        };
+        genieApplication.addToRequestQueue(req);
     }
 
     private void setupOrders(ArrayList<Order> orders) {
