@@ -334,4 +334,5 @@
     <string name="subjecttoemail">Share your thoughts with us</string>
     <string name="supportemailaddress">support@getgenieapp.com</string>
     <string name="sendemail">Send email...</string>
+    <string name="noorderyet">You have not placed any orders yet.</string>
 </resources>

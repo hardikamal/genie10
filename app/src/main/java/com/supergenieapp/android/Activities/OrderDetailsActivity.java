@@ -7,9 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -44,6 +46,8 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     LoadingView loadingView;
     @InjectView(R.id.orderList)
     RecyclerView orderList;
+    @InjectView(R.id.noorders)
+    TextView noOrders;
     boolean canClose = false;
 
     public HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
@@ -172,6 +176,11 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     }
 
     private void setupOrders(ArrayList<Order> orders) {
+        if (orders.size() == 0) {
+            noOrders.setVisibility(View.VISIBLE);
+        } else {
+            noOrders.setVisibility(View.GONE);
+        }
         loadingView.setLoading(false);
         mixpanelDataAdd.put("Size Orders", "Returned Size " + orders.size());
         orderList.removeAllViews();
