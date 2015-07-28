@@ -540,7 +540,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());
                                 if (categories != null)
                                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-                                ((MainFragment) fragment).refreshDataFromLocal();
                             }
                         }
                     }
