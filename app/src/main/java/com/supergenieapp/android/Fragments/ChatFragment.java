@@ -232,7 +232,6 @@ public class ChatFragment extends GenieFragment {
 
         if (scroll == DataFields.ScrollDown) {
             scroll();
-            DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
         }
         if (scroll == DataFields.ScrollPosition)
             scroll(position);
@@ -402,6 +401,8 @@ public class ChatFragment extends GenieFragment {
     private void scroll() {
         if (messages.size() > 1) {
             recyclerView.scrollToPosition(messages.size() - 1);
+            position = messages.size() - 1;
+            DataFields.position = messages.size() - 1;
         }
     }
 
