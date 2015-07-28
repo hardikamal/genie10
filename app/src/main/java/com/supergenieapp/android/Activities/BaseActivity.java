@@ -318,8 +318,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         mToolbar.setTitle(categorie_selected.getName());
 
         mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
-
-        new NotificationHandler(this).updateNotification(5, "Clicked ", categorie_selected.getId());
     }
 
     public void onReceive(Categories categories) {
