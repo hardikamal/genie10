@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -163,6 +164,8 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 mixpanelDataAdd.put("Server Call", "ORDERS Server 500 Error");
                 mixPanelBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
                 error.printStackTrace();
+                noOrders.setVisibility(View.VISIBLE);
+                loadingView.setLoading(false);
             }
         }) {
             @Override
@@ -176,6 +179,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     }
 
     private void setupOrders(ArrayList<Order> orders) {
+        Collections.sort(orders, Collections.reverseOrder());
         if (orders.size() == 0) {
             noOrders.setVisibility(View.VISIBLE);
         } else {
