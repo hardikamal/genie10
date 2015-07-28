@@ -154,7 +154,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
 
-                new NotificationHandler(this).updateNotification(DataFields.NotificationId, getString(R.string.newmessagereceived), new GetDate().getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
+                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new GetDate().getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
             }
         } else {
             Log.v("GCM PUSH", data.toString());

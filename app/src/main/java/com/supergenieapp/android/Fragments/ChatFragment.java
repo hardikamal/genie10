@@ -417,6 +417,7 @@ public class ChatFragment extends GenieFragment {
         } else {
             recyclerView.scrollToPosition(position);
         }
+        this.getArguments().remove("position");
     }
 
     public void setDisable() {

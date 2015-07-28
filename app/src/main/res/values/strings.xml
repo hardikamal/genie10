@@ -336,4 +336,6 @@
     <string name="sendemail">Send email...</string>
     <string name="noorderyet">You have not placed any orders yet.</string>
     <string name="website">www.supergenieapp.com</string>
+    <string name="title">Title</string>
+    <string name="unreadmsg">"&#160;Unread Messages"</string>
 </resources>

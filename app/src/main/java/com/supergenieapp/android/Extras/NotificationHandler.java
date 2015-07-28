@@ -1,11 +1,16 @@
 package com.supergenieapp.android.Extras;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.Activities.SplashScreenActivity;
@@ -36,21 +41,31 @@ public class NotificationHandler {
     }
 
     public void notification(int mId, String msg) {
-        Intent intent = new Intent(context, SplashScreenActivity.class);
-        PendingIntent pIntent = PendingIntent.getActivity(context, 0,
-                intent, 0);
+        Intent resultIntent = new Intent(context, SplashScreenActivity.class);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.genie_logo)
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(msg)
-                        .setAutoCancel(true)
-                        .setContentIntent(pIntent);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
-        NotificationManager mNotificationManager =
+        stackBuilder.addParentStack(SplashScreenActivity.class);
+
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        RemoteViews expandedView = new RemoteViews(context.getPackageName(),
+                R.layout.notification_small);
+        expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+        expandedView.setTextViewText(R.id.t1, msg);
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.icons_97x97)
+                .setAutoCancel(true)
+                .setContent(expandedView)
+                .setContentIntent(resultPendingIntent).build();
+
+        NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(mId, mBuilder.build());
+
+        notificationManager.notify(mId, notification);
     }
 
     public void newNotification(int mId, String msgExtra, int chatId) {
@@ -62,40 +77,45 @@ public class NotificationHandler {
             }
         }
         total++;
-        Intent intent = new Intent(context, BaseActivity.class);
-        intent.putExtra("page", "message" + "," + previousChatId);
+        Intent resultIntent = new Intent(context, BaseActivity.class);
+        resultIntent.putExtra("page", "message");
         sharedPreferences.edit().putInt("catid", previousChatId).apply();
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                intent, 0);
-
-        NotificationCompat.InboxStyle inboxStyle =
-                new NotificationCompat.InboxStyle();
 
         String[] events = new String[1];
         size = events.length;
 
-        events[0] = new String(msgExtra);
-        // Sets a title for the Inbox style big view
-        inboxStyle.setBigContentTitle(context.getString(R.string.app_name));
-        // Moves events into the big view
-        for (int i = 0; i < events.length; i++) {
-            inboxStyle.addLine(events[i]);
-        }
-        msgEvents = events;
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.genie_logo)
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText(msgExtra)
-                        .setStyle(inboxStyle)
-                        .setNumber(total)
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent);
+        events[0] = msgExtra;
 
-        NotificationManager mNotificationManager =
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
+        stackBuilder.addParentStack(SplashScreenActivity.class);
+
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        RemoteViews expandedView = new RemoteViews(context.getPackageName(),
+                R.layout.notification_small);
+        expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+
+        for (int i = 0; i < events.length; i++) {
+            if (i == 0) {
+                expandedView.setTextViewText(R.id.t1, events[0]);
+            }
+        }
+
+        msgEvents = events;
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.icons_97x97)
+                .setAutoCancel(true)
+                .setContent(expandedView)
+                .setContentIntent(resultPendingIntent).build();
+
+        NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(mId, mBuilder.build());
+
+        notificationManager.notify(mId, notification);
     }
 
     public void cancelNotification(int mId) {
@@ -104,7 +124,7 @@ public class NotificationHandler {
         mNotificationManager.cancel(mId);
     }
 
-    public void updateNotification(int mId, String msg, String msgExtra, int chatId) {
+    public void updateNotification(int mId, String msgExtra, int chatId) {
         if (size == 0) {
             newNotification(mId, msgExtra, chatId);
         } else {
@@ -117,15 +137,25 @@ public class NotificationHandler {
                     }
                 }
                 total++;
-                Intent intent = new Intent(context, BaseActivity.class);
-                intent.putExtra("page", "message" + "," + previousChatId);
+                Intent resultIntent = new Intent(context, BaseActivity.class);
+                resultIntent.putExtra("page", "message");
                 sharedPreferences.edit().putInt("catid", previousChatId).apply();
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                        intent, 0);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
-                NotificationCompat.InboxStyle inboxStyle =
-                        new NotificationCompat.InboxStyle();
+                stackBuilder.addParentStack(SplashScreenActivity.class);
+
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                        0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                RemoteViews expandedView = new RemoteViews(context.getPackageName(),
+                        R.layout.notification_small);
+                expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+
+                RemoteViews expandedBigView = new RemoteViews(context.getPackageName(),
+                        R.layout.notification_big);
+                expandedBigView.setTextViewText(R.id.title, context.getString(R.string.app_name));
 
                 if (size > 0) {
                     String[] events = null;
@@ -146,102 +176,53 @@ public class NotificationHandler {
                         }
                     }
                     if (size == 6) {
-                        events[size - 1] = new String(msgExtra);
+                        events[size - 1] = msgExtra;
                     } else {
-                        events[size] = new String(msgExtra);
+                        events[size] = msgExtra;
                     }
-
-                    // Sets a title for the Inbox style big view
-                    inboxStyle.setBigContentTitle(context.getString(R.string.app_name));
+                    expandedView.setTextViewText(R.id.t1, total + context.getString(R.string.unreadmsg));
+                    expandedBigView.setTextViewText(R.id.count, String.valueOf(total));
                     // Moves events into the big view
                     for (int i = 0; i < events.length; i++) {
-                        inboxStyle.addLine(events[i]);
+                        if (i == 0) {
+                            expandedBigView.setViewVisibility(R.id.t1, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t1, events[i]);
+                        } else if (i == 1) {
+                            expandedBigView.setViewVisibility(R.id.t2, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t2, events[i]);
+                        } else if (i == 2) {
+                            expandedBigView.setViewVisibility(R.id.t3, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t3, events[i]);
+                        } else if (i == 3) {
+                            expandedBigView.setViewVisibility(R.id.t4, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t4, events[i]);
+                        } else if (i == 4) {
+                            expandedBigView.setViewVisibility(R.id.t5, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t5, events[i]);
+                        } else if (i == 5) {
+                            expandedBigView.setViewVisibility(R.id.t6, View.VISIBLE);
+                            expandedBigView.setTextViewText(R.id.t6, events[i]);
+                        }
                     }
                     msgEvents = events;
                     size = events.length;
 
                 }
+                Notification notification = new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.icons_97x97)
+                        .setAutoCancel(true)
+                        .setContent(expandedView)
+                        .setContentIntent(resultPendingIntent).build();
 
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.genie_logo)
-                                .setContentTitle(context.getString(R.string.app_name))
-                                .setContentText(msg)
-                                .setStyle(inboxStyle)
-                                .setNumber(total)
-                                .setAutoCancel(true)
-                                .setContentIntent(pendingIntent);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    notification.bigContentView = expandedBigView;
+                }
 
-                NotificationManager mNotificationManager =
+                NotificationManager notificationManager =
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                mNotificationManager.notify(mId, mBuilder.build());
+                notificationManager.notify(mId, notification);
 
-            } else {
-                newNotification(mId, msgExtra, chatId);
-            }
-        }
-    }
-
-    public void updateLastNotification(int mId, String msg, String msgExtra, int chatId) {
-        if (size == 0) {
-            newNotification(mId, msgExtra, chatId);
-        } else {
-            if (msgEvents.length == size) {
-                if (previousChatId != 0) {
-                    if (previousChatId == chatId || previousChatId == -1) {
-                        previousChatId = chatId;
-                    } else {
-                        previousChatId = 0;
-                    }
-                }
-                Intent intent = new Intent(context, BaseActivity.class);
-                intent.putExtra("page", "message");
-                sharedPreferences.edit().putInt("catid", previousChatId).apply();
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                        intent, 0);
-
-                NotificationCompat.InboxStyle inboxStyle =
-                        new NotificationCompat.InboxStyle();
-
-
-                if (size > 0) {
-                    String[] events = new String[size];
-                    for (int i = 0; i < size; i++) {
-                        events[i] = msgEvents[i];
-                    }
-
-                    events[size - 1] = new String(msgExtra);
-                    // Sets a title for the Inbox style big view
-                    inboxStyle.setBigContentTitle(context.getString(R.string.app_name));
-                    // Moves events into the big view
-                    for (int i = 0; i < events.length; i++) {
-                        inboxStyle.addLine(events[i]);
-                    }
-                    msgEvents = events;
-                    size = events.length;
-
-                }
-
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.genie_logo)
-                                .setContentTitle(context.getString(R.string.app_name))
-                                .setContentText(msg)
-                                .setStyle(inboxStyle)
-                                .setNumber(total)
-                                .setAutoCancel(true)
-                                .setContentIntent(pendingIntent);
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    mBuilder.setFullScreenIntent(pendingIntent, true);
-                }
-
-                NotificationManager mNotificationManager =
-                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-                mNotificationManager.notify(mId, mBuilder.build());
             } else {
                 newNotification(mId, msgExtra, chatId);
             }
