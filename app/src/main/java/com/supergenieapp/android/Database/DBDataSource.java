@@ -238,7 +238,7 @@ public class DBDataSource {
                         } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
                         }
                     }
                 } catch (JSONException e) {
@@ -280,7 +280,7 @@ public class DBDataSource {
                         } else if (jsonObject.getInt("id") == DataFields.LOCATION) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
-                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("url"), jsonObject.getString("text"));
+                            messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
                         }
                     }
                 } catch (JSONException e) {

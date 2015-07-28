@@ -124,6 +124,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mToolbar.setTitle(categorie_selected.getName());
                 mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
                 onReceiveFromLeft(categorie_selected);
+//                if (fragmentManager.getBackStackEntryCount() > 0) {
+//                    fragmentManager.popBackStack();
+//                }
             } else if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                 mixpanelDataAdd.put("Back from", "Chat Fragment");
                 goBack();
@@ -329,6 +332,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
+        bundle.putInt("position", DataFields.position);
         bundle.putString("color", categorie_selected.getBg_color());
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());
@@ -459,7 +463,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                 }
                                 if (message.has("category_value")) {
                                     JSONObject category_value = message.getJSONObject("category_value");
-                                    if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                    if (messageType == DataFields.TEXT) {
                                         if (category_value.has("text"))
                                             text = category_value.getString("text");
                                     } else if (messageType == DataFields.LOCATION) {
@@ -467,13 +471,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             lng = category_value.getDouble("lng");
                                         if (category_value.has("lat"))
                                             lat = category_value.getDouble("lat");
-                                        if (category_value.has("text"))
-                                            text = category_value.getString("text");
+                                        if (category_value.has("address"))
+                                            text = category_value.getString("address");
                                     } else if (messageType == DataFields.IMAGE) {
-                                        if (category_value.has("text"))
-                                            text = category_value.getString("text");
+                                        if (category_value.has("caption"))
+                                            text = category_value.getString("caption");
                                         if (category_value.has("url"))
                                             url = category_value.getString("url");
+                                    } else if (messageType == DataFields.PAYNOW) {
+                                        text = category_value.toString();
                                     }
                                 }
                             }
@@ -512,6 +518,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         List<Fragment> fragments = fragmentManager.getFragments();
                         for (Fragment fragment : fragments) {
                             if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                                mixpanelDataAdd.put("Message", "Received in category Screen");
+                                mixPanelBuild("Notification Set from category page");
+                                Crouton.cancelAllCroutons();
+                                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                                if (categories != null)
+                                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                                ((MainFragment) fragment).refreshDataFromLocal();
+                            } else if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
                                 mixpanelDataAdd.put("Message", "Received in category Screen");
                                 mixPanelBuild("Notification Set from category page");
                                 Crouton.cancelAllCroutons();
@@ -640,7 +655,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             }
                                             if (message.has("category_value")) {
                                                 JSONObject category_value = message.getJSONObject("category_value");
-                                                if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                                if (messageType == DataFields.TEXT) {
                                                     if (category_value.has("text"))
                                                         text = category_value.getString("text");
                                                 } else if (messageType == DataFields.LOCATION) {
@@ -648,13 +663,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                         lng = category_value.getDouble("lng");
                                                     if (category_value.has("lat"))
                                                         lat = category_value.getDouble("lat");
-                                                    if (category_value.has("text"))
-                                                        text = category_value.getString("text");
+                                                    if (category_value.has("address"))
+                                                        text = category_value.getString("address");
                                                 } else if (messageType == DataFields.IMAGE) {
-                                                    if (category_value.has("text"))
-                                                        text = category_value.getString("text");
+                                                    if (category_value.has("caption"))
+                                                        text = category_value.getString("caption");
                                                     if (category_value.has("url"))
                                                         url = category_value.getString("url");
+                                                } else if (messageType == DataFields.PAYNOW) {
+                                                    text = category_value.toString();
                                                 }
                                             }
                                         }
@@ -691,6 +708,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
                                         messagesArrayListUnSynced.addAll(holdMessages);
+                                        logging.LogE("Unsent items detected");
                                         mixPanelBuild("Unsent items detected");
                                         // todo resend
                                     }
@@ -708,7 +726,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             List<Fragment> fragments = fragmentManager.getFragments();
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    ((ChatFragment) fragment).displayMessages(true, true);
+                                    ((ChatFragment) fragment).displayMessages(true, DataFields.ScrollPosition);
                                 }
                             }
                         }
@@ -804,7 +822,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (message.has("category_value")) {
                                         JSONObject category_value = message.getJSONObject("category_value");
-                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                        if (messageType == DataFields.TEXT) {
                                             if (category_value.has("text"))
                                                 text = category_value.getString("text");
                                         } else if (messageType == DataFields.LOCATION) {
@@ -812,13 +830,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                 lng = category_value.getDouble("lng");
                                             if (category_value.has("lat"))
                                                 lat = category_value.getDouble("lat");
-                                            if (category_value.has("text"))
-                                                text = category_value.getString("text");
+                                            if (category_value.has("address"))
+                                                text = category_value.getString("address");
                                         } else if (messageType == DataFields.IMAGE) {
-                                            if (category_value.has("text"))
-                                                text = category_value.getString("text");
+                                            if (category_value.has("caption"))
+                                                text = category_value.getString("caption");
                                             if (category_value.has("url"))
                                                 url = category_value.getString("url");
+                                        } else if (messageType == DataFields.PAYNOW) {
+                                            text = category_value.toString();
                                         }
                                     }
 
@@ -859,9 +879,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             for (Fragment fragment : fragments) {
                                 if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
                                     if (messagesArrayList.size() != 0) {
-                                        ((ChatFragment) fragment).displayMessages(true, false);
+                                        ((ChatFragment) fragment).displayMessages(true, DataFields.NoScroll);
                                     } else {
-                                        ((ChatFragment) fragment).displayMessages(false, false);
+                                        ((ChatFragment) fragment).displayMessages(false, DataFields.NoScroll);
                                     }
                                 }
                             }

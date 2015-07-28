@@ -201,7 +201,7 @@ public class SplashScreenActivity extends GenieActivity {
     void runToMainPage(boolean verified) {
         if (verified) {
             int visitedCount = sharedPreferences.getInt("visitedcount", 0);
-            if (visitedCount > DataFields.RATEWHENCOUNT) {
+            if (visitedCount > DataFields.RATEWHENCOUNT && sharedPreferences.getBoolean("trackvisitcount", true)) {
                 try {
                     logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
                     Thread.sleep(Math.max(DataFields.VerifyTimeOut - (System.currentTimeMillis() - start), 0));
@@ -308,6 +308,7 @@ public class SplashScreenActivity extends GenieActivity {
         }).setNeutralButton(getString(R.string.dontaskagain), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 sharedPreferences.edit().putBoolean("trackvisitcount", false).apply();
+                sharedPreferences.edit().putInt("visitedcount", 0).apply();
                 dialog.dismiss();
                 getCategories();
             }
@@ -315,7 +316,6 @@ public class SplashScreenActivity extends GenieActivity {
         alert = alertDialogBuilder.create();
         alert.show();
     }
-
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

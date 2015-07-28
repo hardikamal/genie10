@@ -98,7 +98,7 @@ public class MyGcmListenerService extends GcmListenerService {
                         }
                         if (message.has("category_value")) {
                             JSONObject category_value = message.getJSONObject("category_value");
-                            if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                            if (messageType == DataFields.TEXT) {
                                 if (category_value.has("text"))
                                     text = category_value.getString("text");
                             } else if (messageType == DataFields.LOCATION) {
@@ -106,13 +106,15 @@ public class MyGcmListenerService extends GcmListenerService {
                                     lng = category_value.getDouble("lng");
                                 if (category_value.has("lat"))
                                     lat = category_value.getDouble("lat");
-                                if (category_value.has("text"))
-                                    text = category_value.getString("text");
+                                if (category_value.has("address"))
+                                    text = category_value.getString("address");
                             } else if (messageType == DataFields.IMAGE) {
-                                if (category_value.has("text"))
-                                    text = category_value.getString("text");
+                                if (category_value.has("caption"))
+                                    text = category_value.getString("caption");
                                 if (category_value.has("url"))
                                     url = category_value.getString("url");
+                            } else if (messageType == DataFields.PAYNOW) {
+                                text = category_value.toString();
                             }
                         }
                     }

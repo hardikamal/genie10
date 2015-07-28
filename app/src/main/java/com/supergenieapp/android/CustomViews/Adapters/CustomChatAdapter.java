@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
@@ -126,6 +128,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.paylayout)
         LinearLayout paylayout;
         @Optional
+        @InjectView(R.id.mapViewLayout)
+        RelativeLayout mapViewLayout;
+        @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
         Context localContext;
@@ -213,15 +218,21 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             viewHolderMain.date.setTextColor(Color.parseColor(color));
         } else if (messages.getMessageType() == DataFields.PAYNOW) {
             try {
-                JSONObject object = new JSONObject(messageValues.getText());
-                if (object.has("companyname"))
-                    viewHolderMain.companyName.setText(object.getString("companyname"));
-                if (object.has("rate"))
-                    viewHolderMain.rate.setText("Rs. " + String.valueOf(object.getDouble("rate")));
-                if (object.has("details"))
-                    viewHolderMain.orderdetails.setText(object.getString("details"));
-                if (object.has("cod") && object.getBoolean("cod"))
+                final JSONObject object = new JSONObject(messageValues.getText());
+                if (object.has("service_provider"))
+                    viewHolderMain.companyName.setText(object.getString("service_provider"));
+                if (object.has("cost"))
+                    viewHolderMain.rate.setText("Rs. " + String.valueOf(object.getDouble("cost")));
+                if (object.has("description"))
+                    viewHolderMain.orderdetails.setText(object.getString("description"));
+                if (object.has("cod") && object.getBoolean("cod")) {
                     viewHolderMain.payascod.setVisibility(View.VISIBLE);
+                    viewHolderMain.paynow.setVisibility(View.GONE);
+                } else {
+                    viewHolderMain.payascod.setVisibility(View.GONE);
+                    viewHolderMain.paynow.setVisibility(View.VISIBLE);
+                }
+
                 viewHolderMain.payascod.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
@@ -230,9 +241,24 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         showToast(context.getString(R.string.finishordertext), Style.INFO);
                         PaymentFragment paymentFragment = new PaymentFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putString("url", messageValues.getUrl());
+                        String url = context.getString(R.string.website);
+                        try {
+                            if (object.has("payment_url") && !object.getString("payment_url").equals("")) {
+                                url = object.getString("payment_url");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        bundle.putString("url", url);
                         paymentFragment.setArguments(bundle);
                         ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
+                    }
+                });
+                viewHolderMain.payascod.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showToast(context.getString(R.string.finishordertext), Style.INFO);
+
                     }
                 });
                 viewHolderMain.catimage.setImageUrl(catImageUrl, imageLoader);
@@ -307,13 +333,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             }
 
             if (messages.getMessageType() == DataFields.IMAGE) {
-                viewHolderMain.mapView.setVisibility(View.VISIBLE);
+                viewHolderMain.mapViewLayout.setVisibility(View.VISIBLE);
 //                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
                 viewHolderMain.mapView.setImageUrl(messageValues.getUrl(), imageLoader);
+
                 viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // todo image view intent
+                        PaymentFragment paymentFragment = new PaymentFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("url", messageValues.getUrl());
+                        bundle.putBoolean("image", true);
+                        paymentFragment.setArguments(bundle);
+                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
                     }
                 });
 
@@ -323,9 +355,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapView.setBackground(gd);
+                        viewHolderMain.mapViewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                        viewHolderMain.mapViewLayout.setBackgroundDrawable(gd);
                     }
                 } else {
                     GradientDrawable gd = new GradientDrawable(
@@ -333,9 +365,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapView.setBackground(gd);
+                        viewHolderMain.mapViewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                        viewHolderMain.mapViewLayout.setBackgroundDrawable(gd);
                     }
                 }
             }

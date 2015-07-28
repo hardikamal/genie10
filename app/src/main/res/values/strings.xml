@@ -335,4 +335,5 @@
     <string name="supportemailaddress">support@getgenieapp.com</string>
     <string name="sendemail">Send email...</string>
     <string name="noorderyet">You have not placed any orders yet.</string>
+    <string name="website">www.supergenieapp.com</string>
 </resources>

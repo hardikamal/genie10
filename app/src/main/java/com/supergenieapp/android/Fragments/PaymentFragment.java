@@ -11,6 +11,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.GenieFragment;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -28,8 +30,12 @@ import de.keyboardsurfer.android.widget.crouton.Style;
  */
 public class PaymentFragment extends GenieFragment {
     ViewGroup viewGroup;
+    @Optional
     @InjectView(R.id.webPage)
     WebView webview;
+    @Optional
+    @InjectView(R.id.image)
+    NetworkImageView imageView;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
@@ -61,14 +67,38 @@ public class PaymentFragment extends GenieFragment {
         }
 
         this.viewGroup = container;
-        View rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
-        ButterKnife.inject(this, rootView);
+        View rootView;
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             url = bundle.getString("url", url);
+            if (bundle.getBoolean("image", false)) {
+                rootView = inflater.inflate(R.layout.image_view, container, false);
+                ButterKnife.inject(this, rootView);
+                setImageForm();
+            } else {
+                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+                ButterKnife.inject(this, rootView);
+                setWebForm();
+            }
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+            ButterKnife.inject(this, rootView);
+            setWebForm();
         }
 
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
+        return rootView;
+    }
+
+    private void setImageForm() {
+        parentLoadingView.setLoading(true);
+        parentLoadingView.setLoading(false);
+        parentLoadingView.setText(getString(R.string.loading));
+        imageView.setImageUrl(url, imageLoader);
+    }
+
+    private void setWebForm() {
         parentLoadingView.setLoading(true);
         parentLoadingView.setText(getString(R.string.paymentpageload));
         Crouton.makeText((Activity) getActivity(), getString(R.string.finishordertext), Style.INFO, R.id.body).show();
@@ -91,8 +121,5 @@ public class PaymentFragment extends GenieFragment {
         });
 
         webview.loadUrl(url);
-
-        fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
-        return rootView;
     }
 }

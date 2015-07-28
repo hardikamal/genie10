@@ -61,6 +61,7 @@ public class ChatFragment extends GenieFragment {
     LinearLayout messageLayout;
     String color = "#26ACEC";
     int id = 0;
+    public int position = 0;
     long hide_time = 0;
     @InjectView(R.id.message)
     EditText message;
@@ -81,15 +82,16 @@ public class ChatFragment extends GenieFragment {
         for (int i = 0; i < fragmentManager.getBackStackEntryCount(); ++i) {
             fragmentManager.popBackStack();
         }
+
         this.viewGroup = container;
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
         Crouton.cancelAllCroutons();
 
-
         Bundle bundle = this.getArguments();
 
         if (bundle != null) {
+            position = bundle.getInt("position", -1);
             id = bundle.getInt("id", 0);
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
@@ -128,8 +130,6 @@ public class ChatFragment extends GenieFragment {
                 return false;
             }
         });
-
-        displayMessages(true, true);
 
         message.addTextChangedListener(new TextWatcher() {
 
@@ -173,12 +173,13 @@ public class ChatFragment extends GenieFragment {
             }
         });
 
+        displayMessages(true, DataFields.ScrollPosition);
+
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 
-
-    public void displayMessages(boolean status, boolean scroll) {
+    public void displayMessages(boolean status, int scroll) {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
         Collections.sort(messages);
 
@@ -207,14 +208,34 @@ public class ChatFragment extends GenieFragment {
             messages.add(0, new Messages("0", DataFields.LOADMORE, id, new MessageValues(), 0, 0, 0, 0));
         }
 
+
         recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+            }
+        });
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
         recyclerView.setAdapter(chatAdapter);
-        if (scroll) {
+
+        if (scroll == DataFields.ScrollDown) {
             scroll();
+            DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
         }
+        if (scroll == DataFields.ScrollPosition)
+            scroll(position);
     }
 
     @Override
@@ -227,19 +248,39 @@ public class ChatFragment extends GenieFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data.getExtras() != null) {
             mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
-            MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+            final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
             Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
-            displayMessages(true, true);
-            JSONObject valueJSON = new JSONObject();
-            try {
-                valueJSON.put("text", messageValues.getText());
-                valueJSON.put("lng", messageValues.getLng());
-                valueJSON.put("lat", messageValues.getLat());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            emitMessage(DataFields.LOCATION, valueJSON);
+            displayMessages(true, DataFields.ScrollDown);
+            new Thread(new Runnable() {
+                public void run() {
+                    int i = 0;
+                    do {
+                        try {
+                            Thread.sleep(DataFields.small400TimeOut);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (i > 5) {
+                            break;
+                        }
+                    } while (!genieApplication.getSocket().connected());
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
+                            try {
+                                JSONObject valueJSON = new JSONObject();
+                                valueJSON.put("address", messageValues.getText());
+                                valueJSON.put("lng", messageValues.getLng());
+                                valueJSON.put("lat", messageValues.getLat());
+                                emitMessage(DataFields.LOCATION, valueJSON);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }).start();
         } else {
             Crouton.makeText(getActivity(), getString(R.string.errorinaccessinglocation), Style.ALERT, viewGroup).show();
         }
@@ -258,8 +299,14 @@ public class ChatFragment extends GenieFragment {
     public void onResume() {
         super.onResume();
         logging.LogV("on Resume Chat");
-        displayMessages(true, true);
         dbDataSource.UpdateCatNotification(id, 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        logging.LogV("on Resume Chat");
+        position = DataFields.position;
     }
 
     @Override
@@ -276,7 +323,8 @@ public class ChatFragment extends GenieFragment {
         mixpanelDataAdd.put("Chat Message", "Received");
         if (messageObject.getCategory() == id) {
             mixpanelDataAdd.put("Chat Message", "Updated");
-            displayMessages(true, true);
+            displayMessages(true, DataFields.ScrollDown);
+            scroll();
         } else {
             mixPanelBuild("Message received when user is in different category");
             mixpanelDataAdd.put("Message", "Different Category");
@@ -303,22 +351,7 @@ public class ChatFragment extends GenieFragment {
             MessageValues messageValues = new MessageValues(1, typedMessage);
             Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
-            displayMessages(true, true);
-            if (typedMessage.equalsIgnoreCase("Pay Now")) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("companyname", "Genie");
-                    jsonObject.put("rate", 775.00);
-                    jsonObject.put("details", "This is some random text generated by me. Its being used by me to display some text at this place.");
-                    jsonObject.put("cod", false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                MessageValues messageValues2 = new MessageValues(DataFields.PAYNOW, "www.google.com", jsonObject.toString());
-                Messages messageObject2 = new Messages("1", DataFields.PAYNOW, id, messageValues2, 1, System.currentTimeMillis(), 0, DataFields.INCOMING);
-                dbDataSource.addNormal(messageObject2);
-                displayMessages(true, true);
-            }
+            displayMessages(true, DataFields.ScrollDown);
             JSONObject valueJSON = new JSONObject();
             try {
                 valueJSON.put("text", typedMessage);
@@ -340,7 +373,9 @@ public class ChatFragment extends GenieFragment {
 
             jsonObject.put("msg", subJson);
             jsonObject.put("cid", id);
+
             ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
+            System.out.println(jsonObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -367,6 +402,20 @@ public class ChatFragment extends GenieFragment {
     private void scroll() {
         if (messages.size() > 1) {
             recyclerView.scrollToPosition(messages.size() - 1);
+        }
+    }
+
+    private void scroll(int position) {
+        if (position == 0 && this.getArguments().containsKey("position")) {
+            recyclerView.scrollToPosition(position);
+        } else if (position == -1 && this.getArguments().containsKey("position")) {
+            recyclerView.scrollToPosition(0);
+        } else if (position == -1) {
+            scroll();
+        } else if (position == 0) {
+            scroll();
+        } else {
+            recyclerView.scrollToPosition(position);
         }
     }
 

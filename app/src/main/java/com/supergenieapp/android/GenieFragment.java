@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.Logging;
@@ -37,6 +38,7 @@ public class GenieFragment extends Fragment {
     public TinyBus mBus;
     public Utils utils;
     public MixpanelAPI mixpanel;
+    public ImageLoader imageLoader;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -47,6 +49,7 @@ public class GenieFragment extends Fragment {
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
         logging = genieApplication.getLoggingBuilder().setUp();
         mBus = genieApplication.getBus();
+        imageLoader = genieApplication.getImageLoader();
         gson = new Gson();
         utils = new Utils(getActivity());
         dbDataSource = new DBDataSource(getActivity());

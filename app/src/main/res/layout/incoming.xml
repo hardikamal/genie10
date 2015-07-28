@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="left"
     android:orientation="vertical"
     android:paddingBottom="@dimen/_2sdp"
     android:paddingEnd="@dimen/_100sdp"
@@ -10,59 +11,54 @@
     android:paddingStart="@dimen/_10sdp"
     android:paddingTop="@dimen/_2sdp">
 
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/mapView"
+    <RelativeLayout
+        android:id="@+id/mapViewLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
         android:layout_marginBottom="@dimen/_minus10sdp"
         android:padding="@dimen/_5sdp"
-        android:scaleType="fitXY"
-        android:visibility="gone" />
+        android:visibility="gone">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mapView">
-
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="end"
-            android:textIsSelectable="false"
-            android:padding="@dimen/_5sdp"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_12sdp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/text"
-            android:layout_alignEnd="@+id/text"
-            android:layout_alignRight="@+id/text"
-            android:orientation="horizontal"
-            android:padding="@dimen/_5sdp">
-
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="23:59"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_8sdp" />
-
-            <ImageView
-                android:id="@+id/tick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
     </RelativeLayout>
 
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/mapViewLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignStart="@+id/mapViewLayout"
+        android:layout_below="@+id/mapViewLayout"
+        android:layout_gravity="start"
+        android:padding="@dimen/_5sdp"
+        android:textColor="@color/white"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/_12sdp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/text"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/text"
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="23:59"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8sdp" />
+
+    </LinearLayout>
 </RelativeLayout>
