@@ -125,7 +125,7 @@ public class NotificationHandler {
     }
 
     public void updateNotification(int mId, String msgExtra, int chatId) {
-        if (size == 0) {
+        if (size == 0 || msgEvents == null) {
             newNotification(mId, msgExtra, chatId);
         } else {
             if (msgEvents.length == size) {
