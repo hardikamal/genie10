@@ -35,7 +35,7 @@
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1">
 
-                    <com.android.volley.toolbox.NetworkImageView
+                    <ImageView
                         android:id="@+id/catimage"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_90sdp"

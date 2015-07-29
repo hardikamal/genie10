@@ -10,13 +10,22 @@
     android:paddingStart="@dimen/_100sdp"
     android:paddingTop="@dimen/_2sdp">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <ImageView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
         android:layout_marginBottom="@dimen/_minus10sdp"
         android:padding="@dimen/_5sdp"
         android:scaleType="fitXY"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/_minus10sdp"
+        android:padding="@dimen/_5sdp"
         android:visibility="gone" />
 
     <TextView

@@ -66,7 +66,7 @@
     <string name="personalassistant">Your Personal Assistant</string>
     <string name="faq">FAQ</string>
     <string name="terms"><![CDATA[Terms & Services]]></string>
-    <string name="smsrequestresend">Request Sent. Please check you SMS.</string>
+    <string name="smsrequestresend">Request Sent. Please check your SMS.</string>
     <string name="space10char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="mapservicemissing">MAP SERVICE MISSING</string>
@@ -338,4 +338,5 @@
     <string name="website">www.supergenieapp.com</string>
     <string name="title">Title</string>
     <string name="unreadmsg">"&#160;Unread Messages"</string>
+    <string name="sendinglocation">Sending Location...</string>
 </resources>

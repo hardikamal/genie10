@@ -124,7 +124,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
             viewHolderMain.notification_count.setBackgroundResource(android.R.color.transparent);
         }
 
-        String path = DataFields.TempFolder + "/" + utils.hashString(category.getImage_url()) + ".png";
+        String path = DataFields.TempFolder + "/" + utils.hashString(category.getImage_url());
         File imgFile = new File(path);
         if (imgFile.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -142,7 +142,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
                         viewHolderMain.image.setImageBitmap(response.getBitmap());
                         FileOutputStream out = null;
                         try {
-                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(category.getImage_url()) + ".png");
+                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(category.getImage_url()));
                             response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
                         } catch (Exception e) {
                             e.printStackTrace();

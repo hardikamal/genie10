@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:gravity="center">
 
-            <com.android.volley.toolbox.NetworkImageView
+            <ImageView
                 android:id="@+id/categoryimage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_70sdp"
@@ -102,16 +102,4 @@
 
         </LinearLayout>
     </LinearLayout>
-
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<View-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="3dip"-->
-    <!--android:background="@drawable/shadow" />-->
-    <!--</LinearLayout>-->
-
 </LinearLayout>

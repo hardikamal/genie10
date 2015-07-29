@@ -2,14 +2,17 @@ package com.supergenieapp.android.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +34,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.supergenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
@@ -56,6 +61,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,10 +127,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         logging.LogI("On Destroy");
         mixPanelTimerStop(LocationActivity.class.getName());
         mixPanelBuildHashMap("General Run " + LocationActivity.class.getName(), mixpanelDataAdd);
-        super.
-
-                onDestroy();
-
+        super.onDestroy();
     }
 
     @Override
@@ -133,6 +136,28 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         mixpanelDataAdd.put("Pressed", "Back");
         super.onBackPressed();
     }
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            //your code here
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -323,11 +348,54 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         showSaveLaterBox(messageValues);
     }
 
-    private void setResultBackToActivity(MessageValues messageValues) {
+    private void setResultBackToActivity(final MessageValues messageVal) {
+        final String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
+                + messageVal.getLat()
+                + ","
+                + messageVal.getLng()
+                + "&sensor=false";
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.sendinglocation));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        imageLoader.get(getMapURL, new ImageLoader.ImageListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                sendIntent(messageVal);
+            }
+
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                progressDialog.dismiss();
+                if (response != null && response.getBitmap() != null) {
+                    FileOutputStream out = null;
+                    try {
+                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(getMapURL));
+                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (out != null) {
+                                out.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                sendIntent(messageVal);
+            }
+        });
+    }
+
+    private void sendIntent(MessageValues messageVal) {
         Intent intent = new Intent();
-        intent.putExtra("lat", messageValues.getLat());
-        intent.putExtra("lng", messageValues.getLng());
-        intent.putExtra("address", messageValues.getText());
+        intent.putExtra("lat", messageVal.getLat());
+        intent.putExtra("lng", messageVal.getLng());
+        intent.putExtra("address", messageVal.getText());
         int LOCATIONRESULT = 1;
         setResult(LOCATIONRESULT, intent);
         finish();

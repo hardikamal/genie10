@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -31,6 +33,7 @@ import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.Fragments.ChatFragment;
 import com.supergenieapp.android.Fragments.PaymentFragment;
 import com.supergenieapp.android.GenieApplication;
+import com.supergenieapp.android.Objects.Categories;
 import com.supergenieapp.android.Objects.Chat;
 import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Messages;
@@ -39,6 +42,9 @@ import com.supergenieapp.android.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -57,7 +63,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     private ImageLoader imageLoader;
     private String color;
     Messages messages;
-    private String catImageUrl;
+    private String categoryUrl;
+    private Utils utils;
 
     public Messages getMessages() {
         return messages;
@@ -67,12 +74,13 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         this.messages = messages;
     }
 
-    public CustomChatAdapter(ArrayList<Messages> messagesList, String color, String catImageUrl, Context context) {
+    public CustomChatAdapter(ArrayList<Messages> messagesList, String color, String categoryUrl, Context context) {
         this.messagesList = messagesList;
         this.context = context;
         this.color = color;
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
-        this.catImageUrl = catImageUrl;
+        this.categoryUrl = categoryUrl;
+        utils = new Utils(context);
     }
 
     public void showToast(String message, Style style) {
@@ -96,7 +104,10 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         ImageView tick;
         @Optional
         @InjectView(R.id.mapView)
-        NetworkImageView mapView;
+        ImageView mapView;
+        @Optional
+        @InjectView(R.id.imageView)
+        ImageView imageView;
         @Optional
         @InjectView(R.id.loadingview)
         LoadingViewFlat loadingview;
@@ -123,13 +134,16 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         ButtonFlat paynow;
         @Optional
         @InjectView(R.id.catimage)
-        NetworkImageView catimage;
+        ImageView catimage;
         @Optional
         @InjectView(R.id.paylayout)
         LinearLayout paylayout;
         @Optional
         @InjectView(R.id.mapViewLayout)
         RelativeLayout mapViewLayout;
+        @Optional
+        @InjectView(R.id.imageViewLayout)
+        RelativeLayout imageViewLayout;
         @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
@@ -261,7 +275,41 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 
                     }
                 });
-                viewHolderMain.catimage.setImageUrl(catImageUrl, imageLoader);
+                String path = DataFields.TempFolder + "/" + utils.hashString(categoryUrl);
+                File imgFile = new File(path);
+                if (imgFile.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    viewHolderMain.catimage.setImageBitmap(myBitmap);
+                } else {
+                    imageLoader.get(categoryUrl, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                            if (response != null && response.getBitmap() != null) {
+                                viewHolderMain.catimage.setImageBitmap(response.getBitmap());
+                                FileOutputStream out = null;
+                                try {
+                                    out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
+                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (out != null) {
+                                            out.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -287,26 +335,49 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         } else {
             viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
             if (messages.getMessageType() == DataFields.LOCATION) {
-                String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
+                final String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
                         + messageValues.getLat()
                         + ","
                         + messageValues.getLng()
                         + "&sensor=false";
                 if (messageValues.getLat() != 0.00 && messageValues.getLng() != 0.00) {
                     viewHolderMain.mapView.setVisibility(View.VISIBLE);
-//                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
-                    viewHolderMain.mapView.setImageUrl(getMapURL, imageLoader);
-//                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Uri gmmIntentUri = Uri.parse("geo:" + messageValues.getLat() + "," + messageValues.getLng() + "?z=15");
-//                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-//                        mapIntent.setPackage("com.google.android.apps.maps");
-//                        if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-//                            context.startActivity(mapIntent);
-//                        }
-//                    }
-//                });
+
+                    String path = DataFields.TempFolder + "/" + utils.hashString(getMapURL);
+                    File imgFile = new File(path);
+                    if (imgFile.exists()) {
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        viewHolderMain.mapView.setImageBitmap(myBitmap);
+                    } else {
+                        imageLoader.get(getMapURL, new ImageLoader.ImageListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                if (response != null && response.getBitmap() != null) {
+                                    viewHolderMain.mapView.setImageBitmap(response.getBitmap());
+                                    FileOutputStream out = null;
+                                    try {
+                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(getMapURL));
+                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (out != null) {
+                                                out.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
 
                 if (messages.getDirection() == DataFields.INCOMING) {
@@ -334,8 +405,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 
             if (messages.getMessageType() == DataFields.IMAGE) {
                 viewHolderMain.mapViewLayout.setVisibility(View.VISIBLE);
-//                viewHolderMain.mapView.setDefaultImageResId(R.drawable.); todo set default
-                viewHolderMain.mapView.setImageUrl(messageValues.getUrl(), imageLoader);
+// todo image
 
                 viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
                     @Override
