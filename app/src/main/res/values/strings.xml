@@ -339,4 +339,8 @@
     <string name="title">Title</string>
     <string name="unreadmsg">"&#160;Unread Messages"</string>
     <string name="sendinglocation">Sending Location...</string>
+    <string name="yes">Yes</string>
+    <string name="wouldyouliketopay">Would you like to pay Rs.&#160;</string>
+    <string name="viacod">&#160;via Cash On Delivery?</string>
+    <string name="no">No</string>
 </resources>

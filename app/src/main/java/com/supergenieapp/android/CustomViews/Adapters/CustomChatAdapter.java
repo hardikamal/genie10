@@ -1,8 +1,10 @@
 package com.supergenieapp.android.CustomViews.Adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
+import com.supergenieapp.android.Activities.LocationActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.supergenieapp.android.Extras.DataFields;
@@ -35,6 +38,7 @@ import com.supergenieapp.android.Fragments.PaymentFragment;
 import com.supergenieapp.android.GenieApplication;
 import com.supergenieapp.android.Objects.Categories;
 import com.supergenieapp.android.Objects.Chat;
+import com.supergenieapp.android.Objects.FavValues;
 import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Messages;
 import com.supergenieapp.android.R;
@@ -171,12 +175,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         } else if (currentMessage.getMessageType() == DataFields.PAYNOW) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
         } else {
-            if (messagesList.get(viewType).getDirection() == DataFields.INCOMING)
-            {
+            if (messagesList.get(viewType).getDirection() == DataFields.INCOMING) {
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
-            }
-            else
-            {
+            } else {
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
             }
         }
@@ -247,7 +248,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.payascod.setVisibility(View.GONE);
                     viewHolderMain.paynow.setVisibility(View.VISIBLE);
                 }
-
+                final String costToPay = String.valueOf(object.getDouble("cost"));
                 viewHolderMain.payascod.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
@@ -269,13 +270,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
                     }
                 });
+
                 viewHolderMain.payascod.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showToast(context.getString(R.string.finishordertext), Style.INFO);
-
+                        ((BaseActivity) context).shoyCODAlert(costToPay);
                     }
                 });
+
                 String path = DataFields.TempFolder + "/" + utils.hashString(categoryUrl);
                 File imgFile = new File(path);
                 if (imgFile.exists()) {

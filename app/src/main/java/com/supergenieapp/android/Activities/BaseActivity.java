@@ -1,5 +1,7 @@
 package com.supergenieapp.android.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -952,5 +954,35 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
         mSocket.emit("load earlier messages", jsonObject);
+    }
+
+    public void shoyCODAlert(String costToPay) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setCancelable(true)
+                .setMessage(getString(R.string.wouldyouliketopay) + costToPay + getString(R.string.viacod))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        emitPayCodMessage();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert.show();
+    }
+
+    private void emitPayCodMessage() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("cod", true);
+            System.out.println(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("user message", jsonObject);
     }
 }
