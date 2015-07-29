@@ -26,6 +26,7 @@ public class DataFields {
     public static final String profilePicturePath = mainFolder.getAbsolutePath() + "/me.jpg";
     public static final String configPath = mainFolder.getAbsolutePath() + "/config.txt";
     public static final File logFolder = new File(mainFolder.getAbsolutePath() + "/Log");
+    public static final File TempFolder = new File(mainFolder.getAbsolutePath() + "/temp");
     public static final File logFile = new File(logFolder.getAbsolutePath() + "/" + GetDate.getLogDate() + "_Log.log");
 
     public static final String TOKEN = "token";

@@ -63,6 +63,7 @@ public class GenieApplication extends Application {
     public void onCreate() {
         super.onCreate();
         genieApplication = this;
+        setFolders();
         fontChangerRegular = new FontChangeCrawler(getAssets(), "Roboto-Regular.ttf");
         loggingBuilder = new LoggingBuilder(getApplicationContext())
                 .setCanDisplayOnLogCat(true)
@@ -75,6 +76,12 @@ public class GenieApplication extends Application {
         dbDataSource = new DBDataSource(this);
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
         registerComponentCallbacks(new MyComponentsLifecycleCallbacks());
+    }
+
+    private void setFolders() {
+        if (!DataFields.TempFolder.exists()) {
+            DataFields.TempFolder.mkdirs();
+        }
     }
 
     public SecurePreferences getSecurePrefs() {
