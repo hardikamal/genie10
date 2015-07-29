@@ -12,9 +12,9 @@
     android:paddingTop="@dimen/_2sdp">
 
     <RelativeLayout
-        android:id="@+id/mapViewLayout"
+        android:id="@+id/viewLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_minus10sdp"
         android:padding="@dimen/_5sdp"
         android:visibility="gone">
@@ -22,34 +22,28 @@
         <ImageView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY" />
-    </RelativeLayout>
+            android:layout_height="@dimen/_100sdp"
+            android:scaleType="fitXY"
+            android:visibility="gone"/>
 
-    <RelativeLayout
-        android:id="@+id/imageViewLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_minus10sdp"
-        android:padding="@dimen/_5sdp"
-        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/mapViewLayout"
+        android:layout_alignLeft="@+id/viewLayout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignStart="@+id/mapViewLayout"
-        android:layout_below="@+id/mapViewLayout"
+        android:layout_alignStart="@+id/viewLayout"
+        android:layout_below="@+id/viewLayout"
         android:layout_gravity="start"
         android:padding="@dimen/_5sdp"
         android:textColor="@color/white"

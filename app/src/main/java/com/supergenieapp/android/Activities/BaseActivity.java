@@ -1,25 +1,23 @@
 package com.supergenieapp.android.Activities;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.RemoteViews;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.NotificationHandler;
 import com.supergenieapp.android.Fragments.ChatFragment;
@@ -31,13 +29,13 @@ import com.supergenieapp.android.Objects.Chat;
 import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Messages;
 import com.supergenieapp.android.R;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -201,6 +199,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     protected void onPause() {
         super.onPause();
+        new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Paused");
         logging.LogV("Socket Checking to off");
         mixpanelDataAdd.put("Socket", "Closed");
@@ -512,41 +511,80 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                             messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
                         }
                         if (chat.getType() == DataFields.IMAGE) {
+
                             messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
                         }
                         if (chat.getType() == DataFields.PAYNOW) {
                             messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
                         }
-                        Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                        final Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                         dbDataSource.addNormal(messageObject);
-                        mBus.post(messageObject);
-                        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
-                        List<Fragment> fragments = fragmentManager.getFragments();
-                        for (Fragment fragment : fragments) {
-                            if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
-                                mixpanelDataAdd.put("Message", "Received in category Screen");
-                                mixPanelBuild("Notification Set from category page");
-                                Crouton.cancelAllCroutons();
-                                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
-                                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-                                if (categories != null)
-                                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-                                ((MainFragment) fragment).refreshDataFromLocal();
-                            } else if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
-                                mixpanelDataAdd.put("Message", "Received in category Screen");
-                                mixPanelBuild("Notification Set from category page");
-                                Crouton.cancelAllCroutons();
-                                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
-                                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-                                if (categories != null)
-                                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-                            }
+
+                        if (chat.getType() == DataFields.IMAGE) {
+                            final String urlLocal = messageValues.getUrl();
+                            imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    postToChat(messageObject);
+                                }
+
+                                @Override
+                                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                    if (response != null && response.getBitmap() != null) {
+
+                                        FileOutputStream out = null;
+                                        try {
+                                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(urlLocal));
+                                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            try {
+                                                if (out != null) {
+                                                    out.close();
+                                                }
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        postToChat(messageObject);
+                                    }
+                                }
+                            });
+                        } else {
+                            postToChat(messageObject);
                         }
                     }
                 }
             });
         }
     };
+
+    private void postToChat(Messages messageObject) {
+        mBus.post(messageObject);
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                mixpanelDataAdd.put("Message", "Received in category Screen");
+                mixPanelBuild("Notification Set from category page");
+                Crouton.cancelAllCroutons();
+                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                if (categories != null)
+                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                ((MainFragment) fragment).refreshDataFromLocal();
+            } else if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
+                mixpanelDataAdd.put("Message", "Received in category Screen");
+                mixPanelBuild("Notification Set from category page");
+                Crouton.cancelAllCroutons();
+                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
+                Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                if (categories != null)
+                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+            }
+        }
+    }
 
     private Emitter.Listener agentOffline = new Emitter.Listener() {
         @Override

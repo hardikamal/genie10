@@ -139,11 +139,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.paylayout)
         LinearLayout paylayout;
         @Optional
-        @InjectView(R.id.mapViewLayout)
-        RelativeLayout mapViewLayout;
-        @Optional
-        @InjectView(R.id.imageViewLayout)
-        RelativeLayout imageViewLayout;
+        @InjectView(R.id.viewLayout)
+        RelativeLayout viewLayout;
         @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
@@ -175,9 +172,13 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
         } else {
             if (messagesList.get(viewType).getDirection() == DataFields.INCOMING)
+            {
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
+            }
             else
+            {
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
+            }
         }
         return viewHolderMain;
     }
@@ -341,6 +342,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         + messageValues.getLng()
                         + "&sensor=false";
                 if (messageValues.getLat() != 0.00 && messageValues.getLng() != 0.00) {
+                    viewHolderMain.viewLayout.setVisibility(View.VISIBLE);
                     viewHolderMain.mapView.setVisibility(View.VISIBLE);
 
                     String path = DataFields.TempFolder + "/" + utils.hashString(getMapURL);
@@ -386,9 +388,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapView.setBackground(gd);
+                        viewHolderMain.viewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                        viewHolderMain.viewLayout.setBackgroundDrawable(gd);
                     }
                 } else {
                     GradientDrawable gd = new GradientDrawable(
@@ -396,28 +398,64 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapView.setBackground(gd);
+                        viewHolderMain.viewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapView.setBackgroundDrawable(gd);
+                        viewHolderMain.viewLayout.setBackgroundDrawable(gd);
                     }
                 }
             }
 
             if (messages.getMessageType() == DataFields.IMAGE) {
-                viewHolderMain.mapViewLayout.setVisibility(View.VISIBLE);
-// todo image
+                viewHolderMain.viewLayout.setVisibility(View.VISIBLE);
+                viewHolderMain.imageView.setVisibility(View.VISIBLE);
 
-                viewHolderMain.mapView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PaymentFragment paymentFragment = new PaymentFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("url", messageValues.getUrl());
-                        bundle.putBoolean("image", true);
-                        paymentFragment.setArguments(bundle);
-                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
-                    }
-                });
+                String path = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
+                File imgFile = new File(path);
+                if (imgFile.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    viewHolderMain.imageView.setImageBitmap(myBitmap);
+                } else {
+                    imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                            if (response != null && response.getBitmap() != null) {
+                                viewHolderMain.imageView.setImageBitmap(response.getBitmap());
+                                FileOutputStream out = null;
+                                try {
+                                    out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
+                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (out != null) {
+                                            out.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+//                viewHolderMain.imageView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        PaymentFragment paymentFragment = new PaymentFragment();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("url", messageValues.getUrl());
+//                        bundle.putBoolean("image", true);
+//                        paymentFragment.setArguments(bundle);
+//                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
+//                    }
+//                });
 
                 if (messages.getDirection() == DataFields.INCOMING) {
                     GradientDrawable gd = new GradientDrawable(
@@ -425,9 +463,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{Color.parseColor(color), Color.parseColor(color)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapViewLayout.setBackground(gd);
+                        viewHolderMain.viewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapViewLayout.setBackgroundDrawable(gd);
+                        viewHolderMain.viewLayout.setBackgroundDrawable(gd);
                     }
                 } else {
                     GradientDrawable gd = new GradientDrawable(
@@ -435,9 +473,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
                     gd.setCornerRadius(5f);
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewHolderMain.mapViewLayout.setBackground(gd);
+                        viewHolderMain.viewLayout.setBackground(gd);
                     } else {
-                        viewHolderMain.mapViewLayout.setBackgroundDrawable(gd);
+                        viewHolderMain.viewLayout.setBackgroundDrawable(gd);
                     }
                 }
             }
