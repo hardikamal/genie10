@@ -78,68 +78,68 @@ public class PaymentFragment extends GenieFragment {
         this.viewGroup = container;
         View rootView;
 
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            url = bundle.getString("url", url);
-            if (bundle.getBoolean("image", false)) {
-                rootView = inflater.inflate(R.layout.image_view, container, false);
-                ButterKnife.inject(this, rootView);
-                setImageForm();
-            } else {
-                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
-                ButterKnife.inject(this, rootView);
-                setWebForm();
-            }
-        } else {
-            rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
-            ButterKnife.inject(this, rootView);
-            setWebForm();
-        }
+//        Bundle bundle = this.getArguments();
+//        if (bundle != null) {
+//            url = bundle.getString("url", url);
+//            if (bundle.getBoolean("image", false)) {
+//                rootView = inflater.inflate(R.layout.image_view, container, false);
+//                ButterKnife.inject(this, rootView);
+//                setImageForm();
+//            } else {
+//                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+//                ButterKnife.inject(this, rootView);
+//                setWebForm();
+//            }
+//        } else {
+        rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+        ButterKnife.inject(this, rootView);
+        setWebForm();
+//        }
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 
-    private void setImageForm() {
-        parentLoadingView.setLoading(true);
-        parentLoadingView.setLoading(false);
-        parentLoadingView.setText(getString(R.string.loading));
-        String path = DataFields.TempFolder + "/" + utils.hashString(url);
-        File imgFile = new File(path);
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imageView.setImageBitmap(myBitmap);
-        } else {
-            imageLoader.get(url, new ImageLoader.ImageListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (response != null && response.getBitmap() != null) {
-                        imageView.setImageBitmap(response.getBitmap());
-                        FileOutputStream out = null;
-                        try {
-                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(url));
-                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                if (out != null) {
-                                    out.close();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
+//    private void setImageForm() {
+//        parentLoadingView.setLoading(true);
+//        parentLoadingView.setLoading(false);
+//        parentLoadingView.setText(getString(R.string.loading));
+//        String path = DataFields.TempFolder + "/" + utils.hashString(url);
+//        File imgFile = new File(path);
+//        if (imgFile.exists()) {
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            imageView.setImageBitmap(myBitmap);
+//        } else {
+//            imageLoader.get(url, new ImageLoader.ImageListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+//                    if (response != null && response.getBitmap() != null) {
+//                        imageView.setImageBitmap(response.getBitmap());
+//                        FileOutputStream out = null;
+//                        try {
+//                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(url));
+//                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                            try {
+//                                if (out != null) {
+//                                    out.close();
+//                                }
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//    }
 
     private void setWebForm() {
         parentLoadingView.setLoading(true);
