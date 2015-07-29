@@ -37,12 +37,14 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     private Context context;
     private Logging logging;
     private ImageLoader imageLoader;
+    private DBDataSource dbDataSource;
 
     public CustomOrderAdapter(ArrayList<Order> orders, Context context) {
         this.orders = orders;
         this.context = context;
         this.logging = GenieApplication.getInstance().getLoggingBuilder().setUp();
         this.imageLoader = GenieApplication.getInstance().getImageLoader();
+        this.dbDataSource = GenieApplication.getInstance().getDBDataSource();
     }
 
     @Override
@@ -79,7 +81,7 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final Order order = orders.get(position);
-        Categories currentOrderCategory = new DBDataSource(context).getCategories(Integer.parseInt(order.getCategory_id()));
+        Categories currentOrderCategory = dbDataSource.getCategories(Integer.parseInt(order.getCategory_id()));
         final ViewHolderMain viewHolderMain = (ViewHolderMain) holder;
 
         viewHolderMain.category.setBackgroundColor(Color.parseColor(currentOrderCategory.getBg_color()));

@@ -49,6 +49,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        DBDataSource dbDataSource = GenieApplication.getInstance().getDBDataSource();
 
         MixpanelAPI mixpanel =
                 MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
@@ -147,7 +148,6 @@ public class MyGcmListenerService extends GcmListenerService {
                     messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
                 }
                 Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
-                DBDataSource dbDataSource = new DBDataSource(this);
                 dbDataSource.addNormal(messageObject);
 
                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());

@@ -52,7 +52,7 @@ public class GenieFragment extends Fragment {
         imageLoader = genieApplication.getImageLoader();
         gson = new Gson();
         utils = new Utils(getActivity());
-        dbDataSource = new DBDataSource(getActivity());
+        dbDataSource = genieApplication.getDBDataSource();
         mixpanel.identify(utils.getDeviceSerialNumber());
         mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }

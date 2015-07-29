@@ -302,13 +302,6 @@ public class ChatFragment extends GenieFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        logging.LogV("on Resume Chat");
-        position = DataFields.position;
-    }
-
-    @Override
     public void onStop() {
         mBus.unregister(this);
         mixPanelTimerStop(ChatFragment.class.getName());

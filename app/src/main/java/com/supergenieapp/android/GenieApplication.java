@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.LoggingBuilder;
@@ -48,6 +49,7 @@ public class GenieApplication extends Application {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private Socket mSocket;
+    private DBDataSource dbDataSource;
 
     {
         try {
@@ -70,6 +72,7 @@ public class GenieApplication extends Application {
         mSecurePrefs = new SecurePreferences(this);
         mBus = TinyBus.from(this);
         ACRA.init(this);
+        dbDataSource = new DBDataSource(this);
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
         registerComponentCallbacks(new MyComponentsLifecycleCallbacks());
     }
@@ -141,6 +144,10 @@ public class GenieApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    public DBDataSource getDBDataSource() {
+        return dbDataSource;
     }
 
     public void connectToSocket() {

@@ -54,7 +54,7 @@ public class GenieBaseActivity extends AppCompatActivity {
         mBus = genieApplication.getBus();
         gson = new Gson();
         utils = new Utils(this);
-        dbDataSource = new DBDataSource(this);
+        dbDataSource = genieApplication.getDBDataSource();
         mixpanel.identify(utils.getDeviceSerialNumber());
         mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
         imageLoader = genieApplication.getImageLoader();

@@ -59,7 +59,7 @@ public class GenieActivity extends Activity {
         gson = new Gson();
         imageLoader = genieApplication.getImageLoader();
         utils = new Utils(this);
-        dbDataSource = new DBDataSource(this);
+        dbDataSource = genieApplication.getDBDataSource();
         mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         mixpanel.identify(utils.getDeviceSerialNumber());
         mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
