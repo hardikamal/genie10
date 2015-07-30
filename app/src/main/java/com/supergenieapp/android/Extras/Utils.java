@@ -23,7 +23,10 @@ import com.supergenieapp.android.R;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -160,6 +163,14 @@ public class Utils {
         return simpleDateFormat.format(convertedDate);
     }
 
+    public long convertLongToong(long date) {
+        Date convertedDate = new Date(date);
+        if (date < 86400000 * 1000L) {
+            convertedDate = new Date(date * 1000L);
+        }
+        return convertedDate.getTime();
+    }
+
     public String getIfItsToday(String date, SimpleDateFormat simpleDateFormat) {
         Date convertedDate = new Date(System.currentTimeMillis());
         simpleDateFormat.setTimeZone(TimeZone.getDefault());
@@ -188,4 +199,70 @@ public class Utils {
         }
         return stringBuffer.toString();
     }
+
+    public static String getLogDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM_dd_HH_mm");
+        Date date = new Date();
+        String sDate = dateFormat.format(date);
+        return sDate;
+    }
+
+    public String convertLongToDate(long unixTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(unixTime * 1000);
+
+        if (isSameDay(calendar, Calendar.getInstance())) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a");
+            Date time = new Date(unixTime * 1000);
+            return " " + dateFormat.format(time);
+        } else if (isYesterday(calendar, Calendar.getInstance())) {
+            return " Yesterday";
+        } else {
+            SimpleDateFormat dateFormatToday = new SimpleDateFormat("dd/MM/yyyy");
+            Date time = new Date(unixTime * 1000);
+            return " " + dateFormatToday.format(time);
+        }
+    }
+
+    private boolean isYesterday(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The dates must not be null");
+        }
+        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == (cal2.get(Calendar.DAY_OF_YEAR) - 1));
+    }
+
+    public boolean isSameDay(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The dates must not be null");
+        }
+        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
+    }
+
+    public String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date date = new Date();
+        String sDate = dateFormat.format(date);
+        return sDate;
+    }
+
+//    public static long getConvertedTime() {
+//        System.out.println("Current Time " + System.currentTimeMillis());
+//        Date date = new Date(System.currentTimeMillis());
+//        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss SSS");
+//        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+//        try {
+//            System.out.println("CURRENT Time " + dateFormat.parse(dateFormat.format(date)).getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return System.currentTimeMillis();
+//    }
+//
+//    public static long convertTime(long time) {
+//        return System.currentTimeMillis();
+//    }
 }

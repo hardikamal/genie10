@@ -202,12 +202,6 @@ public class SplashScreenActivity extends GenieActivity {
         if (verified) {
             int visitedCount = sharedPreferences.getInt("visitedcount", 0);
             if (visitedCount > DataFields.RATEWHENCOUNT && sharedPreferences.getBoolean("trackvisitcount", true)) {
-                try {
-                    logging.LogD("Time Left to Run splash", String.valueOf(DataFields.SplashScreenGeneralTimeOut - (System.currentTimeMillis() - start)));
-                    Thread.sleep(Math.max(DataFields.VerifyTimeOut - (System.currentTimeMillis() - start), 0));
-                } catch (Exception err) {
-                    err.printStackTrace();
-                }
                 showRatingAlert();
             } else {
                 if (sharedPreferences.getBoolean("trackvisitcount", true)) {

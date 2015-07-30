@@ -28,7 +28,6 @@ import android.util.Log;
 import com.supergenieapp.android.Activities.SplashScreenActivity;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.DataFields;
-import com.supergenieapp.android.Extras.GetDate;
 import com.supergenieapp.android.Extras.NotificationHandler;
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.GenieApplication;
@@ -154,7 +153,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
 
-                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new GetDate().getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
+                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
             }
         } else {
             Log.v("GCM PUSH", data.toString());
