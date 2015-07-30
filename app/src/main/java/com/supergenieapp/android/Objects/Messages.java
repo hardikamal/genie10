@@ -18,9 +18,9 @@ public class Messages implements Comparable<Messages> {
 
     @Override
     public int compareTo(Messages obj) {
-        int i = Long.valueOf(this.createdAt).compareTo(obj.createdAt);
-        if (i != 0) return i;
-        return String.valueOf(this._id).compareTo(obj._id);
+//        int i = String.valueOf(this._id).compareTo(obj._id);
+//        if (i != 0) return i;
+        return Long.valueOf(this.createdAt).compareTo(obj.createdAt);
     }
 
     private String _id;

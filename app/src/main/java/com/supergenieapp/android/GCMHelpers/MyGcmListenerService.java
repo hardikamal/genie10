@@ -125,11 +125,11 @@ public class MyGcmListenerService extends GcmListenerService {
 
             Chat chat = null;
             if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
-                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+                chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text);
             } else if (messageType == DataFields.LOCATION) {
-                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+                chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text, lng, lat);
             } else if (messageType == DataFields.IMAGE) {
-                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
+                chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, url, text);
             }
 
             if (chat != null) {
