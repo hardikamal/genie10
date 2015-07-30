@@ -79,8 +79,11 @@
     <string name="gaveanametoplace">Give an unique name to your place</string>
     <string name="saveas">Save As</string>
     <string name="share">Share</string>
-    <string name="trygenie">Try SuperGenie</string>
-    <string name="bodytext">Share About Genie Here</string>
+    <string name="trygenie">SuperGenie (Personal Assistant App)</string>
+    <string name="bodytext">Hi!\n\nI just used SuperGenie - Free Personal Assistant App for Ordering
+        &amp; Buying Anything, and the experience was SuperAwesome :)
+        \n\nJust Chat, Order, Done!  You can download the app here: \nhttps://play.google.com/store/apps/details?id=com.supergenieapp.android
+        \n\nYou can also ping SuperGenie on WhatsApp at +918008084084.</string>
     <string name="shareus">Share Us</string>
     <string name="today">Today</string>
     <string name="paynow">Pay Now</string>
