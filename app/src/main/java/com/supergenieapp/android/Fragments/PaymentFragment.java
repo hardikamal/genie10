@@ -20,6 +20,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
+import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.GenieFragment;
 import com.supergenieapp.android.R;
 
@@ -49,6 +50,7 @@ public class PaymentFragment extends GenieFragment {
     LoadingView parentLoadingView;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
     String url = "http://imojo.in/mrn77";
+    long created_at = Utils.getCurrentTimeMillis();
 
     @Override
     public void onStart() {
@@ -65,6 +67,7 @@ public class PaymentFragment extends GenieFragment {
         mixPanelTimerStop(PaymentFragment.class.getName());
         logging.LogV("Showed", "on Stop");
         super.onStop();
+        ((BaseActivity) getActivity()).emitPayOnline(created_at, "back");
     }
 
     @Override
@@ -78,9 +81,10 @@ public class PaymentFragment extends GenieFragment {
         this.viewGroup = container;
         View rootView;
 
-//        Bundle bundle = this.getArguments();
-//        if (bundle != null) {
-//            url = bundle.getString("url", url);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            url = bundle.getString("url", url);
+            created_at = bundle.getLong("created_at", created_at);
 //            if (bundle.getBoolean("image", false)) {
 //                rootView = inflater.inflate(R.layout.image_view, container, false);
 //                ButterKnife.inject(this, rootView);
@@ -88,9 +92,8 @@ public class PaymentFragment extends GenieFragment {
 //            } else {
 //                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
 //                ButterKnife.inject(this, rootView);
-//                setWebForm();
-//            }
-//        } else {
+//                setWebForm(); }
+        }
         rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
         ButterKnife.inject(this, rootView);
         setWebForm();

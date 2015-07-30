@@ -42,7 +42,7 @@
                         android:layout_marginBottom="@dimen/_30sdp"
                         android:layout_marginTop="@dimen/_30sdp"
                         android:padding="5dp"
-                        android:scaleType="center" />
+                        android:scaleType="fitCenter" />
 
                 </LinearLayout>
 

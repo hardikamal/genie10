@@ -115,6 +115,9 @@ public class MyGcmListenerService extends GcmListenerService {
                                     url = category_value.getString("url");
                             } else if (messageType == DataFields.PAYNOW) {
                                 text = category_value.toString();
+                            } else if (messageType == DataFields.PAYASCOD) {
+                                if (category_value.has("text"))
+                                    text = category_value.getString("text");
                             }
                         }
                     }
@@ -124,12 +127,14 @@ public class MyGcmListenerService extends GcmListenerService {
             }
 
             Chat chat = null;
-            if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+            if (messageType == DataFields.TEXT || messageType == DataFields.PAYASCOD) {
                 chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text);
             } else if (messageType == DataFields.LOCATION) {
                 chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text, lng, lat);
             } else if (messageType == DataFields.IMAGE) {
                 chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, url, text);
+            } else if (messageType == DataFields.PAYNOW) {
+                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
             }
 
             if (chat != null) {
@@ -145,6 +150,9 @@ public class MyGcmListenerService extends GcmListenerService {
                 }
                 if (chat.getType() == DataFields.PAYNOW) {
                     messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                }
+                if (chat.getType() == DataFields.PAYASCOD) {
+                    messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
                 }
                 Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                 dbDataSource.addNormal(messageObject);

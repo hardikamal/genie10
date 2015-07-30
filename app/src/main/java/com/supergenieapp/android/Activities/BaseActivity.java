@@ -488,6 +488,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             url = category_value.getString("url");
                                     } else if (messageType == DataFields.PAYNOW) {
                                         text = category_value.toString();
+                                    } else if (messageType == DataFields.PAYASCOD) {
+                                        if (category_value.has("text"))
+                                            text = category_value.getString("text");
                                     }
                                 }
                             }
@@ -497,12 +500,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     }
 
                     Chat chat = null;
-                    if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                    if (messageType == DataFields.TEXT || messageType == DataFields.PAYASCOD) {
                         chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text);
                     } else if (messageType == DataFields.LOCATION) {
                         chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, text, lng, lat);
                     } else if (messageType == DataFields.IMAGE) {
                         chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, url, text);
+                    } else if (messageType == DataFields.PAYNOW) {
+                        chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
                     }
 
                     if (chat != null) {
@@ -519,6 +524,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         }
                         if (chat.getType() == DataFields.PAYNOW) {
                             messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                        }
+                        if (chat.getType() == DataFields.PAYASCOD) {
+                            messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
                         }
                         final Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                         dbDataSource.addNormal(messageObject);
@@ -718,11 +726,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                         url = category_value.getString("url");
                                                 } else if (messageType == DataFields.PAYNOW) {
                                                     text = category_value.toString();
+                                                } else if (messageType == DataFields.PAYASCOD) {
+                                                    if (category_value.has("text"))
+                                                        text = category_value.getString("text");
                                                 }
                                             }
                                         }
                                         Chat chat = null;
-                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW || messageType == DataFields.PAYASCOD) {
                                             chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
                                         } else if (messageType == DataFields.LOCATION) {
                                             chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
@@ -744,6 +755,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                             if (chat.getType() == DataFields.PAYNOW) {
                                                 messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
                                             }
+                                            if (chat.getType() == DataFields.PAYASCOD) {
+                                                messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
+                                            }
                                             Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                                             messagesArrayList.add(messageObject);
                                             if (i == 0) {
@@ -753,7 +767,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
-                                        messagesArrayListUnSynced.addAll(holdMessages);
+//                                        messagesArrayListUnSynced.addAll(holdMessages);
                                         logging.LogE("Unsent items detected");
                                         mixPanelBuild("Unsent items detected");
                                         // todo resend
@@ -885,12 +899,15 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                                 url = category_value.getString("url");
                                         } else if (messageType == DataFields.PAYNOW) {
                                             text = category_value.toString();
+                                        } else if (messageType == DataFields.PAYASCOD) {
+                                            if (category_value.has("text"))
+                                                text = category_value.getString("text");
                                         }
                                     }
 
                                 }
                                 Chat chat = null;
-                                if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW) {
+                                if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW || messageType == DataFields.PAYASCOD) {
                                     chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
                                 } else if (messageType == DataFields.LOCATION) {
                                     chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
@@ -911,6 +928,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (chat.getType() == DataFields.PAYNOW) {
                                         messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                                    }
+                                    if (chat.getType() == DataFields.PAYASCOD) {
+                                        messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
                                     }
                                     Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                                     messagesArrayList.add(messageObject);
@@ -979,11 +999,33 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private void emitPayCodMessage() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("cod", true);
+            JSONObject category_value = new JSONObject();
+            category_value.put("cod", true);
+            JSONObject msg = new JSONObject();
+            msg.put("category", DataFields.PAYASCOD);
+            msg.put("category_value", category_value);
+            msg.put("created_at", Utils.getCurrentTimeMillis());
+            jsonObject.put("msg", msg);
+            jsonObject.put("cid", categorie_selected.getId());
+
             System.out.println(jsonObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         mSocket.emit("user message", jsonObject);
+    }
+
+    public void emitPayOnline(long created_at, String action) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("created_at", created_at);
+            jsonObject.put("button_clicked", action);
+            jsonObject.put("cid", categorie_selected.getId());
+
+            System.out.println(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("pay online", jsonObject);
     }
 }

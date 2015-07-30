@@ -254,6 +254,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ((BaseActivity) context).emitPayOnline(messages.getCreatedAt(), "payment");
                         showToast(context.getString(R.string.finishordertext), Style.INFO);
                         PaymentFragment paymentFragment = new PaymentFragment();
                         Bundle bundle = new Bundle();
@@ -266,6 +267,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                             e.printStackTrace();
                         }
                         bundle.putString("url", url);
+                        bundle.putLong("created_at", messages.getCreatedAt());
                         paymentFragment.setArguments(bundle);
                         ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
                     }
