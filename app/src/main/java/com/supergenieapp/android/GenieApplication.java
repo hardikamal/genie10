@@ -16,6 +16,7 @@ import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.LoggingBuilder;
 import com.supergenieapp.android.Extras.LruBitmapCache;
+import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.SecurePreferences.SecurePreferences;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;

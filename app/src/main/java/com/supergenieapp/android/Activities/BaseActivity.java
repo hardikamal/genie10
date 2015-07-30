@@ -22,6 +22,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.NotificationHandler;
+import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.Fragments.ChatFragment;
 import com.supergenieapp.android.Fragments.MainFragment;
 import com.supergenieapp.android.Fragments.PaymentFragment;
@@ -383,7 +384,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("token", sharedPreferences.getString(DataFields.TOKEN, null));
-                jsonObject.put("timestamp", System.currentTimeMillis());
+                jsonObject.put("timestamp", Utils.getCurrentTimeMillis());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -249,20 +249,11 @@ public class Utils {
         return sDate;
     }
 
-//    public static long getConvertedTime() {
-//        System.out.println("Current Time " + System.currentTimeMillis());
-//        Date date = new Date(System.currentTimeMillis());
-//        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss SSS");
-//        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-//        try {
-//            System.out.println("CURRENT Time " + dateFormat.parse(dateFormat.format(date)).getTime());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        return System.currentTimeMillis();
-//    }
-//
-//    public static long convertTime(long time) {
-//        return System.currentTimeMillis();
-//    }
+    public static long getCurrentTimeMillis() {
+        return System.currentTimeMillis();
+    }
+
+    public static long convertCurrentTimeMillis(long time) {
+        return time;
+    }
 }

@@ -26,6 +26,7 @@ import com.supergenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.NotificationHandler;
+import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.GenieFragment;
 import com.supergenieapp.android.Objects.Categories;
 import com.supergenieapp.android.Objects.MessageValues;
@@ -249,7 +250,7 @@ public class ChatFragment extends GenieFragment {
         if (data.getExtras() != null) {
             mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
             final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
+            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
             displayMessages(true, DataFields.ScrollDown);
             new Thread(new Runnable() {
@@ -342,7 +343,7 @@ public class ChatFragment extends GenieFragment {
             String typedMessage = message.getText().toString().trim();
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
-            Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, System.currentTimeMillis(), 0, 0);
+            Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
             displayMessages(true, DataFields.ScrollDown);
             JSONObject valueJSON = new JSONObject();
@@ -362,7 +363,7 @@ public class ChatFragment extends GenieFragment {
             JSONObject subJson = new JSONObject();
             subJson.put("category", messageCategory);
             subJson.put("category_value", valueJSON);
-            subJson.put("created_at", System.currentTimeMillis());
+            subJson.put("created_at", Utils.getCurrentTimeMillis());
 
             jsonObject.put("msg", subJson);
             jsonObject.put("cid", id);

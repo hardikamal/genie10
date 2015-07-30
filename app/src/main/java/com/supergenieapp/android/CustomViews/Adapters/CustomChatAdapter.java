@@ -216,7 +216,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         }
                         if (!jsonObject.has("cid") && messagesList.size() > 0) {
                             jsonObject.put("cid", messagesList.get(0).getCategory());
-                            jsonObject.put("timestamp", System.currentTimeMillis());
+                            jsonObject.put("timestamp", Utils.getCurrentTimeMillis());
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -331,12 +331,12 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.paylayout.setBackgroundDrawable(gdRound);
                 }
                 viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
-                viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
+                viewHolderMain.time.setText(new Utils(context).convertLongToDate(Utils.convertCurrentTimeMillis(messages.getCreatedAt()), new SimpleDateFormat("HH:mm")));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else {
-            viewHolderMain.time.setText(new Utils(context).convertLongToDate(messages.getCreatedAt(), new SimpleDateFormat("HH:mm")));
+            viewHolderMain.time.setText(new Utils(context).convertLongToDate(Utils.convertCurrentTimeMillis(messages.getCreatedAt()), new SimpleDateFormat("HH:mm")));
             if (messages.getMessageType() == DataFields.LOCATION) {
                 final String getMapURL = "http://maps.googleapis.com/maps/api/staticmap?zoom=18&size=560x240&markers=size:mid|color:red|"
                         + messageValues.getLat()
