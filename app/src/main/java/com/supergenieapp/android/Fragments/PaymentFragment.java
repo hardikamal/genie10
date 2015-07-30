@@ -49,8 +49,9 @@ public class PaymentFragment extends GenieFragment {
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
-    String url = "http://imojo.in/mrn77";
+    String url = "http://supergenieapp.com";
     long created_at = Utils.getCurrentTimeMillis();
+    boolean goBack = true;
 
     @Override
     public void onStart() {
@@ -156,7 +157,14 @@ public class PaymentFragment extends GenieFragment {
                 // The progress meter will automatically disappear when we reach 100%
                 if (view != null) {
                     if (progress == 100) {
+
                         parentLoadingView.setLoading(false);
+                        if (view.getUrl().contains("http://www.getgenieapp.com") || view.getUrl().contains("http://www.supergenieapp.com")) {
+                            if (goBack) {
+                                goBack = false;
+                                getActivity().onBackPressed();
+                            }
+                        }
                     }
                 }
             }
