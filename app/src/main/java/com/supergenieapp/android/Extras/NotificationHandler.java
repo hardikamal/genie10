@@ -76,6 +76,7 @@ public class NotificationHandler {
                 previousChatId = 0;
             }
         }
+
         total++;
         Intent resultIntent = new Intent(context, BaseActivity.class);
         resultIntent.putExtra("page", "message");
@@ -97,6 +98,7 @@ public class NotificationHandler {
         RemoteViews expandedView = new RemoteViews(context.getPackageName(),
                 R.layout.notification_small);
         expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+        expandedView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
 
         for (int i = 0; i < events.length; i++) {
             if (i == 0) {
@@ -152,10 +154,12 @@ public class NotificationHandler {
                 RemoteViews expandedView = new RemoteViews(context.getPackageName(),
                         R.layout.notification_small);
                 expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+                expandedView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
 
                 RemoteViews expandedBigView = new RemoteViews(context.getPackageName(),
                         R.layout.notification_big);
                 expandedBigView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+                expandedBigView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
 
                 if (size > 0) {
                     String[] events = null;

@@ -348,4 +348,5 @@
     <string name="no">No</string>
     <string name="termsandconditions">Terms and Conditions</string>
     <string name="loadingtermsandconditions">Loading Terms and Conditions</string>
+    <string name="defaulttime">23:59</string>
 </resources>
