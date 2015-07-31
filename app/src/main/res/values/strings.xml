@@ -349,4 +349,8 @@
     <string name="termsandconditions">Terms and Conditions</string>
     <string name="loadingtermsandconditions">Loading Terms and Conditions</string>
     <string name="defaulttime">23:59</string>
+    <string name="hellosupergenie">Hello SuperGenie Team,\n\n\n\n\nBelow information is Optional, but it helps us to serve you better.\nDevice Serial Number:&#160;</string>
+    <string name="handsetinfo">\nHandset Information:&#160;</string>
+    <string name="androidosinfo">\nAndroid OS Version:&#160;</string>
+    <string name="supergenieversion">\nSuperGenie Version:&#160;</string>
 </resources>

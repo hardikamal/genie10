@@ -1,6 +1,8 @@
 package com.supergenieapp.android.Extras;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,11 +15,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.supergenieapp.android.GenieApplication;
 import com.supergenieapp.android.R;
 
 import java.io.UnsupportedEncodingException;
@@ -255,5 +259,19 @@ public class Utils {
 
     public static long convertCurrentTimeMillis(long time) {
         return time;
+    }
+
+    public String getDeviceInformationFormEmail() {
+        String emailBody = context.getString(R.string.hellosupergenie) + getDeviceSerialNumber();
+        emailBody += context.getString(R.string.handsetinfo) + Build.MANUFACTURER + ", " + Build.BRAND + ", " + Build.MODEL;
+        emailBody += context.getString(R.string.androidosinfo) + Build.VERSION.SDK_INT;
+        PackageInfo pInfo = null;
+        try {
+            pInfo = GenieApplication.getInstance().getPackageManager().getPackageInfo(GenieApplication.getInstance().getPackageName(), 0);
+            emailBody += context.getString(R.string.supergenieversion) + pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return emailBody;
     }
 }

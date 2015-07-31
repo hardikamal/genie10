@@ -19,12 +19,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.supergenieapp.android.Activities.SplashScreenActivity;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.DataFields;
@@ -41,6 +44,9 @@ import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -154,19 +160,57 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (chat.getType() == DataFields.PAYASCOD) {
                     messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
                 }
-                Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                final Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                 dbDataSource.addNormal(messageObject);
 
                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
 
-                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
+                if (chat.getType() == DataFields.IMAGE) {
+                    final MessageValues tempMessageValues = messageValues;
+                    final String urlLocal = messageValues.getUrl();
+                    GenieApplication.getInstance().getImageLoader().get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            postToChat(messageObject, tempMessageValues);
+                        }
+
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                            if (response != null && response.getBitmap() != null) {
+
+                                FileOutputStream out = null;
+                                try {
+                                    out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(MyGcmListenerService.this).hashString(urlLocal));
+                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (out != null) {
+                                            out.close();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                postToChat(messageObject, tempMessageValues);
+                            }
+                        }
+                    });
+                } else {
+                    postToChat(messageObject, messageValues);
+                }
             }
         } else {
             Log.v("GCM PUSH", data.toString());
             sendNotification("Unhandled Push Notification Received");
         }
+    }
+
+    private void postToChat(Messages messageObject, MessageValues messageValues) {
+        new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
     }
 
     private String showMessage(MessageValues messageValues) {

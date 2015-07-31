@@ -249,11 +249,12 @@ public class UserProfileActivity extends GenieBaseActivity {
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
                 return true;
             case R.id.action_contact:
-                mixpanelDataAdd.put("Pressed", "Contact is");
+                mixpanelDataAdd.put("Pressed", "Contact us");
                 mixPanelBuild("Profile Contact us Pressed");
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", getString(R.string.supportemailaddress), null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subjecttoemail));
+                emailIntent.putExtra(Intent.EXTRA_TEXT, utils.getDeviceInformationFormEmail());
                 startActivity(Intent.createChooser(emailIntent, getString(R.string.sendemail)));
                 return true;
         }
