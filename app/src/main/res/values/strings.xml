@@ -328,14 +328,14 @@
     <string name="isonline">SuperGenie is Online</string>
     <string name="paymentpageload">Loading Payment Page</string>
     <string name="plus91">+91</string>
-    <string name="bysigining">By Signing, I agree to SuperGenie app&#160;</string>
+    <string name="bysigining">By Signing in, I agree to SuperGenie app&#160;</string>
     <string name="termsandservices"><u>Terms and Conditions</u></string>
     <string name="rateit">Rate It</string>
     <string name="remindmelater">Remind me later</string>
     <string name="dontaskagain">Don\'t ask</string>
     <string name="contactus">Contact Us</string>
     <string name="subjecttoemail">Share your thoughts with us</string>
-    <string name="supportemailaddress">support@getgenieapp.com</string>
+    <string name="supportemailaddress">android@getgenieapp.com</string>
     <string name="sendemail">Send email...</string>
     <string name="noorderyet">You have not placed any orders yet.</string>
     <string name="website">www.supergenieapp.com</string>
@@ -346,4 +346,6 @@
     <string name="wouldyouliketopay">Would you like to pay Rs.&#160;</string>
     <string name="viacod">&#160;via Cash On Delivery?</string>
     <string name="no">No</string>
+    <string name="termsandconditions">Terms and Conditions</string>
+    <string name="loadingtermsandconditions">Loading Terms and Conditions</string>
 </resources>

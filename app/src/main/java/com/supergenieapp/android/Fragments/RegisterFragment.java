@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.supergenieapp.android.Activities.EULAActivity;
 import com.supergenieapp.android.Activities.RegisterActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
@@ -274,14 +276,6 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.terms)
     public void onCLickTerms() {
         mixPanelBuild("User Clicked Terms and Conditions");
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setMessage("Terms and Services")
-                .setTitle("Terms and Conditions")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        alert.show();
+        getActivity().startActivity(new Intent(getActivity(), EULAActivity.class));
     }
 }
