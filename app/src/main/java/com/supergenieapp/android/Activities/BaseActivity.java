@@ -170,6 +170,14 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.on("got category chats", onReceivedMessagesList);
             genieApplication.connectToSocket();
         }
+
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                ((MainFragment) fragment).refreshDataFromLocal();
+            }
+        }
     }
 
     @Override
