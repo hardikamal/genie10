@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -286,34 +287,58 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     viewHolderMain.catimage.setImageBitmap(myBitmap);
                 } else {
-                    imageLoader.get(categoryUrl, new ImageLoader.ImageListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                            if (response != null && response.getBitmap() != null) {
-                                viewHolderMain.catimage.setImageBitmap(response.getBitmap());
-                                FileOutputStream out = null;
+                    if (categoryUrl.matches("data:image.*base64.*")) {
+                        String base_64_source = categoryUrl.replaceAll("data:image.*base64", "");
+                        byte[] data = Base64.decode(base_64_source, Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        if (bitmap != null) {
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
                                 try {
-                                    out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
-                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                } catch (Exception e) {
+                                    if (out != null) {
+                                        out.close();
+                                    }
+                                } catch (IOException e) {
                                     e.printStackTrace();
-                                } finally {
+                                }
+                            }
+                            viewHolderMain.catimage.setImageBitmap(bitmap);
+                        }
+                    } else {
+                        imageLoader.get(categoryUrl, new ImageLoader.ImageListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                if (response != null && response.getBitmap() != null) {
+                                    viewHolderMain.catimage.setImageBitmap(response.getBitmap());
+                                    FileOutputStream out = null;
                                     try {
-                                        if (out != null) {
-                                            out.close();
-                                        }
-                                    } catch (IOException e) {
+                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
+                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    } catch (Exception e) {
                                         e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (out != null) {
+                                                out.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -419,34 +444,58 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     viewHolderMain.imageView.setImageBitmap(myBitmap);
                 } else {
-                    imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                            if (response != null && response.getBitmap() != null) {
-                                viewHolderMain.imageView.setImageBitmap(response.getBitmap());
-                                FileOutputStream out = null;
+                    if (messageValues.getUrl().matches("data:image.*base64.*")) {
+                        String base_64_source = messageValues.getUrl().replaceAll("data:image.*base64", "");
+                        byte[] data = Base64.decode(base_64_source, Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        if (bitmap != null) {
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
                                 try {
-                                    out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
-                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                } catch (Exception e) {
+                                    if (out != null) {
+                                        out.close();
+                                    }
+                                } catch (IOException e) {
                                     e.printStackTrace();
-                                } finally {
+                                }
+                            }
+                            viewHolderMain.imageView.setImageBitmap(bitmap);
+                        }
+                    } else {
+                        imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                if (response != null && response.getBitmap() != null) {
+                                    viewHolderMain.imageView.setImageBitmap(response.getBitmap());
+                                    FileOutputStream out = null;
                                     try {
-                                        if (out != null) {
-                                            out.close();
-                                        }
-                                    } catch (IOException e) {
+                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
+                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    } catch (Exception e) {
                                         e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (out != null) {
+                                                out.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
 
 //                viewHolderMain.imageView.setOnClickListener(new View.OnClickListener() {

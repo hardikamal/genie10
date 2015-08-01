@@ -4,14 +4,18 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -542,35 +546,58 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
                         if (chat.getType() == DataFields.IMAGE) {
                             final String urlLocal = messageValues.getUrl();
-                            imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    postToChat(messageObject);
-                                }
-
-                                @Override
-                                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                    if (response != null && response.getBitmap() != null) {
-
-                                        FileOutputStream out = null;
+                            if (messageValues.getUrl().matches("data:image.*base64.*")) {
+                                String base_64_source = messageValues.getUrl().replaceAll("data:image.*base64", "");
+                                byte[] data = Base64.decode(base_64_source, Base64.DEFAULT);
+                                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                                if (bitmap != null) {
+                                    FileOutputStream out = null;
+                                    try {
+                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(urlLocal));
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    } finally {
                                         try {
-                                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(urlLocal));
-                                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        } finally {
-                                            try {
-                                                if (out != null) {
-                                                    out.close();
-                                                }
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
+                                            if (out != null) {
+                                                out.close();
                                             }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
                                         }
-                                        postToChat(messageObject);
                                     }
                                 }
-                            });
+                                postToChat(messageObject);
+                            } else {
+                                imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        postToChat(messageObject);
+                                    }
+
+                                    @Override
+                                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                        if (response != null && response.getBitmap() != null) {
+                                            FileOutputStream out = null;
+                                            try {
+                                                out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(urlLocal));
+                                                response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            } finally {
+                                                try {
+                                                    if (out != null) {
+                                                        out.close();
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            postToChat(messageObject);
+                                        }
+                                    }
+                                });
+                            }
                         } else {
                             postToChat(messageObject);
                         }
@@ -598,8 +625,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mixpanelDataAdd.put("Message", "Received in category Screen");
                 mixPanelBuild("Notification Set from category page");
                 Crouton.cancelAllCroutons();
-                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());
+                if (categories != null)
+                    dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
+                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, R.id.body).show();
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
             }
@@ -776,10 +806,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                     }
                                     if (lastMessage != null) {
                                         ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
-//                                        messagesArrayListUnSynced.addAll(holdMessages);
-                                        logging.LogE("Unsent items detected");
-                                        mixPanelBuild("Unsent items detected");
-                                        // todo resend
+                                        for (Messages msg : holdMessages) {
+                                            if (msg.getMessageType() == DataFields.LOCATION) {
+                                                messagesArrayListUnSynced.add(msg);
+                                            }
+                                        }
                                     }
                                 }
                             }

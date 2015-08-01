@@ -20,10 +20,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -170,35 +172,59 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (chat.getType() == DataFields.IMAGE) {
                     final MessageValues tempMessageValues = messageValues;
                     final String urlLocal = messageValues.getUrl();
-                    GenieApplication.getInstance().getImageLoader().get(messageValues.getUrl(), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            postToChat(messageObject, tempMessageValues);
-                        }
-
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                            if (response != null && response.getBitmap() != null) {
-
-                                FileOutputStream out = null;
+                    if (messageValues.getUrl().matches("data:image.*base64.*")) {
+                        String base_64_source = messageValues.getUrl().replaceAll("data:image.*base64", "");
+                        byte[] dataImage = Base64.decode(base_64_source, Base64.DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(dataImage, 0, dataImage.length);
+                        if (bitmap != null) {
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(this).hashString(urlLocal));
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
                                 try {
-                                    out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(MyGcmListenerService.this).hashString(urlLocal));
-                                    response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (out != null) {
-                                            out.close();
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                                    if (out != null) {
+                                        out.close();
                                     }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                postToChat(messageObject, tempMessageValues);
                             }
                         }
-                    });
+                        postToChat(messageObject, tempMessageValues);
+                    } else {
+                        GenieApplication.getInstance().getImageLoader().get(messageValues.getUrl(), new ImageLoader.ImageListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                postToChat(messageObject, tempMessageValues);
+                            }
+
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                if (response != null && response.getBitmap() != null) {
+
+                                    FileOutputStream out = null;
+                                    try {
+                                        out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(MyGcmListenerService.this).hashString(urlLocal));
+                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (out != null) {
+                                                out.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    postToChat(messageObject, tempMessageValues);
+                                }
+                            }
+                        });
+                    }
                 } else {
                     postToChat(messageObject, messageValues);
                 }
