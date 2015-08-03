@@ -286,65 +286,74 @@ public class UserProfileActivity extends GenieBaseActivity {
                 ContentResolver resolver = getContentResolver();
                 Uri actualUri = data.getData();
                 List<String> uriPath = actualUri.getPathSegments();
-                long imageId = Long.parseLong(uriPath.get(uriPath.size() - 1));
-                Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
-                //There is no thumb-nail with this Image
-                if (thumb != null) {
-                    Cursor cursor = resolver
-                            .query(actualUri,
-                                    new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
-                                    null, null, null);
-                    cursor.moveToFirst();
-                    final String imageFilePath = cursor.getString(0);
-                    cursor.close();
-                    GraphicsUtil graphicUtil = new GraphicsUtil();
-                    //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
-                    userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(this.createImageThumbnail(imageFilePath,
-                            255, 255), radius));
-                    try {
-                        FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
-                        thumb.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                        ostream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (uriPath.size() > 0) {
+                    if (uriPath.get(uriPath.size() - 1).matches("[0-9]+")) {
+                        long imageId = Long.parseLong(uriPath.get(uriPath.size() - 1));
+                        Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(resolver, imageId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                        //There is no thumb-nail with this Image
+                        if (thumb != null) {
+                            Cursor cursor = resolver
+                                    .query(actualUri,
+                                            new String[]{android.provider.MediaStore.Images.ImageColumns.DATA},
+                                            null, null, null);
+                            cursor.moveToFirst();
+                            final String imageFilePath = cursor.getString(0);
+                            cursor.close();
+                            GraphicsUtil graphicUtil = new GraphicsUtil();
+                            //picView.setImageBitmap(graphicUtil.getRoundedShape(thePic));
+                            userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(this.createImageThumbnail(imageFilePath,
+                                    255, 255), radius));
+                            try {
+                                FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
+                                thumb.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                                ostream.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            String thumbPath = getFilePath(actualUri);
+                            ExifInterface exif;
+                            try {
+                                exif = new ExifInterface(thumbPath);
+                                int orientation = exif.getAttributeInt(
+                                        ExifInterface.TAG_ORIENTATION, 0);
+                                Matrix matrix = new Matrix();
+                                if (orientation == 6) {
+                                    matrix.postRotate(90);
+                                } else if (orientation == 3) {
+                                    matrix.postRotate(180);
+                                } else if (orientation == 8) {
+                                    matrix.postRotate(270);
+                                }
+                                Bitmap bitmap = null;
+                                if (bitmap != null) {
+                                    bitmap.recycle();
+                                    bitmap = null;
+                                }
+                                bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(),
+                                        thumb.getHeight(), matrix, true);
+                                if (thumb != bitmap) {
+                                    thumb.recycle();
+                                    thumb = null;
+                                }
+                                GraphicsUtil graphicUtil = new GraphicsUtil();
+                                userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
+                                try {
+                                    FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                                    ostream.close();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                    } else {
+                        // TODO: 8/3/2015
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.INFO, R.id.body).show();
                     }
                 } else {
-                    String thumbPath = getFilePath(actualUri);
-                    ExifInterface exif;
-                    try {
-                        exif = new ExifInterface(thumbPath);
-                        int orientation = exif.getAttributeInt(
-                                ExifInterface.TAG_ORIENTATION, 0);
-                        Matrix matrix = new Matrix();
-                        if (orientation == 6) {
-                            matrix.postRotate(90);
-                        } else if (orientation == 3) {
-                            matrix.postRotate(180);
-                        } else if (orientation == 8) {
-                            matrix.postRotate(270);
-                        }
-                        Bitmap bitmap = null;
-                        if (bitmap != null) {
-                            bitmap.recycle();
-                            bitmap = null;
-                        }
-                        bitmap = Bitmap.createBitmap(thumb, 0, 0, thumb.getWidth(),
-                                thumb.getHeight(), matrix, true);
-                        if (thumb != bitmap) {
-                            thumb.recycle();
-                            thumb = null;
-                        }
-                        GraphicsUtil graphicUtil = new GraphicsUtil();
-                        userIcon.setImageBitmap(graphicUtil.getCroppedBitmap(bitmap, radius));
-                        try {
-                            FileOutputStream ostream = new FileOutputStream(DataFields.profilePicturePath);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                            ostream.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } catch (Exception e) {
-                    }
+                    Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.INFO, R.id.body).show();
                 }
             }
         }

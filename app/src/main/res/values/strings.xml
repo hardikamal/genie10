@@ -313,7 +313,7 @@
     <string name="home">Home</string>
     <string name="notabletoaccessthelocation">Not able to access Location</string>
     <string name="failedtogetthumbnail">Failed to get thumbnail for our image.</string>
-    <string name="devicedoesnotsupportmessage">Whoops - your device doesn\'t support the crop action!</string>
+    <string name="devicedoesnotsupportmessage">Whoops - your device doesn\'t support the action!</string>
     <string name="notabletoacceslocation">Not able to access Location</string>
     <string name="ohno">"Oh no! "</string>
     <string name="searchlocation">Search Location</string>
@@ -353,4 +353,5 @@
     <string name="handsetinfo">\nHandset Information:&#160;</string>
     <string name="androidosinfo">\nAndroid OS Version:&#160;</string>
     <string name="supergenieversion">\nSuperGenie Version:&#160;</string>
+    <string name="imagefailedtodeliver">Try Again Later. Image Failed to Deliver.</string>
 </resources>

@@ -55,6 +55,7 @@ public class NotificationHandler {
                 R.layout.notification_small);
         expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
         expandedView.setTextViewText(R.id.t1, msg);
+        expandedView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
 
         Notification notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.icons_97x97)
