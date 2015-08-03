@@ -63,7 +63,6 @@ public class DBDataSource {
     public void addNormal(Messages message) {
         open();
         ContentValues values = new ContentValues();
-
         values.put(DBHandler.message_id, String.valueOf(message.get_id()));
         values.put(DBHandler.category_id, String.valueOf(message.getCategory()));
         values.put(DBHandler.message_values, String.valueOf(message.getMessageValues().toString()));
@@ -85,10 +84,20 @@ public class DBDataSource {
             values.put(DBHandler.bg_color, categories.getBg_color());
             values.put(DBHandler.hide_chats_time, String.valueOf(categories.getHide_chats_time()));
             database.update(DBHandler.CATTABLE, values, DBHandler.cat_id + "==" + categories.getId(), null);
+            close();
         } else {
-            deleteCat(String.valueOf(categories.getId()));
+            open();
+            ContentValues values = new ContentValues();
+            values.put(DBHandler.cat_id, categories.getId());
+            values.put(DBHandler.notification, categories.getNotification_count());
+            values.put(DBHandler.cat_name, categories.getName());
+            values.put(DBHandler.img_url, categories.getImage_url());
+            values.put(DBHandler.description, categories.getDescription());
+            values.put(DBHandler.bg_color, categories.getBg_color());
+            values.put(DBHandler.hide_chats_time, String.valueOf(categories.getHide_chats_time()));
+            database.insert(DBHandler.CATTABLE, null, values);
+            close();
         }
-        close();
     }
 
     private void deleteCat(String id) {
@@ -283,7 +292,7 @@ public class DBDataSource {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"), jsonObject.getDouble("lng"), jsonObject.getDouble("lat"));
                         } else if (jsonObject.getInt("id") == DataFields.PAYNOW) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
-                        }  else if (jsonObject.getInt("id") == DataFields.PAYASCOD) {
+                        } else if (jsonObject.getInt("id") == DataFields.PAYASCOD) {
                             messageValues = new MessageValues(jsonObject.getInt("id"), jsonObject.getString("text"));
                         }
                     }

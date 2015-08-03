@@ -74,7 +74,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
                 mixpanelDataAdd.put("Page", "Load Categories");
                 setSupportActionBar(mToolbar);
-                startFragment(R.id.body, new MainFragment());
+                startFragmentFromRight(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
             } else if (getIntent().getStringExtra("page").contains("message")) {
                 mixpanelDataAdd.put("Page", "Go to Chat Screen");
@@ -85,7 +85,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mixpanelDataAdd.put("Page", "Load Categories Multiple Messages");
                     mixPanelBuild("Multiple Category Notification");
                     setSupportActionBar(mToolbar);
-                    startFragment(R.id.body, new MainFragment());
+                    startFragmentFromRight(R.id.body, new MainFragment());
                     mToolbar.setLogo(R.drawable.genie_logo);
                     mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mToolbar.setTitle("");
@@ -111,7 +111,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             } else {
                 mixpanelDataAdd.put("Page", "Load Categories");
                 setSupportActionBar(mToolbar);
-                startFragment(R.id.body, new MainFragment());
+                startFragmentFromRight(R.id.body, new MainFragment());
                 mToolbar.setLogo(R.drawable.genie_logo);
             }
         }
@@ -317,7 +317,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());
         chatFragment.setArguments(bundle);
-        startFragment(R.id.body, chatFragment);
+        startFragmentFromRight(R.id.body, chatFragment);
 
         setSupportActionBar(mToolbar);
 
@@ -344,7 +344,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());
         chatFragment.setArguments(bundle);
-        startFragment(R.id.body, chatFragment);
+        startFragmentFromRight(R.id.body, chatFragment);
     }
 
     public void onReceiveFromLeft(Categories categories) {
@@ -402,7 +402,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 e.printStackTrace();
             }
             System.out.println("JSON for get all " + jsonObject.toString());
-            mSocket.emit("register user", jsonObject);
+            if (mSocket.connected())
+                mSocket.emit("register user", jsonObject);
             // changed from get category chats to register users
             setChatStatus(true);
         }
@@ -1024,7 +1025,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
-        mSocket.emit("load earlier messages", jsonObject);
+        if (mSocket.connected())
+            mSocket.emit("load earlier messages", jsonObject);
     }
 
     public void shoyCODAlert(String costToPay) {
@@ -1062,7 +1064,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mSocket.emit("user message", jsonObject);
+        if (mSocket.connected())
+            mSocket.emit("user message", jsonObject);
     }
 
     public void emitPayOnline(long created_at, String action) {
@@ -1076,6 +1079,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mSocket.emit("pay online", jsonObject);
+        if (mSocket.connected())
+            mSocket.emit("pay online", jsonObject);
     }
 }

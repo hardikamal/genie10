@@ -270,7 +270,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         bundle.putString("url", url);
                         bundle.putLong("created_at", messages.getCreatedAt());
                         paymentFragment.setArguments(bundle);
-                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
+                        ((BaseActivity) context).startFragmentFromRight(R.id.body, paymentFragment);
                     }
                 });
 

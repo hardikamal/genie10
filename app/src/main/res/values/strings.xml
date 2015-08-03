@@ -354,4 +354,5 @@
     <string name="androidosinfo">\nAndroid OS Version:&#160;</string>
     <string name="supergenieversion">\nSuperGenie Version:&#160;</string>
     <string name="imagefailedtodeliver">Try Again Later. Image Failed to Deliver.</string>
+    <string name="profileupdated">Profile Updated.</string>
 </resources>

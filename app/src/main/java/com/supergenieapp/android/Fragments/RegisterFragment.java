@@ -95,6 +95,7 @@ public class RegisterFragment extends GenieFragment {
     @Override
     public void onPause() {
         logging.LogI("On Pause");
+        parentLoadingView.setLoading(false);
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
     }
@@ -222,9 +223,13 @@ public class RegisterFragment extends GenieFragment {
                                             e.printStackTrace();
                                         }
                                     }
-                                    ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
+                                    if (getActivity() != null) {
+                                        ((RegisterActivity) getActivity()).onSuccess(gson.fromJson(gson.toJson(response), Register.class));
+                                    }
                                 } else {
-                                    ((RegisterActivity) getActivity()).onError(new Register());
+                                    if (getActivity() != null) {
+                                        ((RegisterActivity) getActivity()).onError(new Register());
+                                    }
                                 }
                             }
                         }, new Response.ErrorListener() {

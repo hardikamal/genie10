@@ -380,8 +380,8 @@ public class ChatFragment extends GenieFragment {
 
             jsonObject.put("msg", subJson);
             jsonObject.put("cid", id);
-
-            ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
+            if (getActivity() != null && (((BaseActivity) getActivity()).getSocket().connected()))
+                ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
             System.out.println(jsonObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();

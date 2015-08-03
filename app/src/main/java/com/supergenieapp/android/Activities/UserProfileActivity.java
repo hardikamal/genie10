@@ -424,7 +424,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                                 progressBar.cancel();
                                 if (response != null) {
                                     logging.LogV("Response ", response.toString());
-                                    // todo implement response
+                                    Crouton.makeText(UserProfileActivity.this, getString(R.string.profileupdated), Style.INFO, R.id.body).show();
                                 }
                             }
                         }, new Response.ErrorListener() {
