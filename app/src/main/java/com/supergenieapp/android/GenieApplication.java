@@ -17,6 +17,7 @@ import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.LoggingBuilder;
 import com.supergenieapp.android.Extras.LruBitmapCache;
 import com.supergenieapp.android.Extras.Utils;
+import com.supergenieapp.android.Pacemaker.Pacemaker;
 import com.supergenieapp.android.SecurePreferences.SecurePreferences;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -65,6 +66,7 @@ public class GenieApplication extends Application {
         super.onCreate();
         genieApplication = this;
         setFolders();
+        Pacemaker.scheduleLinear(this, 2);
         fontChangerRegular = new FontChangeCrawler(getAssets(), "Roboto-Regular.ttf");
         loggingBuilder = new LoggingBuilder(getApplicationContext())
                 .setCanDisplayOnLogCat(true)
