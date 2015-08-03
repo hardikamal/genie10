@@ -62,7 +62,7 @@ public class ChatFragment extends GenieFragment {
     LinearLayout messageLayout;
     String color = "#26ACEC";
     int id = 0;
-    public int position = 0;
+    public int position = -1;
     long hide_time = 0;
     @InjectView(R.id.message)
     EditText message;
@@ -73,6 +73,10 @@ public class ChatFragment extends GenieFragment {
     String url;
     View rootView;
     ViewGroup viewGroup;
+
+    public CustomChatAdapter getCustomChatAdapter() {
+        return chatAdapter;
+    }
 
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
@@ -307,6 +311,9 @@ public class ChatFragment extends GenieFragment {
         super.onResume();
         logging.LogV("on Resume Chat");
         dbDataSource.UpdateCatNotification(id, 0);
+        new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
+        new NotificationHandler(getActivity()).resetNotification();
+        displayMessages(true, DataFields.ScrollDown);
     }
 
     @Override
@@ -407,19 +414,15 @@ public class ChatFragment extends GenieFragment {
         }
     }
 
-    private void scroll(int position) {
-        if (position == 0 && this.getArguments().containsKey("position")) {
-            recyclerView.scrollToPosition(position);
-        } else if (position == -1 && this.getArguments().containsKey("position")) {
-            scroll();
-        } else if (position == -1) {
-            scroll();
-        } else if (position == 0) {
+    private void scroll(int pos) {
+        if (pos == 0 && this.getArguments().containsKey("position")) {
+            recyclerView.scrollToPosition(pos);
+            this.getArguments().remove("position");
+        } else if (pos == -1) {
             scroll();
         } else {
-            recyclerView.scrollToPosition(position);
+            recyclerView.scrollToPosition(pos);
         }
-        this.getArguments().remove("position");
     }
 
     public void setDisable() {

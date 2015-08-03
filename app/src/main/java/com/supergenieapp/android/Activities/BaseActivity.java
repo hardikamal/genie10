@@ -179,7 +179,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
-                ((MainFragment) fragment).refreshDataFromLocal();
+                ((MainFragment) fragment).refreshData();
             }
         }
     }
@@ -616,11 +616,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mixpanelDataAdd.put("Message", "Received in category Screen");
                 mixPanelBuild("Notification Set from category page");
                 Crouton.cancelAllCroutons();
-                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceived), Style.CONFIRM, R.id.body).show();
                 Categories categories = dbDataSource.getCategories(messageObject.getCategory());
-                if (categories != null)
+                if (categories != null) {
+                    Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, R.id.body).show();
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-                ((MainFragment) fragment).refreshDataFromLocal();
+                }
+                ((MainFragment) fragment).refreshData();
             } else if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
                 mixpanelDataAdd.put("Message", "Received in category Screen");
                 mixPanelBuild("Notification Set from category page");
@@ -629,9 +630,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
                 System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
-                Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, R.id.body).show();
-                if (categories != null)
+                if (categories != null) {
+                    Crouton.makeText(BaseActivity.this, getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, R.id.body).show();
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
+                }
             }
         }
     }
@@ -691,152 +693,160 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 @Override
                 public void run() {
                     System.out.println("onReceivedMessagesList " + args[0]);
-                    try {
-                        JSONObject jsonObject = new JSONObject(args[0].toString());
-                        if (jsonObject.has("payload")) {
-                            System.out.println("onReceivedMessagesList " + jsonObject.getString("payload"));
-                            JSONObject payload = jsonObject.getJSONObject("payload");
-                            ArrayList<Categories> categoriesArrayList = dbDataSource.getAllCategories();
-                            ArrayList<Messages> messagesArrayList = new ArrayList<Messages>();
-                            ArrayList<Messages> messagesArrayListUnSynced = new ArrayList<Messages>();
-                            for (Categories cats : categoriesArrayList) {
-                                if (payload.has(String.valueOf(cats.getId()))) {
-                                    System.out.println("onReceivedMessagesList " + payload.getString(String.valueOf(cats.getId())));
-                                    JSONArray catJSONArray = payload.getJSONArray(String.valueOf(cats.getId()));
-                                    Messages lastMessage = null;
-                                    for (int i = 0; i < catJSONArray.length(); i++) {
-                                        System.out.println(catJSONArray.get(i));
-                                        JSONObject chatMessage = catJSONArray.getJSONObject(i);
-                                        int status = 0, categoryId = 0, messageType = 0;
-                                        String id = "", url = "", text = "";
-                                        long created_at = 0, updated_at = 0;
-                                        double lng = 0, lat = 0;
-                                        int uid = 0, aid = 0;
-                                        int direction = DataFields.INCOMING;
-                                        if (chatMessage.has("cid")) {
-                                            categoryId = chatMessage.getInt("cid");
-                                        }
-                                        if (chatMessage.has("_id")) {
-                                            id = chatMessage.getString("_id");
-                                        }
-                                        if (chatMessage.has("uid")) {
-                                            uid = chatMessage.getInt("uid");
-                                        }
-                                        if (chatMessage.has("aid")) {
-                                            aid = chatMessage.getInt("aid");
-                                        }
-                                        if (chatMessage.has("message")) {
-                                            JSONObject message = chatMessage.getJSONObject("message");
-                                            if (message.has("category")) {
-                                                messageType = message.getInt("category");
+                    if (sharedPreferences.getBoolean("syncwithserver", true) || syncTimeDiff(sharedPreferences.getLong("syncwithservertime", 0))) {
+                        sharedPreferences.edit().putBoolean("syncwithserver", false).apply();
+                        sharedPreferences.edit().putLong("syncwithservertime", System.currentTimeMillis()).apply();
+                        try {
+                            JSONObject jsonObject = new JSONObject(args[0].toString());
+                            if (jsonObject.has("payload")) {
+                                System.out.println("onReceivedMessagesList " + jsonObject.getString("payload"));
+                                JSONObject payload = jsonObject.getJSONObject("payload");
+                                ArrayList<Categories> categoriesArrayList = dbDataSource.getAllCategories();
+                                ArrayList<Messages> messagesArrayList = new ArrayList<Messages>();
+                                ArrayList<Messages> messagesArrayListUnSynced = new ArrayList<Messages>();
+                                for (Categories cats : categoriesArrayList) {
+                                    if (payload.has(String.valueOf(cats.getId()))) {
+                                        System.out.println("onReceivedMessagesList " + payload.getString(String.valueOf(cats.getId())));
+                                        JSONArray catJSONArray = payload.getJSONArray(String.valueOf(cats.getId()));
+                                        Messages lastMessage = null;
+                                        for (int i = 0; i < catJSONArray.length(); i++) {
+                                            System.out.println(catJSONArray.get(i));
+                                            JSONObject chatMessage = catJSONArray.getJSONObject(i);
+                                            int status = 0, categoryId = 0, messageType = 0;
+                                            String id = "", url = "", text = "";
+                                            long created_at = 0, updated_at = 0;
+                                            double lng = 0, lat = 0;
+                                            int uid = 0, aid = 0;
+                                            int direction = DataFields.INCOMING;
+                                            if (chatMessage.has("cid")) {
+                                                categoryId = chatMessage.getInt("cid");
                                             }
-                                            if (message.has("status")) {
-                                                status = message.getInt("status");
+                                            if (chatMessage.has("_id")) {
+                                                id = chatMessage.getString("_id");
                                             }
-                                            if (message.has("sender_id")) {
-                                                if (uid == message.getInt("sender_id")) {
-                                                    direction = DataFields.OUTGOING;
-                                                } else if (aid == message.getInt("sender_id")) {
-                                                    direction = DataFields.INCOMING;
+                                            if (chatMessage.has("uid")) {
+                                                uid = chatMessage.getInt("uid");
+                                            }
+                                            if (chatMessage.has("aid")) {
+                                                aid = chatMessage.getInt("aid");
+                                            }
+                                            if (chatMessage.has("message")) {
+                                                JSONObject message = chatMessage.getJSONObject("message");
+                                                if (message.has("category")) {
+                                                    messageType = message.getInt("category");
+                                                }
+                                                if (message.has("status")) {
+                                                    status = message.getInt("status");
+                                                }
+                                                if (message.has("sender_id")) {
+                                                    if (uid == message.getInt("sender_id")) {
+                                                        direction = DataFields.OUTGOING;
+                                                    } else if (aid == message.getInt("sender_id")) {
+                                                        direction = DataFields.INCOMING;
+                                                    }
+                                                }
+                                                if (message.has("created_at")) {
+                                                    created_at = message.getLong("created_at");
+                                                }
+                                                if (message.has("updated_at")) {
+                                                    updated_at = message.getLong("updated_at");
+                                                }
+                                                if (message.has("category_value")) {
+                                                    JSONObject category_value = message.getJSONObject("category_value");
+                                                    if (messageType == DataFields.TEXT) {
+                                                        if (category_value.has("text"))
+                                                            text = category_value.getString("text");
+                                                    } else if (messageType == DataFields.LOCATION) {
+                                                        if (category_value.has("lng"))
+                                                            lng = category_value.getDouble("lng");
+                                                        if (category_value.has("lat"))
+                                                            lat = category_value.getDouble("lat");
+                                                        if (category_value.has("address"))
+                                                            text = category_value.getString("address");
+                                                    } else if (messageType == DataFields.IMAGE) {
+                                                        if (category_value.has("caption"))
+                                                            text = category_value.getString("caption");
+                                                        if (category_value.has("url"))
+                                                            url = category_value.getString("url");
+                                                    } else if (messageType == DataFields.PAYNOW) {
+                                                        text = category_value.toString();
+                                                    } else if (messageType == DataFields.PAYASCOD) {
+                                                        if (category_value.has("text"))
+                                                            text = category_value.getString("text");
+                                                    }
                                                 }
                                             }
-                                            if (message.has("created_at")) {
-                                                created_at = message.getLong("created_at");
+                                            Chat chat = null;
+                                            if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW || messageType == DataFields.PAYASCOD) {
+                                                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
+                                            } else if (messageType == DataFields.LOCATION) {
+                                                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
+                                            } else if (messageType == DataFields.IMAGE) {
+                                                chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
                                             }
-                                            if (message.has("updated_at")) {
-                                                updated_at = message.getLong("updated_at");
-                                            }
-                                            if (message.has("category_value")) {
-                                                JSONObject category_value = message.getJSONObject("category_value");
-                                                if (messageType == DataFields.TEXT) {
-                                                    if (category_value.has("text"))
-                                                        text = category_value.getString("text");
-                                                } else if (messageType == DataFields.LOCATION) {
-                                                    if (category_value.has("lng"))
-                                                        lng = category_value.getDouble("lng");
-                                                    if (category_value.has("lat"))
-                                                        lat = category_value.getDouble("lat");
-                                                    if (category_value.has("address"))
-                                                        text = category_value.getString("address");
-                                                } else if (messageType == DataFields.IMAGE) {
-                                                    if (category_value.has("caption"))
-                                                        text = category_value.getString("caption");
-                                                    if (category_value.has("url"))
-                                                        url = category_value.getString("url");
-                                                } else if (messageType == DataFields.PAYNOW) {
-                                                    text = category_value.toString();
-                                                } else if (messageType == DataFields.PAYASCOD) {
-                                                    if (category_value.has("text"))
-                                                        text = category_value.getString("text");
-                                                }
-                                            }
-                                        }
-                                        Chat chat = null;
-                                        if (messageType == DataFields.TEXT || messageType == DataFields.PAYNOW || messageType == DataFields.PAYASCOD) {
-                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text);
-                                        } else if (messageType == DataFields.LOCATION) {
-                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, text, lng, lat);
-                                        } else if (messageType == DataFields.IMAGE) {
-                                            chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
-                                        }
 
-                                        if (chat != null) {
-                                            MessageValues messageValues = null;
-                                            if (chat.getType() == DataFields.TEXT) {
-                                                messageValues = new MessageValues(DataFields.TEXT, chat.getText());
-                                            }
-                                            if (chat.getType() == DataFields.LOCATION) {
-                                                messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
-                                            }
-                                            if (chat.getType() == DataFields.IMAGE) {
-                                                messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
-                                            }
-                                            if (chat.getType() == DataFields.PAYNOW) {
-                                                messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
-                                            }
-                                            if (chat.getType() == DataFields.PAYASCOD) {
-                                                messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
-                                            }
-                                            Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
-                                            messagesArrayList.add(messageObject);
-                                            if (i == 0) {
-                                                lastMessage = messageObject;
+                                            if (chat != null) {
+                                                MessageValues messageValues = null;
+                                                if (chat.getType() == DataFields.TEXT) {
+                                                    messageValues = new MessageValues(DataFields.TEXT, chat.getText());
+                                                }
+                                                if (chat.getType() == DataFields.LOCATION) {
+                                                    messageValues = new MessageValues(DataFields.LOCATION, chat.getText(), chat.getLng(), chat.getLat());
+                                                }
+                                                if (chat.getType() == DataFields.IMAGE) {
+                                                    messageValues = new MessageValues(DataFields.IMAGE, chat.getUrl(), chat.getText());
+                                                }
+                                                if (chat.getType() == DataFields.PAYNOW) {
+                                                    messageValues = new MessageValues(DataFields.PAYNOW, chat.getText());
+                                                }
+                                                if (chat.getType() == DataFields.PAYASCOD) {
+                                                    messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
+                                                }
+                                                Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
+                                                messagesArrayList.add(messageObject);
+                                                if (i == 0) {
+                                                    lastMessage = messageObject;
+                                                }
                                             }
                                         }
-                                    }
-                                    if (lastMessage != null) {
-                                        ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
-                                        for (Messages msg : holdMessages) {
-                                            if (msg.getMessageType() == DataFields.LOCATION) {
-                                                messagesArrayListUnSynced.add(msg);
+                                        if (lastMessage != null) {
+                                            ArrayList<Messages> holdMessages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(cats.getId()), lastMessage.getCreatedAt());
+                                            for (Messages msg : holdMessages) {
+                                                if (msg.getMessageType() == DataFields.LOCATION) {
+                                                    messagesArrayListUnSynced.add(msg);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            messagesArrayList.addAll(messagesArrayListUnSynced);
-                            dbDataSource.cleanTable();
-                            dbDataSource.addFast(messagesArrayList);
-                            for (Categories categories : dbDataSource.getAllCategories()) {
-                                System.out.println("Get Hide Time : " + categories.getName() + " " + categories.getNotification_count());
-                                if (categories.getNotification_count() != 0)
-                                    dbDataSource.UpdateMessages(categories.getId(), categories.getHide_chats_time());
-                            }
-                            FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
-                            List<Fragment> fragments = fragmentManager.getFragments();
-                            for (Fragment fragment : fragments) {
-                                if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                                    ((ChatFragment) fragment).displayMessages(true, DataFields.ScrollPosition);
+                                messagesArrayList.addAll(messagesArrayListUnSynced);
+                                dbDataSource.cleanTable();
+                                dbDataSource.addFast(messagesArrayList);
+                                for (Categories categories : dbDataSource.getAllCategories()) {
+                                    System.out.println("Get Hide Time : " + categories.getName() + " " + categories.getNotification_count());
+                                    if (categories.getNotification_count() != 0)
+                                        dbDataSource.UpdateMessages(categories.getId(), categories.getHide_chats_time());
+                                }
+                                FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+                                List<Fragment> fragments = fragmentManager.getFragments();
+                                for (Fragment fragment : fragments) {
+                                    if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                                        ((ChatFragment) fragment).getCustomChatAdapter().notifyDataSetChanged();
+                                    }
                                 }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             });
         }
     };
+
+    private boolean syncTimeDiff(long syncwithservertime) {
+        return ((System.currentTimeMillis() - syncwithservertime) > 60 * 60 * 1000);
+    }
 
     private Emitter.Listener onServerError = new Emitter.Listener() {
         @Override

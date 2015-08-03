@@ -85,84 +85,84 @@ public class MainFragment extends GenieFragment {
         super.onStop();
     }
 
-    public void refreshDataFromLocal() {
-        mixpanelDataAdd.put("Refresh Categories", "From Local");
-        ArrayList<Categories> catList = dbDataSource.getAllCategories();
-        if (catList.size() > 0) {
-            categoriesList.clear();
-            for (Categories categories : catList) {
-                categoriesList.add(categories);
+    public void refreshData() {
+        if (dbDataSource.getAllCategories().size() > 0) {
+            mixpanelDataAdd.put("Refresh Categories", "From Local");
+            ArrayList<Categories> catList = dbDataSource.getAllCategories();
+            if (catList.size() > 0) {
+                categoriesList.clear();
+                for (Categories categories : catList) {
+                    categoriesList.add(categories);
+                }
+                setupCategories(categoriesList);
             }
-            setupCategories(categoriesList);
-        }
-    }
-
-    private void refreshData() {
-        mixpanelDataAdd.put("Refresh Categories", "From Server");
-        logging.LogV("Refreshing Data");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
-        JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(final JSONArray response) {
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                        System.out.println(response.toString());
-                        if (response.length() > 0) {
-                            ArrayList<Categories> localCategories = dbDataSource.getAllCategories();
-                            ArrayList<Categories> catList = new ArrayList<>();
-                            for (int i = 0; i < response.length(); i++) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
-                                    Categories categories = new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
-                                            jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
-                                            jsonObject.getLong("hide_chats_time"));
-                                    catList.add(categories);
-                                    dbDataSource.addNormalCategories(categories);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+        } else {
+            mixpanelDataAdd.put("Refresh Categories", "From Server");
+            logging.LogV("Refreshing Data");
+            mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
+            JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(final JSONArray response) {
+                            mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
+                            System.out.println(response.toString());
+                            if (response.length() > 0) {
+                                ArrayList<Categories> localCategories = dbDataSource.getAllCategories();
+                                ArrayList<Categories> catList = new ArrayList<>();
+                                for (int i = 0; i < response.length(); i++) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
+                                        Categories categories = new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
+                                                jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
+                                                jsonObject.getLong("hide_chats_time"));
+                                        catList.add(categories);
+                                        dbDataSource.addNormalCategories(categories);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            }
-                            if (catList.size() > 0) {
-                                categoriesList.clear();
-                                for (Categories categories : catList) {
-                                    categoriesList.add(categories);
-                                }
-                                if (customAdapter != null) {
-                                    logging.LogV("Updating View");
-                                    View v = recyclerView.getChildAt(0);
-                                    int top = (v == null) ? 0 : v.getTop();
-                                    customAdapter.notifyDataSetChanged();
-                                    if (top < categoriesList.size())
-                                        recyclerView.scrollToPosition(top);
+                                if (catList.size() > 0) {
+                                    categoriesList.clear();
+                                    for (Categories categories : catList) {
+                                        categoriesList.add(categories);
+                                    }
+                                    if (customAdapter != null) {
+                                        logging.LogV("Updating View");
+                                        View v = recyclerView.getChildAt(0);
+                                        int top = (v == null) ? 0 : v.getTop();
+                                        customAdapter.notifyDataSetChanged();
+                                        if (top < categoriesList.size())
+                                            recyclerView.scrollToPosition(top);
 
-                                } else {
-                                    setupCategories(categoriesList);
+                                    } else {
+                                        setupCategories(categoriesList);
+                                    }
                                 }
                             }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                error.printStackTrace();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
-                return params;
-            }
-        };
-        genieApplication.addToRequestQueue(req);
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
+                    error.printStackTrace();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("x-access-token", sharedPreferences.getString(DataFields.TOKEN, ""));
+                    return params;
+                }
+            };
+            genieApplication.addToRequestQueue(req);
+        }
     }
 
     private void loadCategories() {
         logging.LogV("Get Categories");
         Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            refreshDataFromLocal();
+        if (bundle == null) {
+            refreshData();
         } else {
             if (getActivity().getIntent().getExtras() != null && getActivity().getIntent().hasExtra("category")) {
                 ArrayList<Categories> localCategories = dbDataSource.getAllCategories();

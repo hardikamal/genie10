@@ -437,7 +437,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             if (messages.getMessageType() == DataFields.IMAGE) {
                 viewHolderMain.viewLayout.setVisibility(View.VISIBLE);
                 viewHolderMain.imageView.setVisibility(View.VISIBLE);
-
                 String path = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
                 File imgFile = new File(path);
                 if (imgFile.exists()) {

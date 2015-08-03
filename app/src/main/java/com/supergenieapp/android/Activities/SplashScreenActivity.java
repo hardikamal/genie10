@@ -50,7 +50,7 @@ public class SplashScreenActivity extends GenieActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
+        sharedPreferences.edit().putBoolean("syncwithserver", true).apply();
         logging.LogD("Splash Screen", "Entered ");
         mixpanelDataAdd.put("Splash Screen", "Entered");
 
