@@ -349,11 +349,10 @@ public class UserProfileActivity extends GenieBaseActivity {
                             }
                         }
                     } else {
-                        // TODO: 8/3/2015
-                        Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.INFO, R.id.body).show();
+                        Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.ALERT, R.id.body).show();
                     }
                 } else {
-                    Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.INFO, R.id.body).show();
+                    Crouton.makeText(UserProfileActivity.this, getString(R.string.imagefailedtodeliver), Style.ALERT, R.id.body).show();
                 }
             }
         }
