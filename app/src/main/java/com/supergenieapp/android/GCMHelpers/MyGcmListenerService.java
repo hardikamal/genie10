@@ -169,65 +169,67 @@ public class MyGcmListenerService extends GcmListenerService {
                 if (categories != null)
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
 
-                if (chat.getType() == DataFields.IMAGE) {
-                    final MessageValues tempMessageValues = messageValues;
-                    final String urlLocal = messageValues.getUrl();
-                    if (messageValues.getUrl().matches("data:image.*base64.*")) {
-                        String base_64_source = messageValues.getUrl().replaceAll("data:image.*base64", "");
-                        byte[] dataImage = Base64.decode(base_64_source, Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(dataImage, 0, dataImage.length);
-                        if (bitmap != null) {
-                            FileOutputStream out = null;
-                            try {
-                                out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(this).hashString(urlLocal));
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (out != null) {
-                                        out.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        postToChat(messageObject, tempMessageValues);
-                    } else {
-                        GenieApplication.getInstance().getImageLoader().get(messageValues.getUrl(), new ImageLoader.ImageListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                postToChat(messageObject, tempMessageValues);
-                            }
+//                if (chat.getType() == DataFields.IMAGE) {
+//                    final MessageValues tempMessageValues = messageValues;
+//                    final String urlLocal = messageValues.getUrl();
+//                    if (messageValues.getUrl().matches("data:image.*base64.*")) {
+//                        String base_64_source = urlLocal.replaceAll("data:image.*base64", "");
+//                        byte[] dataImage = Base64.decode(base_64_source, Base64.DEFAULT);
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(dataImage, 0, dataImage.length);
+//                        if (bitmap != null) {
+//                            FileOutputStream out = null;
+//                            try {
+//                                out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(this).hashString(urlLocal));
+//                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            } finally {
+//                                try {
+//                                    if (out != null) {
+//                                        out.close();
+//                                    }
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                        postToChat(messageObject, tempMessageValues);
+//                    } else {
+//                        GenieApplication.getInstance().getImageLoader().get(urlLocal, new ImageLoader.ImageListener() {
+//                            @Override
+//                            public void onErrorResponse(VolleyError error) {
+//                                postToChat(messageObject, tempMessageValues);
+//                            }
+//
+//                            @Override
+//                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+//                                if (response != null && response.getBitmap() != null) {
+//
+//                                    FileOutputStream out = null;
+//                                    try {
+//                                        out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(MyGcmListenerService.this).hashString(urlLocal));
+//                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    } finally {
+//                                        try {
+//                                            if (out != null) {
+//                                                out.close();
+//                                            }
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                    postToChat(messageObject, tempMessageValues);
+//                                }
+//                            }
+//                        });
+//                    }
+//                } else {
+//                   postToChat(messageObject, tempMessageValues);
+//                }
 
-                            @Override
-                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                if (response != null && response.getBitmap() != null) {
-
-                                    FileOutputStream out = null;
-                                    try {
-                                        out = new FileOutputStream(DataFields.TempFolder + "/" + new Utils(MyGcmListenerService.this).hashString(urlLocal));
-                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        try {
-                                            if (out != null) {
-                                                out.close();
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    postToChat(messageObject, tempMessageValues);
-                                }
-                            }
-                        });
-                    }
-                } else {
-                    postToChat(messageObject, messageValues);
-                }
+                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
             }
         } else {
             Log.v("GCM PUSH", data.toString());

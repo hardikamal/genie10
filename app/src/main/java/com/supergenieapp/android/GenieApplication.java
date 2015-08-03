@@ -66,7 +66,7 @@ public class GenieApplication extends Application {
         super.onCreate();
         genieApplication = this;
         setFolders();
-        Pacemaker.scheduleLinear(this, 2);
+        Pacemaker.scheduleExponential(this, 5, 90);
         fontChangerRegular = new FontChangeCrawler(getAssets(), "Roboto-Regular.ttf");
         loggingBuilder = new LoggingBuilder(getApplicationContext())
                 .setCanDisplayOnLogCat(true)

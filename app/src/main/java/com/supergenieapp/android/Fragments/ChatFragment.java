@@ -411,7 +411,7 @@ public class ChatFragment extends GenieFragment {
         if (position == 0 && this.getArguments().containsKey("position")) {
             recyclerView.scrollToPosition(position);
         } else if (position == -1 && this.getArguments().containsKey("position")) {
-            recyclerView.scrollToPosition(0);
+            scroll();
         } else if (position == -1) {
             scroll();
         } else if (position == 0) {
