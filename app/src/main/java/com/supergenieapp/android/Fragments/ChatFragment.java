@@ -213,22 +213,28 @@ public class ChatFragment extends GenieFragment {
         recyclerView.removeAllViews();
         recyclerView.setHasFixedSize(true);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        if (linearLayoutManager != null) {
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (linearLayoutManager != null) {
+                        DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                        position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    }
+                }
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-            }
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+                }
+            });
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
 
-            }
-        });
         chatAdapter = new CustomChatAdapter(messages, color, url, getActivity());
         recyclerView.setAdapter(chatAdapter);
 

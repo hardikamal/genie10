@@ -93,15 +93,6 @@ public class MainFragment extends GenieFragment {
             for (Categories categories : catList) {
                 categoriesList.add(categories);
             }
-            if (customAdapter != null) {
-                logging.LogV("Updating View");
-                View v = recyclerView.getChildAt(0);
-                int top = (v == null) ? 0 : v.getTop();
-                customAdapter.notifyDataSetChanged();
-                if (top < categoriesList.size())
-                    recyclerView.scrollToPosition(top);
-
-            }
             setupCategories(categoriesList);
         }
     }

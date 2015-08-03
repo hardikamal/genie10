@@ -81,7 +81,7 @@ public class DataFields {
     public static int SENT = 1;
     public static int DELIVERED = 2;
     public static int SEEN = 3;
-    public static int position = 0;
+    public static int position = -1;
     public static int ScrollDown = 1;
     public static int ScrollPosition = 2;
     public static int NoScroll = 0;

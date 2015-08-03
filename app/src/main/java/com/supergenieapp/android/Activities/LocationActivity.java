@@ -640,7 +640,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     private void displayFavLocations() {
         ArrayList<FavValues> favValues = dbDataSource.getAllFav();
         recyclerView.removeAllViews();
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(favValues, this);

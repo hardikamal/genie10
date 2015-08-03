@@ -54,16 +54,16 @@ android {
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
-            versionCode 4
-            versionName '0.0.4.Internal'
+            versionCode 5
+            versionName '1.0.0.Internal'
         }
         releaseConfig {
             minSdkVersion 14
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
-            versionCode 4
-            versionName '0.0.4.Alpha'
+            versionCode 5
+            versionName '1.0.0.Beta'
         }
     }
 }
@@ -84,6 +84,7 @@ dependencies {
     compile('com.github.nkzawa:socket.io-client:0.5.2') {
         exclude group: 'org.json', module: 'json'
     }
+    compile 'in.raveesh:pacemaker:0.1.0-SNAPSHOT'
     compile 'com.intuit.sdp:sdp-android:1.0.0'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
