@@ -57,7 +57,7 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         DBDataSource dbDataSource = GenieApplication.getInstance().getDBDataSource();
-
+        System.out.println(data.toString());
         MixpanelAPI mixpanel =
                 MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
         mixpanel.getPeople().identify(new Utils(this).getDeviceSerialNumber());
@@ -229,7 +229,7 @@ public class MyGcmListenerService extends GcmListenerService {
 //                   postToChat(messageObject, tempMessageValues);
 //                }
 
-                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " : " + showMessage(messageValues), messageObject.getCategory());
+                new NotificationHandler(this).updateNotification(DataFields.NotificationId, new Utils(this).getCurrentTime() + " @ " + categories.getName() + " : " + showMessage(messageValues), messageObject.getCategory());
             }
         } else {
             Log.v("GCM PUSH", data.toString());

@@ -61,6 +61,7 @@ public class NotificationHandler {
                 .setSmallIcon(R.drawable.icons_97x97)
                 .setAutoCancel(true)
                 .setContent(expandedView)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
                 .setContentIntent(resultPendingIntent).build();
 
         NotificationManager notificationManager =
@@ -113,6 +114,7 @@ public class NotificationHandler {
                 .setSmallIcon(R.drawable.icons_97x97)
                 .setAutoCancel(true)
                 .setContent(expandedView)
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
                 .setContentIntent(resultPendingIntent).build();
 
         NotificationManager notificationManager =
@@ -216,6 +218,7 @@ public class NotificationHandler {
                 Notification notification = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.icons_97x97)
                         .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
                         .setContent(expandedView)
                         .setContentIntent(resultPendingIntent).build();
 
