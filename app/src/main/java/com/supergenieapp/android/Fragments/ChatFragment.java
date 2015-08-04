@@ -1,9 +1,14 @@
 package com.supergenieapp.android.Fragments;
 
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,8 +22,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.Activities.LocationActivity;
@@ -41,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
 
 import butterknife.ButterKnife;
@@ -66,6 +74,31 @@ public class ChatFragment extends GenieFragment {
     long hide_time = 0;
     @InjectView(R.id.message)
     EditText message;
+    @InjectView(R.id.more)
+    ImageView moreButton;
+    @InjectView(R.id.moreLayout)
+    LinearLayout moreLayout;
+    @InjectView(R.id.mute)
+    CircularButton mute;
+    @InjectView(R.id.muteText)
+    TextView muteText;
+    @InjectView(R.id.muteLayout)
+    LinearLayout muteLayout;
+    @InjectView(R.id.image)
+    CircularButton image;
+    @InjectView(R.id.imageText)
+    TextView imageText;
+    @InjectView(R.id.imageLayout)
+    LinearLayout imageLayout;
+    @InjectView(R.id.locationLayout)
+    LinearLayout locationLayout;
+    @InjectView(R.id.speechBox)
+    LinearLayout speechBox;
+    @InjectView(R.id.location)
+    CircularButton location;
+    @InjectView(R.id.locationText)
+    TextView locationText;
+
     boolean imageResource = true;
     private CustomChatAdapter chatAdapter;
     private ArrayList<Messages> messages = new ArrayList<>();
@@ -112,9 +145,20 @@ public class ChatFragment extends GenieFragment {
             send.setButtonColor(Color.parseColor(color));
             send.setShadowColor(Color.parseColor(color));
             message.setTextColor(Color.parseColor(color));
+            moreButton.setEnabled(true);
+            mute.setButtonColor(Color.parseColor(color));
+            mute.setShadowColor(Color.parseColor(color));
+            image.setButtonColor(Color.parseColor(color));
+            image.setShadowColor(Color.parseColor(color));
+            location.setButtonColor(Color.parseColor(color));
+            location.setShadowColor(Color.parseColor(color));
+            muteText.setTextColor(Color.parseColor(color));
+            imageText.setTextColor(Color.parseColor(color));
+            locationText.setTextColor(Color.parseColor(color));
         }
-
+        setMuteButton();
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
+        new NotificationHandler(getActivity()).cancelNotification(DataFields.ALERTMSG);
 
         message.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -150,9 +194,9 @@ public class ChatFragment extends GenieFragment {
                 } else {
                     imageResource = true;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_white_24dp, getActivity().getTheme()));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_24dp, getActivity().getTheme()));
                     } else {
-                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_white_24dp));
+                        send.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_24dp));
                     }
                 }
             }
@@ -256,45 +300,56 @@ public class ChatFragment extends GenieFragment {
         super.onDetach();
     }
 
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data.getExtras() != null) {
-            mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
-            final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
-            dbDataSource.addNormal(messageObject);
-            displayMessages(true, DataFields.ScrollDown);
-            new Thread(new Runnable() {
-                public void run() {
-                    int i = 0;
-                    do {
-                        try {
-                            Thread.sleep(DataFields.small400TimeOut);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (i > 5) {
-                            break;
-                        }
-                    } while (!genieApplication.getSocket().connected());
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
+            if (data.hasExtra(RecognizerIntent.EXTRA_RESULTS)) {
+                ArrayList<String> result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                System.out.println(result.get(0));
+                message.setText(result.get(0));
+            } else {
+                mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
+                final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+                Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
+                dbDataSource.addNormal(messageObject);
+                displayMessages(true, DataFields.ScrollDown);
+                new Thread(new Runnable() {
+                    public void run() {
+                        int i = 0;
+                        do {
                             try {
-                                JSONObject valueJSON = new JSONObject();
-                                valueJSON.put("address", messageValues.getText());
-                                valueJSON.put("lng", messageValues.getLng());
-                                valueJSON.put("lat", messageValues.getLat());
-                                emitMessage(DataFields.LOCATION, valueJSON);
-                            } catch (JSONException e) {
+                                Thread.sleep(DataFields.small400TimeOut);
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                        }
-                    });
-                }
-            }).start();
-        } else {
+                            if (i > 5) {
+                                break;
+                            }
+                        } while (!genieApplication.getSocket().connected());
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                try {
+                                    JSONObject valueJSON = new JSONObject();
+                                    valueJSON.put("address", messageValues.getText());
+                                    valueJSON.put("lng", messageValues.getLng());
+                                    valueJSON.put("lat", messageValues.getLat());
+                                    emitMessage(DataFields.LOCATION, valueJSON);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }).start();
+            }
+        } else
+
+        {
             Crouton.makeText(getActivity(), getString(R.string.errorinaccessinglocation), Style.ALERT, viewGroup).show();
         }
+
     }
 
     @Override
@@ -330,6 +385,15 @@ public class ChatFragment extends GenieFragment {
         mixpanelDataAdd.put("Chat Message", "Received");
         if (messageObject.getCategory() == id) {
             mixpanelDataAdd.put("Chat Message", "Updated");
+            if (messageObject.getMessageValues().get_id() == DataFields.TEXT) {
+                ((BaseActivity) getActivity()).speakOut(messageObject.getMessageValues().getText());
+            } else if (messageObject.getMessageValues().get_id() == DataFields.LOCATION) {
+                ((BaseActivity) getActivity()).speakOut(messageObject.getMessageValues().getText());
+            } else if (messageObject.getMessageValues().get_id() == DataFields.IMAGE) {
+                ((BaseActivity) getActivity()).speakOut(messageObject.getMessageValues().getText());
+            } else if (messageObject.getMessageValues().get_id() == DataFields.PAYNOW) {
+                ((BaseActivity) getActivity()).speakOut("payment card received. pay to finish your order.");
+            }
             displayMessages(true, DataFields.ScrollDown);
             scroll();
         } else {
@@ -346,9 +410,35 @@ public class ChatFragment extends GenieFragment {
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
         if (imageResource) {
-            mixpanelDataAdd.put("Chat Button", "Location clicked");
+            mixpanelDataAdd.put("Chat Button", "Mic option clicked");
             hideKeyboard(getActivity());
-            startActivityForResult(new Intent(getActivity(), LocationActivity.class), LOCATIONRESULT);
+            if (((BaseActivity) getActivity()).startSpeech()) {
+//                GradientDrawable gd = new GradientDrawable(
+//                        GradientDrawable.Orientation.TOP_BOTTOM,
+//                        new int[]{Color.parseColor(color), Color.parseColor(color)});
+//                gd.setAlpha(75);
+//                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    speechBox.setBackground(gd);
+//                } else {
+//                    speechBox.setBackgroundDrawable(gd);
+//                }
+                speechBox.setVisibility(View.VISIBLE);
+                message.setEnabled(false);
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.sleep(DataFields.small400TimeOut);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                scroll();
+                            }
+                        });
+                    }
+                }).start();
+            }
         } else {
             mixpanelDataAdd.put("Chat Button", "Send clicked");
             final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
@@ -386,6 +476,29 @@ public class ChatFragment extends GenieFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @OnClick(R.id.more)
+    public void onClickMore() {
+        if (moreLayout.getVisibility() == View.VISIBLE) {
+            moreLayout.setVisibility(View.GONE);
+        } else if (moreLayout.getVisibility() == View.GONE) {
+            moreLayout.setVisibility(View.VISIBLE);
+        }
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(DataFields.small400TimeOut);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        scroll();
+                    }
+                });
+            }
+        }).start();
     }
 
     @OnClick(R.id.messageLayout)
@@ -435,6 +548,8 @@ public class ChatFragment extends GenieFragment {
                 send.setButtonColor(getResources().getColor(R.color.color999));
                 send.setShadowColor(getResources().getColor(R.color.color999));
                 messageLayout.setBackgroundColor(getResources().getColor(R.color.colorddd));
+                moreButton.setEnabled(false);
+                moreLayout.setVisibility(View.GONE);
             }
         });
     }
@@ -453,8 +568,61 @@ public class ChatFragment extends GenieFragment {
                     send.setShadowColor(Color.parseColor(color));
                     send.setEnabled(true);
                 }
+                moreButton.setEnabled(true);
                 messageLayout.setBackgroundColor(getResources().getColor(R.color.white));
             }
         });
+    }
+
+    @OnClick(R.id.doneButton)
+    public void onClickDoneButton() {
+        message.setEnabled(true);
+        ((BaseActivity) getActivity()).stopSpeech();
+        speechBox.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.muteLayout)
+    public void onClickedMute() {
+        if (sharedPreferences.getBoolean("isMuted", true)) {
+            sharedPreferences.edit().putBoolean("isMuted", false).apply();
+        } else {
+            sharedPreferences.edit().putBoolean("isMuted", true).apply();
+        }
+        setMuteButton();
+    }
+
+    @OnClick(R.id.locationLayout)
+    public void onClickedLocation() {
+        startActivityForResult(new Intent((BaseActivity) getActivity(), LocationActivity.class), LOCATIONRESULT);
+        moreLayout.setVisibility(View.GONE);
+    }
+
+    private void setMuteButton() {
+        if (sharedPreferences.getBoolean("isMuted", true)) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_white_24dp, getActivity().getTheme()));
+            } else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_white_24dp));
+            }
+            muteText.setText(getString(R.string.playsound));
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_white_24dp, getActivity().getTheme()));
+            } else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_white_24dp));
+            }
+            muteText.setText(getString(R.string.mutesound));
+            ((BaseActivity) getActivity()).setTTS();
+        }
+    }
+
+    public void postToMessageBox(String text) {
+        message.setText(text);
+        message.setEnabled(true);
+    }
+
+    public void closePopup() {
+        speechBox.setVisibility(View.GONE);
+        message.setEnabled(true);
     }
 }

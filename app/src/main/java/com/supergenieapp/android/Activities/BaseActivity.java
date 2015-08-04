@@ -1,5 +1,6 @@
 package com.supergenieapp.android.Activities;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,12 +11,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.TrafficStats;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -46,13 +53,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect {
+public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect, TextToSpeech.OnInitListener, RecognitionListener {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
     @InjectView(R.id.screen)
@@ -62,12 +70,30 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
     long startRxBytes = 0;
     long startTxBytes = 0;
+    private TextToSpeech tts;
+    private SpeechRecognizer speech = null;
+    private Intent recognizerIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         ButterKnife.inject(this);
+        if (!sharedPreferences.getBoolean("isMuted", true)) {
+            tts = new TextToSpeech(this, this);
+        }
+
+        speech = SpeechRecognizer.createSpeechRecognizer(this);
+        speech.setRecognitionListener(this);
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
+                "en");
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+
         mSocket = genieApplication.getSocket();
         getWindow().setBackgroundDrawableResource(R.drawable.wallpaper_wallpaper);
         if (getIntent().getExtras() != null) {
@@ -214,6 +240,13 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     @Override
     protected void onPause() {
         super.onPause();
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        if (speech != null) {
+            speech.destroy();
+        }
         new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Paused");
         logging.LogV("Socket Checking to off");
@@ -1081,5 +1114,167 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         }
         if (mSocket.connected())
             mSocket.emit("pay online", jsonObject);
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (!sharedPreferences.getBoolean("isMuted", true)) {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = tts.setLanguage(Locale.getDefault());
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Crouton.makeText(BaseActivity.this,
+                            getString(R.string.languagenotfound), Style.ALERT, R.id.body).show();
+                }
+            } else {
+                Crouton.makeText(BaseActivity.this,
+                        getString(R.string.notsupportedtexttospeech), Style.ALERT, R.id.body).show();
+            }
+        }
+    }
+
+    public void speakOut(String text) {
+        if (!sharedPreferences.getBoolean("isMuted", true) && tts != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ttsGreater21(text);
+            } else {
+                ttsUnder20(text);
+            }
+        }
+    }
+
+    public boolean startSpeech() {
+        if (speech != null && recognizerIntent != null) {
+            speech.startListening(recognizerIntent);
+        } else {
+            Crouton.makeText(BaseActivity.this,
+                    getString(R.string.speech_not_supported), Style.ALERT, R.id.body).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void stopSpeech() {
+        if (speech != null) {
+            speech.stopListening();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void ttsUnder20(String text) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, map);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ttsGreater21(String text) {
+        String utteranceId = this.hashCode() + "";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+
+    public void setTTS() {
+        tts = new TextToSpeech(this, this);
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+        logging.LogI("onBeginningOfSpeech");
+    }
+
+    @Override
+    public void onBufferReceived(byte[] buffer) {
+        logging.LogI("onBufferReceived: " + buffer);
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                ((ChatFragment) fragment).closePopup();
+            }
+        }
+    }
+
+    @Override
+    public void onError(int errorCode) {
+        String errorMessage = getErrorText(errorCode);
+        Crouton.makeText(BaseActivity.this,
+                errorMessage, Style.ALERT, R.id.body).show();
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                ((ChatFragment) fragment).closePopup();
+            }
+        }
+    }
+
+    @Override
+    public void onEvent(int arg0, Bundle arg1) {
+    }
+
+    @Override
+    public void onPartialResults(Bundle arg0) {
+    }
+
+    @Override
+    public void onReadyForSpeech(Bundle arg0) {
+    }
+
+    @Override
+    public void onResults(Bundle results) {
+        ArrayList<String> matches = results
+                .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                ((ChatFragment) fragment).postToMessageBox(matches.get(0));
+            }
+        }
+    }
+
+    @Override
+    public void onRmsChanged(float rmsdB) {
+    }
+
+    public static String getErrorText(int errorCode) {
+        String message;
+        switch (errorCode) {
+            case SpeechRecognizer.ERROR_AUDIO:
+                message = "Audio recording error";
+                break;
+            case SpeechRecognizer.ERROR_CLIENT:
+                message = "Client side error";
+                break;
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                message = "Insufficient permissions";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK:
+                message = "Network error";
+                break;
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                message = "Network timeout";
+                break;
+            case SpeechRecognizer.ERROR_NO_MATCH:
+                message = "No match";
+                break;
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                message = "RecognitionService busy";
+                break;
+            case SpeechRecognizer.ERROR_SERVER:
+                message = "Error from server";
+                break;
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                message = "No speech input";
+                break;
+            default:
+                message = "Didn't understand, please try again.";
+                break;
+        }
+        return message;
     }
 }

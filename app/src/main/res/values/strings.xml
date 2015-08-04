@@ -44,7 +44,7 @@
     <string name="repeatorder">REPEAT ORDER</string>
     <string name="loadearliermessages">Load Earlier Messages</string>
     <string name="buynow">Buy Now</string>
-    <string name="typeamessage">Type a message</string>
+    <string name="typeamessage">Type a message or Tap on mic to speak</string>
     <string name="resendcoderequest">Requesting Server to resend code</string>
     <string name="code91">+91</string>
     <string name="errortryagain">Error. Try Again.</string>
@@ -356,4 +356,14 @@
     <string name="imagefailedtodeliver">Try Again Later. Image Failed to Deliver.</string>
     <string name="profileupdated">Profile Updated.</string>
     <string name="ok">Ok</string>
+    <string name="speech_prompt">&#160;&#160;Speak now&#8230;</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
+    <string name="tap_on_mic">Tap on mic to speak</string>
+    <string name="mutesound">Mute</string>
+    <string name="playsound">Play</string>
+    <string name="location">Location</string>
+    <string name="image">Image</string>
+    <string name="languagenotfound">Language Package not found.</string>
+    <string name="notsupportedtexttospeech">Device doesn\'t support text to speech</string>
+    <string name="unabletostartspeech">Unable to start speech to text</string>
 </resources>
