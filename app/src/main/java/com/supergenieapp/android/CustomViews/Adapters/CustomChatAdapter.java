@@ -548,11 +548,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 } else {
                     viewHolderMain.text.setBackgroundDrawable(gd);
                 }
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+                {
                     viewHolderMain.mainLayout.setGravity(Gravity.LEFT);
-                } else {
+                }
+                else {
                     viewHolderMain.mainLayout.setGravity(Gravity.START);
                 }
+
             } else {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space12char));
                 viewHolderMain.text.setTextColor(Color.parseColor(color));

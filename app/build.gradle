@@ -54,16 +54,16 @@ android {
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
-            versionCode 8
-            versionName '1.0.2.Internal'
+            versionCode 9
+            versionName '1.0.3.Internal'
         }
         releaseConfig {
             minSdkVersion 14
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
-            versionCode 8
-            versionName '1.0.2.Beta'
+            versionCode 9
+            versionName '1.0.3.Beta'
         }
     }
 }

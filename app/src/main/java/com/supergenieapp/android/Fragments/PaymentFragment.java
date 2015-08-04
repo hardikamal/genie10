@@ -159,7 +159,7 @@ public class PaymentFragment extends GenieFragment {
                     if (progress == 100) {
 
                         parentLoadingView.setLoading(false);
-                        if (view.getUrl().contains("http://www.getgenieapp.com") || view.getUrl().contains("http://www.supergenieapp.com")) {
+                        if (view.getUrl().contains("http://getgenieapp.com") || view.getUrl().contains("http://supergenieapp.com")) {
                             if (goBack) {
                                 goBack = false;
                                 getActivity().onBackPressed();

@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/mainLayout"
+    android:gravity="left"
     android:orientation="vertical"
     android:paddingBottom="@dimen/_2sdp"
     android:paddingEnd="@dimen/_100sdp"
