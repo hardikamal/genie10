@@ -50,7 +50,7 @@
     <string name="errortryagain">Error. Try Again.</string>
     <string name="wrongverificationcode">Wrong Verification code.</string>
     <string name="servererrortryagain">Error. Try Again</string>
-    <string name="error_toast">Unfortunately SuperGenie Crashed.</string>
+    <string name="error_toast">Oops! Something went wrong, our engineers are on it. Please ping SuperGenie after some time!</string>
     <string name="redoregistration">Redo Registration</string>
     <string name="gettinglocation">Getting Location</string>
     <string name="updatinguserinformation">Updating User information..</string>
@@ -355,4 +355,5 @@
     <string name="supergenieversion">\nSuperGenie Version:&#160;</string>
     <string name="imagefailedtodeliver">Try Again Later. Image Failed to Deliver.</string>
     <string name="profileupdated">Profile Updated.</string>
+    <string name="ok">Ok</string>
 </resources>

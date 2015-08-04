@@ -1,5 +1,7 @@
 package com.supergenieapp.android.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -164,7 +166,9 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 mixpanelDataAdd.put("Server Call", "ORDERS Server 500 Error");
                 mixPanelBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
                 error.printStackTrace();
-                noOrders.setVisibility(View.VISIBLE);
+                ArrayList<Order> orders = new ArrayList<>();
+                setupOrders(orders);
+//                showAlert();
                 loadingView.setLoading(false);
             }
         }) {
@@ -182,7 +186,10 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         Collections.sort(orders, Collections.reverseOrder());
         if (orders.size() == 0) {
             noOrders.setVisibility(View.VISIBLE);
+            orderList.setVisibility(View.GONE);
+//            showAlert();
         } else {
+            orderList.setVisibility(View.VISIBLE);
             noOrders.setVisibility(View.GONE);
         }
         loadingView.setLoading(false);
@@ -194,6 +201,20 @@ public class OrderDetailsActivity extends GenieBaseActivity {
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fly_in_from_center);
         orderList.setAnimation(anim);
         anim.start();
+    }
+
+    private void showAlert() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setCancelable(false)
+                .setMessage(getString(R.string.noorderyet))
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        onBackPressed();
+                        dialog.dismiss();
+                    }
+                });
+        alert.show();
     }
 
     @Override

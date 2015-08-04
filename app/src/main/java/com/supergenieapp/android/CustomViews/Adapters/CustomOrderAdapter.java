@@ -132,7 +132,7 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
             });
         }
 
-        viewHolderMain.companyname.setText(order.getService_provider());
+        viewHolderMain.companyname.setText(order.getTitle());
         DecimalFormat df = new DecimalFormat("#.00");
         viewHolderMain.rate.setText("Rs. " + df.format(Double.parseDouble(order.getCost())));
         viewHolderMain.orderdetailstext.setText(order.getDescription());

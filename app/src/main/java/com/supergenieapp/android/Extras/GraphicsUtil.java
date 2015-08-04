@@ -13,15 +13,23 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.ExifInterface;
+import android.util.Log;
 
 public class GraphicsUtil {
 
     public Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
         sbmp = Bitmap.createScaledBitmap(bmp, radius, radius, false);
+        Bitmap output = null;
+        if (sbmp.getWidth() > sbmp.getHeight()) {
+            output = Bitmap.createBitmap(sbmp.getHeight(),
+                    sbmp.getHeight(), Bitmap.Config.ARGB_8888);
+        } else {
+            output = Bitmap.createBitmap(sbmp.getWidth(),
+                    sbmp.getWidth(), Bitmap.Config.ARGB_8888);
+        }
 
-        Bitmap output = Bitmap.createBitmap(sbmp.getWidth(),
-                sbmp.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final int color = 0xffa19774;

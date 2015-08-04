@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -57,11 +59,12 @@ public class NotificationHandler {
         expandedView.setTextViewText(R.id.t1, msg);
         expandedView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
 
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.icons_97x97)
                 .setAutoCancel(true)
                 .setContent(expandedView)
-                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+                .setSound(defaultSoundUri)
                 .setContentIntent(resultPendingIntent).build();
 
         NotificationManager notificationManager =
@@ -110,11 +113,12 @@ public class NotificationHandler {
 
         msgEvents = events;
 
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.icons_97x97)
                 .setAutoCancel(true)
                 .setContent(expandedView)
-                .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+                .setSound(defaultSoundUri)
                 .setContentIntent(resultPendingIntent).build();
 
         NotificationManager notificationManager =
@@ -215,10 +219,12 @@ public class NotificationHandler {
                     size = events.length;
 
                 }
+
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 Notification notification = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.icons_97x97)
                         .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+                        .setSound(defaultSoundUri)
                         .setContent(expandedView)
                         .setContentIntent(resultPendingIntent).build();
 

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,6 +147,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.viewLayout)
         RelativeLayout viewLayout;
+        @Optional
+        @InjectView(R.id.mainLayout)
+        RelativeLayout mainLayout;
         @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
@@ -543,6 +547,11 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.text.setBackground(gd);
                 } else {
                     viewHolderMain.text.setBackgroundDrawable(gd);
+                }
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    viewHolderMain.mainLayout.setGravity(Gravity.LEFT);
+                } else {
+                    viewHolderMain.mainLayout.setGravity(Gravity.START);
                 }
             } else {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space12char));
