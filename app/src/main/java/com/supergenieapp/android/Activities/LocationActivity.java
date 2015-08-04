@@ -36,6 +36,9 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.supergenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
@@ -83,7 +86,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 // On click on fav place will share the location
 // Adapter is CustomPlaceAdapter
 
-public class LocationActivity extends GenieBaseActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class LocationActivity extends GenieBaseActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     @InjectView(R.id.refreshLocation)
     CircularButton refreshLocation;
     @InjectView(R.id.location)
@@ -100,15 +103,21 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     AutoCompleteTextView mAutocompleteView;
     @InjectView(R.id.searchlayout)
     LinearLayout searchLayout;
-
     private MessageValues messageValues = null;
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
-
+    private String provider;
     int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
     AlertDialog.Builder dialog;
-
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+    private Location mLastLocation;
+    private boolean mRequestingLocationUpdates = false;
+    private LocationRequest mLocationRequest;
+    private static int UPDATE_INTERVAL = 10000; // 10 sec
+    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int DISPLACEMENT = 10; // 10 meters
     protected GoogleApiClient mGoogleApiClient;
+    protected GoogleApiClient mGoogleApiClientLocation;
 
     private PlaceAutocompleteAdapter mAdapter;
 
@@ -118,6 +127,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @Override
     protected void onStart() {
         super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+        if (mGoogleApiClientLocation != null) {
+            mGoogleApiClientLocation.connect();
+        }
         mixPanelTimerStart(LocationActivity.class.getName());
         logging.LogI("On Start");
     }
@@ -137,28 +152,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         super.onBackPressed();
     }
 
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            //your code here
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,10 +160,21 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
         hideKeyboard(this);
 
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                .getMap();
         displayFavLocations();
         checkLocationStatus();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        mGoogleApiClientLocation = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+                .getMap();
 
         new Thread(new Runnable() {
             public void run() {
@@ -187,11 +191,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 });
             }
         }).start();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
 
         // Register a listener that receives callbacks when a suggestion has been selected
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
@@ -242,7 +241,6 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         mixpanelDataAdd.put("Return Location", _Location);
         return _Location;
     }
-
 
     private void checkLocationStatus() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -498,14 +496,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         double latitude = 0.00;
         String _Location = "";
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), true);
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClientLocation);
 
-        Location locations = locationManager.getLastKnownLocation(provider);
-        List<String> providerList = locationManager.getAllProviders();
-        if (null != locations && null != providerList && providerList.size() > 0) {
-            longitude = locations.getLongitude();
-            latitude = locations.getLatitude();
+        if (mLastLocation != null) {
+            longitude = mLastLocation.getLongitude();
+            latitude = mLastLocation.getLatitude();
             Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
             try {
                 List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -645,6 +641,18 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         CustomPlaceAdapter chatAdapter = new CustomPlaceAdapter(favValues, this);
         recyclerView.setAdapter(chatAdapter);
         dialog = new AlertDialog.Builder(this);
+    }
 
+    @Override
+    public void onConnected(Bundle arg0) {
+
+        // Once connected with google api, get the location
+        refreshLocation.performClick();
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        mGoogleApiClient.connect();
+        mGoogleApiClientLocation.connect();
     }
 }

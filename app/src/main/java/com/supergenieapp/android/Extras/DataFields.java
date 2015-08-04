@@ -35,8 +35,8 @@ public class DataFields {
     public static final String UPDATEGCMURL = "/updategcm";
     public static final String REGISTERURL = "/users";
 
-    private static final String StagingServer = "http://staging0.getgenieapp.com";
-    private static final String StagingSocket = "http://staging0chat.getgenieapp.com";
+    private static final String StagingServer = "http://staging0.supergenieapp.com";
+    private static final String StagingSocket = "http://staging0chat.supergenieapp.com";
 
     private static final String TestServer = "http://staging0.getgenieapp.com";
     private static final String TestSocket = "http://staging0chat.getgenieapp.com";
