@@ -595,6 +595,7 @@ public class ChatFragment extends GenieFragment {
     public void onClickedLocation() {
         startActivityForResult(new Intent((BaseActivity) getActivity(), LocationActivity.class), LOCATIONRESULT);
         moreLayout.setVisibility(View.GONE);
+        speechBox.setVisibility(View.GONE);
     }
 
     private void setMuteButton() {
