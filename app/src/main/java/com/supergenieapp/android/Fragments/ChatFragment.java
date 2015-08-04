@@ -392,7 +392,7 @@ public class ChatFragment extends GenieFragment {
             } else if (messageObject.getMessageValues().get_id() == DataFields.IMAGE) {
                 ((BaseActivity) getActivity()).speakOut(messageObject.getMessageValues().getText());
             } else if (messageObject.getMessageValues().get_id() == DataFields.PAYNOW) {
-                ((BaseActivity) getActivity()).speakOut("payment card received. pay to finish your order.");
+                ((BaseActivity) getActivity()).speakOut("pay to finish your order.");
             }
             displayMessages(true, DataFields.ScrollDown);
             scroll();
@@ -424,6 +424,7 @@ public class ChatFragment extends GenieFragment {
 //                }
                 speechBox.setVisibility(View.VISIBLE);
                 message.setEnabled(false);
+                send.setEnabled(false);
                 new Thread(new Runnable() {
                     public void run() {
                         try {
@@ -577,6 +578,7 @@ public class ChatFragment extends GenieFragment {
     @OnClick(R.id.doneButton)
     public void onClickDoneButton() {
         message.setEnabled(true);
+        send.setEnabled(true);
         ((BaseActivity) getActivity()).stopSpeech();
         speechBox.setVisibility(View.GONE);
     }
@@ -620,10 +622,12 @@ public class ChatFragment extends GenieFragment {
     public void postToMessageBox(String text) {
         message.setText(text);
         message.setEnabled(true);
+        send.setEnabled(true);
     }
 
     public void closePopup() {
         speechBox.setVisibility(View.GONE);
         message.setEnabled(true);
+        send.setEnabled(true);
     }
 }

@@ -53,7 +53,7 @@ public class EULAActivity extends GenieBaseActivity {
             }
         });
 
-        webPage.loadUrl("http://www.getgenieapp.com/terms.html");
+        webPage.loadUrl("http://www.supergenieapp.com/terms.html");
     }
 
     @Override

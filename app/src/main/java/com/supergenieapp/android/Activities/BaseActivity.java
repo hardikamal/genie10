@@ -85,6 +85,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         speech.setRecognitionListener(this);
+
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
                 "en");
@@ -243,9 +244,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         if (tts != null) {
             tts.stop();
             tts.shutdown();
-        }
-        if (speech != null) {
-            speech.destroy();
         }
         new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Paused");
@@ -1121,6 +1119,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         if (!sharedPreferences.getBoolean("isMuted", true)) {
             if (status == TextToSpeech.SUCCESS) {
                 int result = tts.setLanguage(Locale.getDefault());
+                tts.setPitch(1f);
+                tts.setSpeechRate(0.85f);
                 if (result == TextToSpeech.LANG_MISSING_DATA
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Crouton.makeText(BaseActivity.this,
@@ -1146,12 +1146,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     public boolean startSpeech() {
         if (speech != null && recognizerIntent != null) {
             speech.startListening(recognizerIntent);
+            return true;
         } else {
             Crouton.makeText(BaseActivity.this,
                     getString(R.string.speech_not_supported), Style.ALERT, R.id.body).show();
             return false;
         }
-        return true;
     }
 
     public void stopSpeech() {
@@ -1203,6 +1203,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         String errorMessage = getErrorText(errorCode);
         Crouton.makeText(BaseActivity.this,
                 errorMessage, Style.ALERT, R.id.body).show();
+
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {

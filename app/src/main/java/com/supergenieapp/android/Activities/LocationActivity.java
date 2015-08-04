@@ -302,7 +302,15 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @OnClick(R.id.pickplaces)
     public void onClickPickPlaces() {
         mixpanelDataAdd.put("Pressed", "Pick Places Button");
-        pickplacebutton.performClick();
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        Context context = getApplicationContext();
+        try {
+            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.pickplacebutton)
@@ -323,7 +331,9 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @OnClick(R.id.location)
     public void onClickLocation() {
         mixpanelDataAdd.put("Pressed", "Location Button");
-        locationButton.performClick();
+        if (messageValues == null)
+            messageValues = getLocation();
+        showSaveLaterBox(messageValues);
     }
 
     @OnClick(R.id.search)
