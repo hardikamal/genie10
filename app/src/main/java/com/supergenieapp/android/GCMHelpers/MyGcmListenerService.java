@@ -56,7 +56,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        DBDataSource dbDataSource = GenieApplication.getInstance().getDBDataSource();
+        DBDataSource dbDataSource = new DBDataSource(this);
         System.out.println(data.toString());
         MixpanelAPI mixpanel =
                 MixpanelAPI.getInstance(this, getString(R.string.mixpanel));

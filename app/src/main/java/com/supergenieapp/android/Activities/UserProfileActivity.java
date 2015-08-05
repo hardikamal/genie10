@@ -82,7 +82,6 @@ public class UserProfileActivity extends GenieBaseActivity {
     final int PICK_IMAGE = 2;
 
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
-    boolean canClose = false;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
@@ -106,9 +105,6 @@ public class UserProfileActivity extends GenieBaseActivity {
 
         setContentView(R.layout.activity_user_profile);
         ButterKnife.inject(this);
-        if (getIntent().getExtras() != null) {
-            canClose = getIntent().getBooleanExtra("canclose", false);
-        }
 
         update.setTextColor(getResources().getColor(R.color.white));
         userIcon.setButtonColor(getResources().getColor(R.color.colorPrimary));
@@ -235,8 +231,7 @@ public class UserProfileActivity extends GenieBaseActivity {
                 Intent profileIntent = new Intent(this, OrderDetailsActivity.class);
                 profileIntent.putExtra("canclose", true);
                 startActivity(profileIntent);
-                if (canClose)
-                    finish();
+                finish();
                 return true;
             case R.id.action_share:
                 mixpanelDataAdd.put("Pressed", "Share Menu");

@@ -51,7 +51,6 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     RecyclerView orderList;
     @InjectView(R.id.noorders)
     TextView noOrders;
-    boolean canClose = false;
 
     public HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
@@ -81,9 +80,6 @@ public class OrderDetailsActivity extends GenieBaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         getUserOrders();
-        if (getIntent().getExtras() != null) {
-            canClose = getIntent().getBooleanExtra("canclose", false);
-        }
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -238,8 +234,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 Intent profileIntent = new Intent(this, UserProfileActivity.class);
                 profileIntent.putExtra("canclose", true);
                 startActivity(profileIntent);
-                if (canClose)
-                    finish();
+                finish();
                 return true;
             case R.id.action_share:
                 mixpanelDataAdd.put("Pressed", "Share Menu");
