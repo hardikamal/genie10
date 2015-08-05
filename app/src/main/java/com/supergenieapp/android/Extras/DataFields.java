@@ -86,6 +86,7 @@ public class DataFields {
     public static int ScrollDown = 1;
     public static int ScrollPosition = 2;
     public static int NoScroll = 0;
+    public static int LOCATIONRESULT = 17;
 
     public static String getServerUrl() {
         String server = StagingServer;

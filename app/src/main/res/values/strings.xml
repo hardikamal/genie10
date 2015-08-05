@@ -79,17 +79,16 @@
     <string name="gaveanametoplace">Give an unique name to your place</string>
     <string name="saveas">Save As</string>
     <string name="share">Share</string>
-    <string name="trygenie">SuperGenie (Personal Assistant App)</string>
-    <string name="bodytext">Hi!\n\nI just used SuperGenie - Free Personal Assistant App for Ordering
+    <string name="trygenie">SuperGenie App</string>
+    <string name="bodytext">Hey, I just used SuperGenie - Free Personal Assistant App for Ordering
         &amp; Buying Anything, and the experience was SuperAwesome :)
-        \n\nJust Chat, Order, Done!  You can download the app here: \nhttps://play.google.com/store/apps/details?id=com.supergenieapp.android
-        \n\nYou can also ping SuperGenie on WhatsApp at +918008084084.</string>
+        \n\nJust Chat, Order, Done!  You can download the app here: \nhttps://play.google.com/store/apps/details?id=com.supergenieapp.android</string>
     <string name="shareus">Share Us</string>
     <string name="today">Today</string>
     <string name="paynow">Pay Now</string>
     <string name="paycod">Pay as COD</string>
     <string name="price999">Rs. 999.00</string>
-    <string name="paynowrandomtext">Your order from Super Genie is Rs. 999.00. You will receive your order soon.</string>
+    <string name="paynowrandomtext">Your order from SuperGenie is Rs. 999.00. You will receive your order soon.</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>
@@ -366,4 +365,5 @@
     <string name="languagenotfound">Language Package not found.</string>
     <string name="notsupportedtexttospeech">Device doesn\'t support text to speech</string>
     <string name="unabletostartspeech">Unable to start speech to text</string>
+    <string name="serverconnectionerror">Server Connection Error</string>
 </resources>

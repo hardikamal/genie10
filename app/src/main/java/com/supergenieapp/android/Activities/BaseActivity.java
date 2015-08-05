@@ -65,7 +65,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     Toolbar mToolbar;
     @InjectView(R.id.screen)
     LinearLayout screen;
-    private Socket mSocket;
+    private static Socket mSocket;
     private static Categories categorie_selected = null;
     private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
     long startRxBytes = 0;
@@ -185,7 +185,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Resumed");
         logging.LogV("Socket Checking to on");
-        if (!mSocket.connected()) {
+        if (!mSocket.connected() && genieApplication.getSocket().connected()) {
             mixpanelDataAdd.put("Socket", "Opened");
             logging.LogV("Socket Opened");
             mSocket.on("reset connection", reset_connection);
@@ -266,12 +266,16 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println(requestCode);
+
         FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
         for (Fragment fragment : fragments) {
             if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment && data != null) {
                 mixpanelDataAdd.put("Location", "Activity Returned");
-                fragment.onActivityResult(requestCode, resultCode, data);
+                if (requestCode == DataFields.LOCATIONRESULT) {
+                    ((ChatFragment) fragment).onActivityResultLocation(data);
+                }
             }
         }
     }
@@ -432,9 +436,13 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println("JSON for get all " + jsonObject.toString());
-            if (mSocket.connected())
-                mSocket.emit("register user", jsonObject);
+//            System.out.println("JSON for get all " + jsonObject.toString());
+            if (mSocket.connected() && genieApplication.getSocket().connected())
+                genieApplication.getSocket().emit("register user", jsonObject);
+            else {
+                Crouton.makeText(BaseActivity.this,
+                        getString(R.string.serverconnectionerror), Style.ALERT, R.id.body).show();
+            }
             // changed from get category chats to register users
             setChatStatus(true);
         }
@@ -1056,8 +1064,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
-        if (mSocket.connected())
-            mSocket.emit("load earlier messages", jsonObject);
+        if (mSocket.connected() && genieApplication.getSocket().connected())
+            genieApplication.getSocket().emit("load earlier messages", jsonObject);
     }
 
     public void shoyCODAlert(String costToPay) {
@@ -1095,8 +1103,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected())
-            mSocket.emit("user message", jsonObject);
+        if (mSocket.connected() && genieApplication.getSocket().connected())
+            genieApplication.getSocket().emit("user message", jsonObject);
     }
 
     public void emitPayOnline(long created_at, String action) {
@@ -1110,8 +1118,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected())
-            mSocket.emit("pay online", jsonObject);
+        if (mSocket.connected() && genieApplication.getSocket().connected())
+            genieApplication.getSocket().emit("pay online", jsonObject);
     }
 
     @Override

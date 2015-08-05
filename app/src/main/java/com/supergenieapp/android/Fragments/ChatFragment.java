@@ -301,55 +301,45 @@ public class ChatFragment extends GenieFragment {
     }
 
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResultLocation(Intent data) {
         if (data.getExtras() != null) {
-            if (data.hasExtra(RecognizerIntent.EXTRA_RESULTS)) {
-                ArrayList<String> result = data
-                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                System.out.println(result.get(0));
-                message.setText(result.get(0));
-            } else {
-                mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
-                final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
-                Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
-                dbDataSource.addNormal(messageObject);
-                displayMessages(true, DataFields.ScrollDown);
-                new Thread(new Runnable() {
-                    public void run() {
-                        int i = 0;
-                        do {
+            mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
+            final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
+            Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
+            dbDataSource.addNormal(messageObject);
+            displayMessages(true, DataFields.ScrollDown);
+            new Thread(new Runnable() {
+                public void run() {
+                    int i = 0;
+                    do {
+                        try {
+                            Thread.sleep(DataFields.small400TimeOut);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (i > 5) {
+                            break;
+                        }
+                    } while (!genieApplication.getSocket().connected());
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        public void run() {
                             try {
-                                Thread.sleep(DataFields.small400TimeOut);
-                            } catch (InterruptedException e) {
+                                JSONObject valueJSON = new JSONObject();
+                                valueJSON.put("address", messageValues.getText());
+                                valueJSON.put("lng", messageValues.getLng());
+                                valueJSON.put("lat", messageValues.getLat());
+                                emitMessage(DataFields.LOCATION, valueJSON);
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            if (i > 5) {
-                                break;
-                            }
-                        } while (!genieApplication.getSocket().connected());
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run() {
-                                try {
-                                    JSONObject valueJSON = new JSONObject();
-                                    valueJSON.put("address", messageValues.getText());
-                                    valueJSON.put("lng", messageValues.getLng());
-                                    valueJSON.put("lat", messageValues.getLat());
-                                    emitMessage(DataFields.LOCATION, valueJSON);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
-                }).start();
-            }
-        } else
-
-        {
+                        }
+                    });
+                }
+            }).start();
+        } else {
             Crouton.makeText(getActivity(), getString(R.string.errorinaccessinglocation), Style.ALERT, viewGroup).show();
         }
-
     }
 
     @Override
@@ -595,7 +585,7 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.locationLayout)
     public void onClickedLocation() {
-        startActivityForResult(new Intent((BaseActivity) getActivity(), LocationActivity.class), LOCATIONRESULT);
+        ((BaseActivity) getActivity()).startActivityForResult(new Intent((BaseActivity) getActivity(), LocationActivity.class), DataFields.LOCATIONRESULT);
         moreLayout.setVisibility(View.GONE);
         speechBox.setVisibility(View.GONE);
     }
