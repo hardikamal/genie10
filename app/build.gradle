@@ -88,6 +88,7 @@ dependencies {
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.1.4'
     compile 'com.mixpanel.android:mixpanel-android:4.6.2'
     //    testCompile 'junit:junit:4.6'
     //    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'

@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,7 +71,7 @@ public class ChatFragment extends GenieFragment {
     LinearLayout messageLayout;
     String color = "#26ACEC";
     int id = 0;
-    public int position = -1;
+    public static int position;
     long hide_time = 0;
     @InjectView(R.id.message)
     EditText message;
@@ -99,10 +100,10 @@ public class ChatFragment extends GenieFragment {
     @InjectView(R.id.locationText)
     TextView locationText;
 
+    boolean wentBackground = false;
     boolean imageResource = true;
     private CustomChatAdapter chatAdapter;
     private ArrayList<Messages> messages = new ArrayList<>();
-    private int LOCATIONRESULT = 1;
     String url;
     View rootView;
     ViewGroup viewGroup;
@@ -125,11 +126,15 @@ public class ChatFragment extends GenieFragment {
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
         ButterKnife.inject(this, rootView);
         Crouton.cancelAllCroutons();
-
+        wentBackground = false;
         Bundle bundle = this.getArguments();
 
         if (bundle != null) {
-            position = bundle.getInt("position", -1);
+            if (!bundle.containsKey("position")) {
+                position = -1;
+            }
+
+            System.out.println(position);
             id = bundle.getInt("id", 0);
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
@@ -267,8 +272,8 @@ public class ChatFragment extends GenieFragment {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
-                    if (linearLayoutManager != null) {
-                        DataFields.position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (linearLayoutManager != null && linearLayoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
+                        System.out.println(linearLayoutManager.findFirstCompletelyVisibleItemPosition());
                         position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     }
                 }
@@ -289,14 +294,17 @@ public class ChatFragment extends GenieFragment {
         if (scroll == DataFields.ScrollDown) {
             scroll();
         }
-        if (scroll == DataFields.ScrollPosition)
+        if (scroll == DataFields.ScrollPosition) {
+            System.out.println(position);
             scroll(position);
+        }
     }
 
     @Override
     public void onDetach() {
         mixpanelDataAdd.put("Chat Keyboard", "Hidden");
         hideKeyboard(getActivity());
+        wentBackground = false;
         super.onDetach();
     }
 
@@ -349,6 +357,7 @@ public class ChatFragment extends GenieFragment {
         mBus.register(this);
         mixPanelTimerStart(ChatFragment.class.getName());
         logging.LogI("On Start");
+        System.out.println(position);
     }
 
     @Override
@@ -358,7 +367,19 @@ public class ChatFragment extends GenieFragment {
         dbDataSource.UpdateCatNotification(id, 0);
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
         new NotificationHandler(getActivity()).resetNotification();
-        displayMessages(true, DataFields.ScrollDown);
+        if (wentBackground) {
+            wentBackground = false;
+            displayMessages(true, DataFields.ScrollDown);
+        }
+        System.out.println(position);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        wentBackground = true;
+        logging.LogV("on onPause Chat");
+        System.out.println(position);
     }
 
     @Override
@@ -513,8 +534,6 @@ public class ChatFragment extends GenieFragment {
     private void scroll() {
         if (messages.size() > 1) {
             recyclerView.scrollToPosition(messages.size() - 1);
-            position = messages.size() - 1;
-            DataFields.position = messages.size() - 1;
         }
     }
 

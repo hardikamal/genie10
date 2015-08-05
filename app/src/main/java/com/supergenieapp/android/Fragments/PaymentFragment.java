@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
@@ -45,7 +47,7 @@ public class PaymentFragment extends GenieFragment {
     WebView webview;
     @Optional
     @InjectView(R.id.image)
-    ImageView imageView;
+    SubsamplingScaleImageView imageView;
     @InjectView(R.id.parentLoadingView)
     LoadingView parentLoadingView;
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
@@ -86,64 +88,64 @@ public class PaymentFragment extends GenieFragment {
         if (bundle != null) {
             url = bundle.getString("url", url);
             created_at = bundle.getLong("created_at", created_at);
-//            if (bundle.getBoolean("image", false)) {
-//                rootView = inflater.inflate(R.layout.image_view, container, false);
-//                ButterKnife.inject(this, rootView);
-//                setImageForm();
-//            } else {
-//                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
-//                ButterKnife.inject(this, rootView);
-//                setWebForm(); }
+            if (bundle.getBoolean("image", false)) {
+                rootView = inflater.inflate(R.layout.image_view, container, false);
+                ButterKnife.inject(this, rootView);
+                setImageForm();
+            } else {
+                rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+                ButterKnife.inject(this, rootView);
+                setWebForm();
+            }
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
+            ButterKnife.inject(this, rootView);
+            setWebForm();
         }
-        rootView = inflater.inflate(R.layout.fragment_web_view, container, false);
-        ButterKnife.inject(this, rootView);
-        setWebForm();
-//        }
-
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
 
-//    private void setImageForm() {
-//        parentLoadingView.setLoading(true);
-//        parentLoadingView.setLoading(false);
-//        parentLoadingView.setText(getString(R.string.loading));
-//        String path = DataFields.TempFolder + "/" + utils.hashString(url);
-//        File imgFile = new File(path);
-//        if (imgFile.exists()) {
-//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-//            imageView.setImageBitmap(myBitmap);
-//        } else {
-//            imageLoader.get(url, new ImageLoader.ImageListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//
-//                }
-//
-//                @Override
-//                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-//                    if (response != null && response.getBitmap() != null) {
-//                        imageView.setImageBitmap(response.getBitmap());
-//                        FileOutputStream out = null;
-//                        try {
-//                            out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(url));
-//                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            try {
-//                                if (out != null) {
-//                                    out.close();
-//                                }
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
+    private void setImageForm() {
+        parentLoadingView.setLoading(true);
+        parentLoadingView.setLoading(false);
+        parentLoadingView.setText(getString(R.string.loading));
+        final String path = DataFields.TempFolder + "/" + utils.hashString(url);
+        File imgFile = new File(path);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imageView.setImage(ImageSource.uri(path));
+        } else {
+            imageLoader.get(url, new ImageLoader.ImageListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (response != null && response.getBitmap() != null) {
+                        FileOutputStream out = null;
+                        try {
+                            out = new FileOutputStream(path);
+                            response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (out != null) {
+                                    out.close();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        imageView.setImage(ImageSource.uri(path));
+                    }
+                }
+            });
+        }
+    }
 
     private void setWebForm() {
         parentLoadingView.setLoading(true);

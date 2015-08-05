@@ -185,7 +185,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Resumed");
         logging.LogV("Socket Checking to on");
-        if (!mSocket.connected() && genieApplication.getSocket().connected()) {
+        if (!mSocket.connected() ) {
             mixpanelDataAdd.put("Socket", "Opened");
             logging.LogV("Socket Opened");
             mSocket.on("reset connection", reset_connection);
@@ -374,7 +374,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
-        bundle.putInt("position", DataFields.position);
+        bundle.putBoolean("position", true);
         bundle.putString("color", categorie_selected.getBg_color());
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());
@@ -388,7 +388,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
-        bundle.putInt("position", DataFields.position);
+        bundle.putBoolean("position", true);
         bundle.putString("color", categorie_selected.getBg_color());
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());
@@ -437,8 +437,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 e.printStackTrace();
             }
 //            System.out.println("JSON for get all " + jsonObject.toString());
-            if (mSocket.connected() && genieApplication.getSocket().connected())
-                genieApplication.getSocket().emit("register user", jsonObject);
+            if (mSocket.connected() )
+                mSocket.emit("register user", jsonObject);
             else {
                 Crouton.makeText(BaseActivity.this,
                         getString(R.string.serverconnectionerror), Style.ALERT, R.id.body).show();
@@ -1064,8 +1064,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
-        if (mSocket.connected() && genieApplication.getSocket().connected())
-            genieApplication.getSocket().emit("load earlier messages", jsonObject);
+        if (mSocket.connected() )
+            mSocket.emit("load earlier messages", jsonObject);
     }
 
     public void shoyCODAlert(String costToPay) {
@@ -1103,8 +1103,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected() && genieApplication.getSocket().connected())
-            genieApplication.getSocket().emit("user message", jsonObject);
+        if (mSocket.connected() )
+            mSocket.emit("user message", jsonObject);
     }
 
     public void emitPayOnline(long created_at, String action) {
@@ -1118,8 +1118,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected() && genieApplication.getSocket().connected())
-            genieApplication.getSocket().emit("pay online", jsonObject);
+        if (mSocket.connected() )
+            mSocket.emit("pay online", jsonObject);
     }
 
     @Override

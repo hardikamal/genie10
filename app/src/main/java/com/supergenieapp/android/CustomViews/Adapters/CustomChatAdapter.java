@@ -501,17 +501,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     }
                 }
 
-//                viewHolderMain.imageView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        PaymentFragment paymentFragment = new PaymentFragment();
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString("url", messageValues.getUrl());
-//                        bundle.putBoolean("image", true);
-//                        paymentFragment.setArguments(bundle);
-//                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
-//                    }
-//                });
+                viewHolderMain.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PaymentFragment paymentFragment = new PaymentFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("url", messageValues.getUrl());
+                        bundle.putBoolean("image", true);
+                        paymentFragment.setArguments(bundle);
+                        ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
+                    }
+                });
 
                 if (messages.getDirection() == DataFields.INCOMING) {
                     GradientDrawable gd = new GradientDrawable(
@@ -548,11 +548,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 } else {
                     viewHolderMain.text.setBackgroundDrawable(gd);
                 }
-                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     viewHolderMain.mainLayout.setGravity(Gravity.LEFT);
-                }
-                else {
+                } else {
                     viewHolderMain.mainLayout.setGravity(Gravity.START);
                 }
 
