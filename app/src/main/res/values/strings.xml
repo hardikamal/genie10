@@ -7,7 +7,7 @@
 
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>
-    <string name="title_activity_main"/>
+    <string name="title_activity_main" />
     <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
@@ -367,4 +367,20 @@
     <string name="unabletostartspeech">Unable to start speech to text</string>
     <string name="serverconnectionerror">Server Connection Error</string>
     <string name="menu">Menu</string>
+
+    <string-array name="menu_items">
+        <item>Orders</item>
+        <item>Profile</item>
+        <item>Referral</item>
+        <item>Coupons/Offers</item>
+        <item>Share</item>
+    </string-array>
+
+    <string-array name="menu_items_draws">
+        <item>@drawable/ic_call_black_24dp</item>
+        <item>@drawable/ic_call_black_24dp</item>
+        <item>@drawable/ic_call_black_24dp</item>
+        <item>@drawable/ic_call_black_24dp</item>
+        <item>@drawable/ic_call_black_24dp</item>
+    </string-array>
 </resources>

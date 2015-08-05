@@ -39,8 +39,8 @@
                         android:id="@+id/catimage"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_90sdp"
-                        android:layout_marginBottom="@dimen/_30sdp"
-                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
                         android:padding="5dp"
                         android:scaleType="fitCenter" />
 

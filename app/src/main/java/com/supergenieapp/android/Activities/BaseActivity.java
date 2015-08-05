@@ -313,6 +313,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mNavigationDrawerFragment.toggleDrawerLayout();
                 return true;
             case R.id.action_share:
+                if (mNavigationDrawerFragment.isVisible()) {
+                    mNavigationDrawerFragment.toggleDrawerLayout();
+                }
                 mixpanelDataAdd.put("Pressed", "Share Menu");
                 mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
@@ -1334,5 +1337,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     private void onSectionAttached(int anInt) {
         // // TODO: 8/6/2015  
+    }
+
+    public void closeMenu() {
+        if (mNavigationDrawerFragment.isVisible())
+            mNavigationDrawerFragment.toggleDrawerLayout();
     }
 }

@@ -2,23 +2,22 @@ package com.supergenieapp.android.Fragments;
 
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
+import com.supergenieapp.android.CustomViews.Adapters.CustomMenuAdapter;
 import com.supergenieapp.android.R;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class NavigationDrawerFragment extends Fragment {
 
@@ -64,12 +63,18 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
+    @InjectView(R.id.recyclerView)
+    RecyclerView recyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(
-                R.layout.newsss, container, false);
+                R.layout.slidemenu, container, false);
+        ButterKnife.inject(this, rootView);
+        recyclerView.removeAllViews();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(new CustomMenuAdapter(getActivity()));
 
         return rootView;
     }
