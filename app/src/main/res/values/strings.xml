@@ -7,7 +7,7 @@
 
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>
-    <string name="title_activity_main">Chat</string>
+    <string name="title_activity_main"/>
     <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
@@ -366,4 +366,5 @@
     <string name="notsupportedtexttospeech">Device doesn\'t support text to speech</string>
     <string name="unabletostartspeech">Unable to start speech to text</string>
     <string name="serverconnectionerror">Server Connection Error</string>
+    <string name="menu">Menu</string>
 </resources>

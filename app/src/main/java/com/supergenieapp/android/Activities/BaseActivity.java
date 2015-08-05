@@ -1,6 +1,7 @@
 package com.supergenieapp.android.Activities;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,12 +20,16 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
@@ -36,6 +41,7 @@ import com.supergenieapp.android.Extras.NotificationHandler;
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.Fragments.ChatFragment;
 import com.supergenieapp.android.Fragments.MainFragment;
+import com.supergenieapp.android.Fragments.NavigationDrawerFragment;
 import com.supergenieapp.android.Fragments.PaymentFragment;
 import com.supergenieapp.android.GenieBaseActivity;
 import com.supergenieapp.android.Objects.Categories;
@@ -60,7 +66,7 @@ import butterknife.InjectView;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect, TextToSpeech.OnInitListener, RecognitionListener {
+public class BaseActivity extends GenieBaseActivity implements MainFragment.onSelect, TextToSpeech.OnInitListener, RecognitionListener, NavigationDrawerFragment.NavigationDrawerCallbacks {
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
     @InjectView(R.id.screen)
@@ -73,6 +79,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private TextToSpeech tts;
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,12 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         if (!sharedPreferences.getBoolean("isMuted", true)) {
             tts = new TextToSpeech(this, this);
         }
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         speech.setRecognitionListener(this);
@@ -146,36 +159,37 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
 
     @Override
     public void onBackPressed() {
-        mixpanelDataAdd.put("Button Pressed", "Back");
-        FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
-                mixpanelDataAdd.put("Back from", "Payment Fragment");
-                setSupportActionBar(mToolbar);
-                ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setHomeButtonEnabled(true);
-                    actionBar.setDisplayHomeAsUpEnabled(true);
+        if (!mNavigationDrawerFragment.isVisible()) {
+            mixpanelDataAdd.put("Button Pressed", "Back");
+            FragmentManager fragmentManager = BaseActivity.this.getSupportFragmentManager();
+            List<Fragment> fragments = fragmentManager.getFragments();
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
+                    mixpanelDataAdd.put("Back from", "Payment Fragment");
+                    setSupportActionBar(mToolbar);
+                    ActionBar actionBar = getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setHomeButtonEnabled(true);
+                        actionBar.setDisplayHomeAsUpEnabled(true);
+                    }
+                    mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+                    mToolbar.setTitle(categorie_selected.getName());
+                    mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
+                    onReceiveFromLeft(categorie_selected);
+                } else if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
+                    mixpanelDataAdd.put("Back from", "Chat Fragment");
+                    goBack();
+                } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
+                    mixpanelDataAdd.put("Back from", "Main Fragment");
+                    fragmentManager.popBackStack();
+                    Intent startMain = new Intent(Intent.ACTION_MAIN);
+                    startMain.addCategory(Intent.CATEGORY_HOME);
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(startMain);
                 }
-                mToolbar.setLogo(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-                mToolbar.setTitle(categorie_selected.getName());
-                mToolbar.setBackgroundColor(Color.parseColor(categorie_selected.getBg_color()));
-                onReceiveFromLeft(categorie_selected);
-//                if (fragmentManager.getBackStackEntryCount() > 0) {
-//                    fragmentManager.popBackStack();
-//                }
-            } else if (fragment != null && fragment.isVisible() && fragment instanceof ChatFragment) {
-                mixpanelDataAdd.put("Back from", "Chat Fragment");
-                goBack();
-            } else if (fragment != null && fragment.isVisible() && fragment instanceof MainFragment) {
-                mixpanelDataAdd.put("Back from", "Main Fragment");
-                fragmentManager.popBackStack();
-                Intent startMain = new Intent(Intent.ACTION_MAIN);
-                startMain.addCategory(Intent.CATEGORY_HOME);
-                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(startMain);
             }
+        } else {
+            mNavigationDrawerFragment.toggleDrawerLayout();
         }
     }
 
@@ -185,7 +199,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         new NotificationHandler(this).cancelNotification(DataFields.ALERTMSG);
         mixpanelDataAdd.put("Activity", "Resumed");
         logging.LogV("Socket Checking to on");
-        if (!mSocket.connected() ) {
+        if (!mSocket.connected()) {
             mixpanelDataAdd.put("Socket", "Opened");
             logging.LogV("Socket Opened");
             mSocket.on("reset connection", reset_connection);
@@ -295,15 +309,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
-            case R.id.action_profile:
-                mixpanelDataAdd.put("Pressed", "Profile Menu");
-                mixPanelBuild("Profile Menu Pressed");
-                startActivity(new Intent(BaseActivity.this, UserProfileActivity.class));
-                return true;
-            case R.id.action_previous_orders:
-                mixpanelDataAdd.put("Pressed", "Previous Orders Menu");
-                mixPanelBuild("Previous Orders Menu Pressed");
-                startActivity(new Intent(this, OrderDetailsActivity.class));
+            case R.id.action_menu:
+                mNavigationDrawerFragment.toggleDrawerLayout();
                 return true;
             case R.id.action_share:
                 mixpanelDataAdd.put("Pressed", "Share Menu");
@@ -437,7 +444,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 e.printStackTrace();
             }
 //            System.out.println("JSON for get all " + jsonObject.toString());
-            if (mSocket.connected() )
+            if (mSocket.connected())
                 mSocket.emit("register user", jsonObject);
             else {
                 Crouton.makeText(BaseActivity.this,
@@ -1064,7 +1071,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void sendLoadMoreMessagesCall(JSONObject jsonObject) {
-        if (mSocket.connected() )
+        if (mSocket.connected())
             mSocket.emit("load earlier messages", jsonObject);
     }
 
@@ -1103,7 +1110,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected() )
+        if (mSocket.connected())
             mSocket.emit("user message", jsonObject);
     }
 
@@ -1118,7 +1125,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (mSocket.connected() )
+        if (mSocket.connected())
             mSocket.emit("pay online", jsonObject);
     }
 
@@ -1285,5 +1292,47 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 break;
         }
         return message;
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        // update the main content by replacing fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.body, PlaceholderFragment.newInstance(position + 1))
+                .commit();
+    }
+
+    public static class PlaceholderFragment extends Fragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_main, container, false);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((BaseActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }
+
+    private void onSectionAttached(int anInt) {
+        // // TODO: 8/6/2015  
     }
 }
