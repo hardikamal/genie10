@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.supergenieapp.android.Activities.BaseActivity;
+import com.supergenieapp.android.Activities.FeedBackActivity;
 import com.supergenieapp.android.Activities.OrderDetailsActivity;
 import com.supergenieapp.android.Activities.UserProfileActivity;
 import com.supergenieapp.android.Extras.Utils;
@@ -115,8 +116,10 @@ public class CustomMenuAdapter extends RecyclerView.Adapter {
                 Intent intent = new Intent(localContext, WalkThroughActivity.class);
                 intent.putExtra("finish", true);
                 localContext.startActivity(intent);
+            } else if (text.getText().equals("Feedback")) {
+                Intent intent = new Intent(localContext, FeedBackActivity.class);
+                localContext.startActivity(intent);
             }
-
 // // TODO: 8/6/2015
             ((BaseActivity) localContext).closeMenu();
         }

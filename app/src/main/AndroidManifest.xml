@@ -126,6 +126,12 @@
             android:label="@string/termsandconditions"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/MyMaterialThemeWithToolBar" />
+        <activity
+            android:name=".Activities.FeedBackActivity"
+            android:label="@string/title_activity_feed_back"
+            android:screenOrientation="sensorPortrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/MyMaterialThemeWithToolBar"/>
     </application>
 
 </manifest>

@@ -132,7 +132,7 @@ public class NavigationDrawerFragment extends GenieFragment {
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
-        
+
         if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
             mDrawerLayout.closeDrawer(Gravity.RIGHT);
         } else {

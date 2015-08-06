@@ -335,12 +335,12 @@
     <string name="contactus">Contact Us</string>
     <string name="subjecttoemail">Share your thoughts with us</string>
     <string name="supportemailaddress">android@getgenieapp.com</string>
-    <string name="sendemail">Send email...</string>
+    <string name="sendemail">Send email&#8230;</string>
     <string name="noorderyet">You have not placed any orders yet.</string>
     <string name="website">www.supergenieapp.com</string>
     <string name="title">Title</string>
     <string name="unreadmsg">"&#160;Unread Messages"</string>
-    <string name="sendinglocation">Sending Location...</string>
+    <string name="sendinglocation">Sending Location&#8230;</string>
     <string name="yes">Yes</string>
     <string name="wouldyouliketopay">Would you like to pay Rs.&#160;</string>
     <string name="viacod">&#160;via Cash On Delivery?</string>
@@ -354,7 +354,7 @@
     <string name="supergenieversion">\nSuperGenie Version:&#160;</string>
     <string name="imagefailedtodeliver">Try Again Later. Image Failed to Deliver.</string>
     <string name="profileupdated">Profile Updated.</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="speech_prompt">&#160;&#160;Speak now&#8230;</string>
     <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
     <string name="tap_on_mic">Tap on mic to speak</string>
@@ -369,20 +369,7 @@
     <string name="menu">Menu</string>
     <string name="signupfailed">Sign Up failed. Try again.</string>
     <string name="notabletoregisteruser">Not able to register user. Try again.</string>
-
-    <string-array name="menu_items">
-        <item>Profile</item>
-        <item>Profile</item>
-        <item>Referral</item>
-        <item>Coupons/Offers</item>
-        <item>Share</item>
-    </string-array>
-
-    <string-array name="menu_items_draws">
-        <item>MaterialDrawableBuilder.IconValue.ACCOUNT</item>
-        <item>@drawable/ic_call_black_24dp</item>
-        <item>@drawable/ic_call_black_24dp</item>
-        <item>@drawable/ic_call_black_24dp</item>
-        <item>@drawable/ic_call_black_24dp</item>
-    </string-array>
+    <string name="title_activity_feed_back">Feedback</string>
+    <string name="submit">Submit</string>
+    <string name="pleasetypeyourfeedback">Please type your feedback here&#8230;</string>
 </resources>
