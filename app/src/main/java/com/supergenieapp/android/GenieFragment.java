@@ -5,22 +5,16 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.Fragment;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.gson.Gson;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.Logging;
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.SecurePreferences.SecurePreferences;
-import com.google.gson.Gson;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONObject;
 
@@ -37,13 +31,11 @@ public class GenieFragment extends Fragment {
     public Logging logging;
     public TinyBus mBus;
     public Utils utils;
-    public MixpanelAPI mixpanel;
     public ImageLoader imageLoader;
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mixpanel = MixpanelAPI.getInstance(getActivity(), getString(R.string.mixpanel));
         genieApplication = GenieApplication.getInstance();
         sharedPreferences = genieApplication.getSecurePrefs();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
@@ -53,13 +45,10 @@ public class GenieFragment extends Fragment {
         gson = new Gson();
         utils = new Utils(getActivity());
         dbDataSource = genieApplication.getDBDataSource();
-        mixpanel.identify(utils.getDeviceSerialNumber());
-        mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }
 
     @Override
     public void onDestroy() {
-        mixpanel.flush();
         super.onDestroy();
     }
 
@@ -72,27 +61,27 @@ public class GenieFragment extends Fragment {
 
     public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
         memoryConsumption(myValues);
-        mixpanel.trackMap(eventName, myValues);
+
     }
 
     public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
-        mixpanel.track(eventName, jsonObject);
+
     }
 
     public void mixPanelBuild(String eventName) {
-        mixpanel.track(eventName);
+
     }
 
     public void mixPanelFlush() {
-        mixpanel.flush();
+
     }
 
     public void mixPanelTimerStart(String timerName) {
-        mixpanel.timeEvent(timerName);
+
     }
 
     public void mixPanelTimerStop(String timerName) {
-        mixpanel.track(timerName);
+
     }
 
     public void memoryConsumption(HashMap<String, Object> map) {

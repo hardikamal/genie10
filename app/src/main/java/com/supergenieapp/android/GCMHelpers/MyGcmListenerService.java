@@ -42,7 +42,6 @@ import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Messages;
 import com.supergenieapp.android.R;
 import com.google.android.gms.gcm.GcmListenerService;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,11 +57,6 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         DBDataSource dbDataSource = new DBDataSource(this);
         System.out.println(data.toString());
-        MixpanelAPI mixpanel =
-                MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
-        mixpanel.getPeople().identify(new Utils(this).getDeviceSerialNumber());
-        mixpanel.getPeople().initPushHandling(getString(R.string.projectId));
-
         if (data.containsKey("alertmsg")) {
             try {
                 JSONObject jsonObject = new JSONObject(data.getString("alertmsg"));

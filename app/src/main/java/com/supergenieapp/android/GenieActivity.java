@@ -3,7 +3,6 @@ package com.supergenieapp.android;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -11,22 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.gson.Gson;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.Logging;
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.SecurePreferences.SecurePreferences;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import de.halfbit.tinybus.TinyBus;
 
@@ -43,7 +38,6 @@ public class GenieActivity extends Activity {
     public ImageLoader imageLoader;
     public Utils utils;
     public DBDataSource dbDataSource;
-    public MixpanelAPI mixpanel;
 
     /**
      * @param savedInstance
@@ -60,9 +54,6 @@ public class GenieActivity extends Activity {
         imageLoader = genieApplication.getImageLoader();
         utils = new Utils(this);
         dbDataSource = genieApplication.getDBDataSource();
-        mixpanel = MixpanelAPI.getInstance(this, getString(R.string.mixpanel));
-        mixpanel.identify(utils.getDeviceSerialNumber());
-        mixpanel.getPeople().identify(utils.getDeviceSerialNumber());
     }
 
     public void setupUI(View view, final Activity activity) {
@@ -113,32 +104,31 @@ public class GenieActivity extends Activity {
 
     public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
         memoryConsumption(myValues);
-        mixpanel.trackMap(eventName, myValues);
+
     }
 
     public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
-        mixpanel.track(eventName, jsonObject);
+
     }
 
     public void mixPanelBuild(String eventName) {
-        mixpanel.track(eventName);
+
     }
 
     public void mixPanelFlush() {
-        mixpanel.flush();
+
     }
 
     public void mixPanelTimerStart(String timerName) {
-        mixpanel.timeEvent(timerName);
+
     }
 
     public void mixPanelTimerStop(String timerName) {
-        mixpanel.track(timerName);
+
     }
 
     @Override
     protected void onDestroy() {
-        mixpanel.flush();
         super.onDestroy();
     }
 
