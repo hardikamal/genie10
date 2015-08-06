@@ -69,7 +69,7 @@ public class UpdateIntentService extends IntentService {
                         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 // [END get_token]
                 Log.i(TAG, "GCM Registration Token: " + token);
-
+// // TODO: 8/6/2015  
                 sendRegistrationToServer(token, new onTokenUpdate() {
                     @Override
                     public void onUpdate(boolean status, boolean verify) {

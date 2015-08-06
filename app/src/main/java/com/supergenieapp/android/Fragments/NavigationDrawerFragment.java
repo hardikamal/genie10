@@ -3,7 +3,6 @@ package com.supergenieapp.android.Fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.supergenieapp.android.CustomViews.Adapters.CustomMenuAdapter;
+import com.supergenieapp.android.GenieFragment;
 import com.supergenieapp.android.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends GenieFragment {
 
     /**
      * Remember the position of the selected item.
@@ -63,8 +63,10 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
     @InjectView(R.id.recyclerView)
     RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,13 +78,15 @@ public class NavigationDrawerFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new CustomMenuAdapter(getActivity()));
 
+        fontChangeCrawlerRegular.replaceFonts((ViewGroup) rootView);
         return rootView;
     }
+
+    String color;
 
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
-
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
@@ -125,10 +129,16 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     public void toggleDrawerLayout() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+        
         if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
             mDrawerLayout.closeDrawer(Gravity.RIGHT);
         } else {
             mDrawerLayout.openDrawer(Gravity.RIGHT);
         }
-    };
+    }
+
+    ;
 }

@@ -158,6 +158,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // // TODO: 8/6/2015
                 mixPanelTimerStop(DataFields.getServerUrl() + DataFields.ORDERS);
                 mixpanelDataAdd.put("Server Call", "ORDERS Server 500 Error");
                 mixPanelBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");

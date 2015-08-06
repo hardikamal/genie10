@@ -207,6 +207,7 @@ public class RegisterFragment extends GenieFragment {
             json.put("mac_id", utils.getMacId());
             json.put("gcm_token", sharedPreferences.getString(DataFields.GCM_TOKEN, null));
             if (json.has(DataFields.GCM_TOKEN) && json.getString(DataFields.GCM_TOKEN) != null) {
+
                 logging.LogV("GCM Token", json.getString(DataFields.GCM_TOKEN));
                 JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.REGISTERURL, json,
                         new Response.Listener<JSONObject>() {
@@ -246,7 +247,7 @@ public class RegisterFragment extends GenieFragment {
             } else {
                 logging.LogE("GCM Token not found");
                 parentLoadingView.setLoading(false);
-
+                Crouton.makeText(getActivity(), genieApplication.getString(R.string.notabletoregisteruser), Style.ALERT, viewGroup).show();
             }
         } catch (JSONException e) {
             e.printStackTrace();

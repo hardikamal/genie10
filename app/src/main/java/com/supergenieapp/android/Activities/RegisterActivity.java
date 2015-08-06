@@ -155,7 +155,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Register register) {
-        Crouton.makeText(this, getString(R.string.unexpectederror), Style.ALERT).show();
+        Crouton.makeText(this, getString(R.string.signupfailed), Style.ALERT).show();
     }
 
     @Override

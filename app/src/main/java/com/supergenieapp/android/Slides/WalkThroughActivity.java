@@ -22,12 +22,14 @@ public class WalkThroughActivity extends AppIntro {
     }
 
     private void loadMainActivity() {
-        Intent intent = new Intent(WalkThroughActivity.this, RegisterActivity.class);
-        intent.putExtra("page", "Register");
-        startActivity(intent);
+        if (getIntent().getExtras() == null) {
+            Intent intent = new Intent(WalkThroughActivity.this, RegisterActivity.class);
+            intent.putExtra("page", "Register");
+            startActivity(intent);
+        }
         finish();
     }
-    
+
     @Override
     public void onSkipPressed() {
         mixpanelAPI.track("Walk Thru Skip Pressed");

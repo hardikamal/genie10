@@ -320,7 +320,6 @@ public class VerifyFragment extends GenieFragment {
     @OnClick(R.id.redoRegistration)
     public void RedoRegistration() {
         mixPanelBuild("User Clicked RedoRegistration");
-        sharedPreferences.edit().clear().apply();
         ((RegisterActivity) getActivity()).onRedo(new Verify());
     }
 

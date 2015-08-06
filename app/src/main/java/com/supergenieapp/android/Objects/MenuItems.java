@@ -1,17 +1,17 @@
 package com.supergenieapp.android.Objects;
 
+import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
+
 /**
  * Created by Raviteja on 8/6/2015.
  */
 public class MenuItems {
     String title;
-    String image;
-    String color;
+    MaterialDrawableBuilder.IconValue image;
 
-    public MenuItems(String title, String image, String color) {
+    public MenuItems(String title, MaterialDrawableBuilder.IconValue image) {
         this.title = title;
         this.image = image;
-        this.color = color;
     }
 
     public String getTitle() {
@@ -22,19 +22,11 @@ public class MenuItems {
         this.title = title;
     }
 
-    public String getImage() {
+    public MaterialDrawableBuilder.IconValue getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(MaterialDrawableBuilder.IconValue image) {
         this.image = image;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 }

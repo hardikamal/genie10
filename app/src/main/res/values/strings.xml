@@ -367,9 +367,11 @@
     <string name="unabletostartspeech">Unable to start speech to text</string>
     <string name="serverconnectionerror">Server Connection Error</string>
     <string name="menu">Menu</string>
+    <string name="signupfailed">Sign Up failed. Try again.</string>
+    <string name="notabletoregisteruser">Not able to register user. Try again.</string>
 
     <string-array name="menu_items">
-        <item>Orders</item>
+        <item>Profile</item>
         <item>Profile</item>
         <item>Referral</item>
         <item>Coupons/Offers</item>
@@ -377,7 +379,7 @@
     </string-array>
 
     <string-array name="menu_items_draws">
-        <item>@drawable/ic_call_black_24dp</item>
+        <item>MaterialDrawableBuilder.IconValue.ACCOUNT</item>
         <item>@drawable/ic_call_black_24dp</item>
         <item>@drawable/ic_call_black_24dp</item>
         <item>@drawable/ic_call_black_24dp</item>

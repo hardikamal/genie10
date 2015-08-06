@@ -62,7 +62,7 @@ public class RegistrationIntentService extends IntentService {
                 Log.i(TAG, "GCM Registration Token: " + token);
 
                 subscribeTopics(token);
-
+//// TODO: 8/6/2015  
                 sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, true).apply();
                 securePreference.edit().putString(DataFields.GCM_TOKEN, token).apply();
 

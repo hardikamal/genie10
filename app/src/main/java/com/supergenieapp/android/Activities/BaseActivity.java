@@ -81,6 +81,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     private Intent recognizerIntent;
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    public Categories getCategorie_selected() {
+        return categorie_selected;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +119,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mixpanelDataAdd.put("Page", "Load Categories");
                 setSupportActionBar(mToolbar);
                 startFragmentFromRight(R.id.body, new MainFragment());
+                categorie_selected = null;
                 mToolbar.setLogo(R.drawable.genie_logo);
             } else if (getIntent().getStringExtra("page").contains("message")) {
                 mixpanelDataAdd.put("Page", "Go to Chat Screen");
@@ -126,6 +131,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     mixPanelBuild("Multiple Category Notification");
                     setSupportActionBar(mToolbar);
                     startFragmentFromRight(R.id.body, new MainFragment());
+                    categorie_selected = null;
                     mToolbar.setLogo(R.drawable.genie_logo);
                     mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     mToolbar.setTitle("");
@@ -152,6 +158,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 mixpanelDataAdd.put("Page", "Load Categories");
                 setSupportActionBar(mToolbar);
                 startFragmentFromRight(R.id.body, new MainFragment());
+                categorie_selected = null;
                 mToolbar.setLogo(R.drawable.genie_logo);
             }
         }
@@ -185,6 +192,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     Intent startMain = new Intent(Intent.ACTION_MAIN);
                     startMain.addCategory(Intent.CATEGORY_HOME);
                     startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    categorie_selected = null;
                     startActivity(startMain);
                 }
             }
@@ -349,6 +357,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         bundle.putBoolean("refresh", true);
         mainFragment.setArguments(bundle);
         startFragmentFromLeft(R.id.body, mainFragment);
+        categorie_selected = null;
     }
 
     public void onClick(Categories categories) {
@@ -446,10 +455,10 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            System.out.println("JSON for get all " + jsonObject.toString());
-            if (mSocket.connected())
+            System.out.println("JSON for get all " + jsonObject.toString());
+            if (mSocket.connected() && sharedPreferences.getString(DataFields.TOKEN, null) != null) {
                 mSocket.emit("register user", jsonObject);
-            else {
+            } else {
                 Crouton.makeText(BaseActivity.this,
                         getString(R.string.serverconnectionerror), Style.ALERT, R.id.body).show();
             }
@@ -672,6 +681,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                     dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
                 }
                 ((MainFragment) fragment).refreshData();
+                categorie_selected = null;
             } else if (fragment != null && fragment.isVisible() && fragment instanceof PaymentFragment) {
                 mixpanelDataAdd.put("Message", "Received in category Screen");
                 mixPanelBuild("Notification Set from category page");

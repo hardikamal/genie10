@@ -2,30 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorddd">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/splashcreenbackgroundcolor"
         android:orientation="vertical">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/supergenie_512" />
+            android:background="@drawable/sidebar_header" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:enabled="false"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_30sdp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/colorddd" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@id/recyclerView"
