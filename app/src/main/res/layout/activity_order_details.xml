@@ -14,15 +14,29 @@
         android:textSize="@dimen/_15sdp"
         android:visibility="gone" />
 
-    <com.supergenieapp.android.CustomViews.ProgressBar.LoadingView
-        android:id="@+id/loadingview"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/orderList"
+        <com.supergenieapp.android.CustomViews.ProgressBar.LoadingView
+            android:id="@+id/loadingview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.supergenieapp.android.CustomViews.ProgressBar.LoadingView>
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/orderList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.supergenieapp.android.CustomViews.ProgressBar.LoadingView>
+
+        <fragment
+            android:id="@+id/navigation_drawer"
+            android:name="com.supergenieapp.android.Fragments.NavigationDrawerFragment"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            tools:layout="@layout/slidemenu" />
+    </android.support.v4.widget.DrawerLayout>
 
 </RelativeLayout>

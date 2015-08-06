@@ -23,7 +23,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,6 +45,7 @@ import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.GraphicsUtil;
+import com.supergenieapp.android.Fragments.NavigationDrawerFragment;
 import com.supergenieapp.android.GenieBaseActivity;
 import com.supergenieapp.android.R;
 
@@ -63,7 +68,7 @@ import butterknife.OnClick;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class UserProfileActivity extends GenieBaseActivity {
+public class UserProfileActivity extends GenieBaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     @InjectView(R.id.name)
     EditText name;
     @InjectView(R.id.email)
@@ -77,12 +82,22 @@ public class UserProfileActivity extends GenieBaseActivity {
     @InjectView(R.id.update)
     ButtonRectangle update;
     int radius;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     final int CAMERA_CAPTURE = 1;
     final int PICK_IMAGE = 2;
 
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
     HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+
+    @Override
+    public void onBackPressed() {
+        if (!mNavigationDrawerFragment.isVisible()) {
+            super.onBackPressed();
+        } else {
+            mNavigationDrawerFragment.toggleDrawerLayout();
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -117,6 +132,12 @@ public class UserProfileActivity extends GenieBaseActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
         radius = userIcon.getLayoutParams().width;
         getUserData();
@@ -212,7 +233,7 @@ public class UserProfileActivity extends GenieBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        getMenuInflater().inflate(R.menu.menu_base, menu);
         return true;
     }
 
@@ -225,15 +246,13 @@ public class UserProfileActivity extends GenieBaseActivity {
                 mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
-            case R.id.action_previous_orders:
-                mixpanelDataAdd.put("Pressed", "Previous Orders Menu");
-                mixPanelBuild("Previous Orders Menu Pressed");
-                Intent profileIntent = new Intent(this, OrderDetailsActivity.class);
-                profileIntent.putExtra("canclose", true);
-                startActivity(profileIntent);
-                finish();
+            case R.id.action_menu:
+                mNavigationDrawerFragment.toggleDrawerLayout();
                 return true;
             case R.id.action_share:
+                if (mNavigationDrawerFragment.isVisible()) {
+                    mNavigationDrawerFragment.toggleDrawerLayout();
+                }
                 mixpanelDataAdd.put("Pressed", "Share Menu");
                 mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
@@ -242,15 +261,6 @@ public class UserProfileActivity extends GenieBaseActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.trygenie));
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.shareus)));
-                return true;
-            case R.id.action_contact:
-                mixpanelDataAdd.put("Pressed", "Contact us");
-                mixPanelBuild("Profile Contact us Pressed");
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", getString(R.string.supportemailaddress), null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subjecttoemail));
-                emailIntent.putExtra(Intent.EXTRA_TEXT, utils.getDeviceInformationFormEmail());
-                startActivity(Intent.createChooser(emailIntent, getString(R.string.sendemail)));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -561,5 +571,52 @@ public class UserProfileActivity extends GenieBaseActivity {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        // update the main content by replacing fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.body, PlaceholderFragment.newInstance(position + 1))
+                .commit();
+    }
+
+    public static class PlaceholderFragment extends Fragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_main, container, false);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((UserProfileActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }
+
+    private void onSectionAttached(int anInt) {
+        // // TODO: 8/6/2015
+    }
+
+    public void closeMenu() {
+        if (mNavigationDrawerFragment.isVisible())
+            mNavigationDrawerFragment.toggleDrawerLayout();
     }
 }

@@ -56,7 +56,11 @@ public class CustomMenuAdapter extends RecyclerView.Adapter {
         };
         if (titles.length == images.length) {
             for (int i = 0; i < titles.length; i++) {
-                menu.add(new MenuItems(titles[i], images[i]));
+                if ((context instanceof UserProfileActivity && titles[i].equals("Profile"))) {
+                } else if ((context instanceof OrderDetailsActivity && titles[i].equals("Order History"))) {
+                } else {
+                    menu.add(new MenuItems(titles[i], images[i]));
+                }
             }
         }
         return menu;
@@ -120,8 +124,13 @@ public class CustomMenuAdapter extends RecyclerView.Adapter {
                 Intent intent = new Intent(localContext, FeedBackActivity.class);
                 localContext.startActivity(intent);
             }
-// // TODO: 8/6/2015
-            ((BaseActivity) localContext).closeMenu();
+            if (localContext instanceof BaseActivity) {
+                ((BaseActivity) localContext).closeMenu();
+            } else if (localContext instanceof OrderDetailsActivity) {
+                ((OrderDetailsActivity) localContext).closeMenu();
+            } else if (localContext instanceof UserProfileActivity) {
+                ((UserProfileActivity) localContext).closeMenu();
+            }
         }
     }
 

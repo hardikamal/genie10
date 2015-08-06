@@ -1,12 +1,19 @@
 package com.supergenieapp.android.Activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +29,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.supergenieapp.android.CustomViews.Adapters.CustomOrderAdapter;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
+import com.supergenieapp.android.Fragments.ChatFragment;
+import com.supergenieapp.android.Fragments.MainFragment;
+import com.supergenieapp.android.Fragments.NavigationDrawerFragment;
+import com.supergenieapp.android.Fragments.PaymentFragment;
 import com.supergenieapp.android.GenieBaseActivity;
 import com.supergenieapp.android.Objects.Order;
 import com.supergenieapp.android.R;
@@ -33,6 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -44,14 +56,14 @@ import butterknife.InjectView;
 // Recycler view for showing the list of previous orders
 // Adapter is CustomOrderAdapter
 
-public class OrderDetailsActivity extends GenieBaseActivity {
+public class OrderDetailsActivity extends GenieBaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     @InjectView(R.id.loadingview)
     LoadingView loadingView;
     @InjectView(R.id.orderList)
     RecyclerView orderList;
     @InjectView(R.id.noorders)
     TextView noOrders;
-
+    private NavigationDrawerFragment mNavigationDrawerFragment;
     public HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
@@ -70,6 +82,15 @@ public class OrderDetailsActivity extends GenieBaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (!mNavigationDrawerFragment.isVisible()) {
+            super.onBackPressed();
+        } else {
+            mNavigationDrawerFragment.toggleDrawerLayout();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_details);
@@ -80,6 +101,12 @@ public class OrderDetailsActivity extends GenieBaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         getUserOrders();
+
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -216,7 +243,7 @@ public class OrderDetailsActivity extends GenieBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_orders, menu);
+        getMenuInflater().inflate(R.menu.menu_base, menu);
         return true;
     }
 
@@ -229,15 +256,13 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 mixPanelBuild("Home/Back Menu Pressed");
                 onBackPressed();
                 return true;
-            case R.id.action_profile:
-                mixpanelDataAdd.put("Pressed", "Profile Menu");
-                mixPanelBuild("Profile Menu Pressed");
-                Intent profileIntent = new Intent(this, UserProfileActivity.class);
-                profileIntent.putExtra("canclose", true);
-                startActivity(profileIntent);
-                finish();
+            case R.id.action_menu:
+                mNavigationDrawerFragment.toggleDrawerLayout();
                 return true;
             case R.id.action_share:
+                if (mNavigationDrawerFragment.isVisible()) {
+                    mNavigationDrawerFragment.toggleDrawerLayout();
+                }
                 mixpanelDataAdd.put("Pressed", "Share Menu");
                 mixPanelBuild("Profile Share Pressed");
                 String shareBody = getString(R.string.bodytext);
@@ -249,5 +274,52 @@ public class OrderDetailsActivity extends GenieBaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        // update the main content by replacing fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.body, PlaceholderFragment.newInstance(position + 1))
+                .commit();
+    }
+
+    public static class PlaceholderFragment extends Fragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public PlaceholderFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_main, container, false);
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((OrderDetailsActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+    }
+
+    private void onSectionAttached(int anInt) {
+        // // TODO: 8/6/2015
+    }
+
+    public void closeMenu() {
+        if (mNavigationDrawerFragment.isVisible())
+            mNavigationDrawerFragment.toggleDrawerLayout();
     }
 }

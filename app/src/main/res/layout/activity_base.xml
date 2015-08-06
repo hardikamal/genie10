@@ -33,6 +33,6 @@
             android:layout_width="@dimen/_200sdp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            tools:layout="@layout/fragment_navigation_drawer" />
+            tools:layout="@layout/slidemenu" />
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>
