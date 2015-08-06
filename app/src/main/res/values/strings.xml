@@ -372,4 +372,5 @@
     <string name="title_activity_feed_back">Feedback</string>
     <string name="submit">Submit</string>
     <string name="pleasetypeyourfeedback">Please type your feedback here&#8230;</string>
+    <string name="failedtosubmitfeedback">Failed to submit feedback. Try again.</string>
 </resources>
