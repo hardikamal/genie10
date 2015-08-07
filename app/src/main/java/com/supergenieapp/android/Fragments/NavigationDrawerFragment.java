@@ -2,6 +2,9 @@ package com.supergenieapp.android.Fragments;
 
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,10 +14,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.supergenieapp.android.CustomViews.Adapters.CustomMenuAdapter;
+import com.supergenieapp.android.CustomViews.Button.Button;
 import com.supergenieapp.android.GenieFragment;
 import com.supergenieapp.android.R;
+
+import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

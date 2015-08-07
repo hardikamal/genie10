@@ -15,7 +15,9 @@
     <color name="color444">#444</color>
     <color name="color999">#999</color>
     <color name="colorddd">#ddd</color>
+    <color name="colorececec">#ececec</color>
     <color name="white">#ffffff</color>
+    <color name="halo">#e3f2fd</color>
     <color name="black">#000000</color>
     <color name="green">#00FF00</color>
     <color name="yellow">#FFFF00</color>

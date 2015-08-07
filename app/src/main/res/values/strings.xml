@@ -2,7 +2,6 @@
     <string name="app_name">SuperGenie</string>
     <string name="companyName">SuperGenie</string>
     <string name="version">0.0.0.0</string>
-    <string name="mixpanel">b0495338b2ad0709731791003f5a24af</string>
     <string name="projectId">1083662993807</string>
 
     <string name="copyrights">© 2015 Genie</string>
@@ -373,4 +372,6 @@
     <string name="submit">Submit</string>
     <string name="pleasetypeyourfeedback">Please type your feedback here&#8230;</string>
     <string name="failedtosubmitfeedback">Failed to submit feedback. Try again.</string>
+    <string name="inindia">in India</string>
+    <string name="madewith">Made with</string>
 </resources>

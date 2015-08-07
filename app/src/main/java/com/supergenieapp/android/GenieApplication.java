@@ -11,6 +11,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.localytics.android.Localytics;
+import com.localytics.android.LocalyticsActivityLifecycleCallbacks;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
@@ -79,6 +81,9 @@ public class GenieApplication extends Application {
         dbDataSource = new DBDataSource(this);
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
         registerComponentCallbacks(new MyComponentsLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(
+                new LocalyticsActivityLifecycleCallbacks(this));
+        Localytics.setPushDisabled(false);
     }
 
     private void setFolders() {

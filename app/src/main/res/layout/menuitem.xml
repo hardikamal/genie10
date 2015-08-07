@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorddd"
+    android:background="#d2e2ee"
     android:orientation="vertical">
 
     <LinearLayout
@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginBottom="@dimen/_1sdp"
-        android:background="@color/white"
+        android:background="@color/halo"
         android:orientation="horizontal">
 
         <net.steamcrafted.materialiconlib.MaterialIconView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,15 +19,16 @@
             android:layout_height="@dimen/_50sdp"
             android:scaleType="center"
             app:materialIcon="clipboard_arrow_down"
-            app:materialIconColor="#787878"
-            app:materialIconSize="30dp" />
+            app:materialIconColor="#748897"
+            app:materialIconSize="24dp" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="#748897"
             android:gravity="center_vertical"
-            android:textSize="@dimen/_15sdp" />
+            android:textSize="@dimen/_14sdp" />
     </LinearLayout>
 </LinearLayout>
