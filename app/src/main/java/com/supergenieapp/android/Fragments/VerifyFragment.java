@@ -17,6 +17,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.RegisterActivity;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
@@ -106,6 +107,8 @@ public class VerifyFragment extends GenieFragment {
     @Override
     public void onStart() {
         super.onStart();
+        Localytics.openSession();
+        Localytics.tagScreen("Verify Fragment");
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
