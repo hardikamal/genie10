@@ -84,6 +84,10 @@ public class GenieApplication extends Application {
         registerActivityLifecycleCallbacks(
                 new LocalyticsActivityLifecycleCallbacks(this));
         Localytics.setPushDisabled(false);
+        Utils utils = new Utils(this);
+        Localytics.integrate(this);
+        Localytics.setCustomerId(utils.getDeviceSerialNumber());
+        Localytics.registerPush(getString(R.string.projectId));
     }
 
     private void setFolders() {

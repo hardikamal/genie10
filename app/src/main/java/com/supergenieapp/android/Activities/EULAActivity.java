@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.supergenieapp.android.GenieBaseActivity;
@@ -28,6 +29,15 @@ public class EULAActivity extends GenieBaseActivity {
     LoadingView loadingView;
     @InjectView(R.id.webPage)
     WebView webPage;
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("EULA Web view");
+        Localytics.upload();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,7 @@ public class EULAActivity extends GenieBaseActivity {
         });
         webPage.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                localyticsBuild("EULA Web view Error");
             }
         });
 

@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.Activities.LocationActivity;
 import com.supergenieapp.android.CustomViews.Adapters.CustomChatAdapter;
@@ -112,7 +113,7 @@ public class ChatFragment extends GenieFragment {
         return chatAdapter;
     }
 
-    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    private HashMap<String, String> dataAdd = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,13 +141,13 @@ public class ChatFragment extends GenieFragment {
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
-        mixpanelDataAdd.put("Chat Fragment", id);
+        dataAdd.put("Chat Fragment", String.valueOf(id));
 
         if (!sharedPreferences.getBoolean("agent", true)) {
             setDisable();
-            mixpanelDataAdd.put("Chat Enable", false);
+            dataAdd.put("Chat Enable", String.valueOf(false));
         } else {
-            mixpanelDataAdd.put("Chat Enable", true);
+            dataAdd.put("Chat Enable", String.valueOf(true));
             send.setButtonColor(Color.parseColor(color));
             send.setShadowColor(Color.parseColor(color));
             message.setTextColor(Color.parseColor(color));
@@ -218,8 +219,8 @@ public class ChatFragment extends GenieFragment {
         message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    mixpanelDataAdd.put("Chat", "Send Button");
-                    mixPanelBuild("Chat Send Button from Keyboard");
+                    dataAdd.put("Chat", "Send Button");
+                    localyticsBuild("Chat Send Button from Keyboard");
                     send.performClick();
                     return true;
                 }
@@ -237,7 +238,7 @@ public class ChatFragment extends GenieFragment {
         messages = dbDataSource.getAllListBasedOnCategoryWithHideTime(String.valueOf(id), hide_time);
         Collections.sort(messages);
 
-        mixpanelDataAdd.put("Chat Messages", "Size " + messages.size());
+        dataAdd.put("Chat Messages", "Size " + messages.size());
         String present = "";
         String now = "";
 
@@ -302,7 +303,6 @@ public class ChatFragment extends GenieFragment {
 
     @Override
     public void onDetach() {
-        mixpanelDataAdd.put("Chat Keyboard", "Hidden");
         hideKeyboard(getActivity());
         wentBackground = false;
         super.onDetach();
@@ -311,7 +311,7 @@ public class ChatFragment extends GenieFragment {
 
     public void onActivityResultLocation(Intent data) {
         if (data.getExtras() != null) {
-            mixpanelDataAdd.put("Chat Display Location", data.getStringExtra("address"));
+            dataAdd.put("Chat Display Location", data.getStringExtra("address"));
             final MessageValues messageValues = new MessageValues(DataFields.LOCATION, data.getStringExtra("address"), data.getDoubleExtra("lng", 0.00), data.getDoubleExtra("lat", 0.00));
             Messages messageObject = new Messages("1", DataFields.LOCATION, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);
             dbDataSource.addNormal(messageObject);
@@ -355,7 +355,6 @@ public class ChatFragment extends GenieFragment {
         super.onStart();
         logging.LogV("Showed", "on Start");
         mBus.register(this);
-        mixPanelTimerStart(ChatFragment.class.getName());
         logging.LogI("On Start");
         System.out.println(position);
     }
@@ -363,6 +362,8 @@ public class ChatFragment extends GenieFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("Chat Fragment");
         logging.LogV("on Resume Chat");
         dbDataSource.UpdateCatNotification(id, 0);
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);
@@ -385,17 +386,16 @@ public class ChatFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
-        mixPanelTimerStop(ChatFragment.class.getName());
-        mixPanelBuildHashMap("General Run " + ChatFragment.class.getName(), mixpanelDataAdd);
         logging.LogV("Showed", "on Stop");
+        localyticsBuildHashMap("General Run Chat Fragment", dataAdd);
         super.onStop();
     }
 
     @Subscribe
     public void onMessageReceived(final Messages messageObject) {
-        mixpanelDataAdd.put("Chat Message", "Received");
+        dataAdd.put("Chat Message", "Received");
         if (messageObject.getCategory() == id) {
-            mixpanelDataAdd.put("Chat Message", "Updated");
+            dataAdd.put("Chat Message", "Updated");
             if (messageObject.getMessageValues().get_id() == DataFields.TEXT) {
                 ((BaseActivity) getActivity()).speakOut(messageObject.getMessageValues().getText());
             } else if (messageObject.getMessageValues().get_id() == DataFields.LOCATION) {
@@ -408,8 +408,8 @@ public class ChatFragment extends GenieFragment {
             displayMessages(true, DataFields.ScrollDown);
             scroll();
         } else {
-            mixPanelBuild("Message received when user is in different category");
-            mixpanelDataAdd.put("Message", "Different Category");
+            localyticsBuild("Message received when user is in different category");
+            dataAdd.put("Message", "Different Category");
             Categories categories = dbDataSource.getCategories(messageObject.getCategory());
             if (categories != null)
                 dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
@@ -421,7 +421,7 @@ public class ChatFragment extends GenieFragment {
     @OnClick(R.id.send)
     public void onClickSend(View buttonSend) {
         if (imageResource) {
-            mixpanelDataAdd.put("Chat Button", "Mic option clicked");
+            dataAdd.put("Chat Button", "Mic option clicked");
             hideKeyboard(getActivity());
             if (((BaseActivity) getActivity()).startSpeech()) {
 //                GradientDrawable gd = new GradientDrawable(
@@ -452,7 +452,7 @@ public class ChatFragment extends GenieFragment {
                 }).start();
             }
         } else {
-            mixpanelDataAdd.put("Chat Button", "Send clicked");
+            dataAdd.put("Chat Button", "Send clicked");
             final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
             buttonSend.startAnimation(animTranslate);
             String typedMessage = message.getText().toString().trim();
@@ -472,7 +472,7 @@ public class ChatFragment extends GenieFragment {
     }
 
     private void emitMessage(int messageCategory, JSONObject valueJSON) {
-        mixpanelDataAdd.put("Chat Message", "Sent");
+        dataAdd.put("Chat Message", "Sent");
         JSONObject jsonObject = new JSONObject();
         try {
             JSONObject subJson = new JSONObject();
@@ -492,6 +492,7 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.more)
     public void onClickMore() {
+        localyticsBuild("Clicked attachments in chat");
         if (moreLayout.getVisibility() == View.VISIBLE) {
             moreLayout.setVisibility(View.GONE);
         } else if (moreLayout.getVisibility() == View.GONE) {
@@ -586,6 +587,7 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.doneButton)
     public void onClickDoneButton() {
+        localyticsBuild("Speech button done");
         message.setEnabled(true);
         send.setEnabled(true);
         ((BaseActivity) getActivity()).stopSpeech();
@@ -595,8 +597,10 @@ public class ChatFragment extends GenieFragment {
     @OnClick(R.id.muteLayout)
     public void onClickedMute() {
         if (sharedPreferences.getBoolean("isMuted", true)) {
+            localyticsBuild("Text to speech unmuted");
             sharedPreferences.edit().putBoolean("isMuted", false).apply();
         } else {
+            localyticsBuild("Text to speech muted");
             sharedPreferences.edit().putBoolean("isMuted", true).apply();
         }
         setMuteButton();
@@ -604,6 +608,7 @@ public class ChatFragment extends GenieFragment {
 
     @OnClick(R.id.locationLayout)
     public void onClickedLocation() {
+        localyticsBuild("Location Clicked");
         ((BaseActivity) getActivity()).startActivityForResult(new Intent((BaseActivity) getActivity(), LocationActivity.class), DataFields.LOCATIONRESULT);
         moreLayout.setVisibility(View.GONE);
         speechBox.setVisibility(View.GONE);

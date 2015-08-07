@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.EULAActivity;
 import com.supergenieapp.android.Activities.RegisterActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
@@ -63,14 +64,15 @@ public class RegisterFragment extends GenieFragment {
     EditText areaCode;
     View rootView;
     ViewGroup viewGroup;
-    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    HashMap<String, String> dataAdd = new HashMap<>();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     public void onStart() {
         super.onStart();
+        Localytics.openSession();
+        Localytics.tagScreen("Registration Fragment");
         hideKeyboard(getActivity());
-        mixPanelTimerStart(RegisterFragment.class.getName());
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
@@ -78,8 +80,7 @@ public class RegisterFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
-        mixPanelTimerStop(RegisterFragment.class.getName());
-        mixPanelBuildHashMap("General Run " + RegisterFragment.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run RegisterFragment", dataAdd);
         logging.LogV("Showed", "on Stop");
         super.onStop();
     }
@@ -197,8 +198,7 @@ public class RegisterFragment extends GenieFragment {
     }
 
     private void RegisterUser() {
-        mixPanelBuild("User Registered");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.REGISTERURL);
+        localyticsBuild("User Registered");
         JSONObject json = new JSONObject();
         try {
             json.put("name", name.getText().toString());
@@ -213,7 +213,6 @@ public class RegisterFragment extends GenieFragment {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.REGISTERURL);
                                 parentLoadingView.setLoading(false);
                                 if (response != null) {
                                     logging.LogV("GCM Token", response.toString());
@@ -236,7 +235,6 @@ public class RegisterFragment extends GenieFragment {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.REGISTERURL);
                         parentLoadingView.setLoading(false);
                         System.out.println("Error " + error.toString());
                         ((RegisterActivity) getActivity()).onError(new Register());
@@ -257,13 +255,13 @@ public class RegisterFragment extends GenieFragment {
     @OnClick(R.id.getStarted)
     public void onGetStartedButtonClick() {
         if (name.getText().toString().trim().length() == 0) {
-            mixpanelDataAdd.put("Didnt Entered", "Name");
+            dataAdd.put("Didnt Entered", "Name");
             Crouton.makeText(getActivity(), getString(R.string.pleaseentername), Style.ALERT, viewGroup).show();
         } else if (number.getText().toString().trim().length() < 10) {
-            mixpanelDataAdd.put("Didnt Entered", "Number");
+            dataAdd.put("Didnt Entered", "Number");
             Crouton.makeText(getActivity(), getString(R.string.pleaseentervalidnumber), Style.ALERT, viewGroup).show();
         } else {
-            mixpanelDataAdd.put("Clicked", "Get Started");
+            dataAdd.put("Clicked", "Get Started");
             parentLoadingView.setText(getResources().getString(R.string.registeringuser));
             parentLoadingView.setLoading(true);
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -281,7 +279,7 @@ public class RegisterFragment extends GenieFragment {
 
     @OnClick(R.id.terms)
     public void onCLickTerms() {
-        mixPanelBuild("User Clicked Terms and Conditions");
+        localyticsBuild("User Clicked Terms and Conditions");
         getActivity().startActivity(new Intent(getActivity(), EULAActivity.class));
     }
 }

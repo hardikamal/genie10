@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.Activities.FeedBackActivity;
 import com.supergenieapp.android.Activities.OrderDetailsActivity;
@@ -93,24 +94,29 @@ public class CustomMenuAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View v) {
             if (text.getText().equals("Profile")) {
+                Localytics.tagEvent("Profile Clicked in slide menu");
                 localContext.startActivity(new Intent(localContext, UserProfileActivity.class));
                 if (localContext instanceof UserProfileActivity || localContext instanceof OrderDetailsActivity) {
                     ((Activity) localContext).finish();
                 }
             } else if (text.getText().equals("Order History")) {
+                Localytics.tagEvent("Order History Clicked in slide menu");
                 localContext.startActivity(new Intent(localContext, OrderDetailsActivity.class));
                 if (localContext instanceof UserProfileActivity || localContext instanceof OrderDetailsActivity) {
                     ((Activity) localContext).finish();
                 }
             } else if (text.getText().equals("Rate us")) {
+                Localytics.tagEvent("Rate Us Clicked in slide menu");
                 localContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.supergenieapp.android")));
             } else if (text.getText().equals("Invite Friends")) {
+                Localytics.tagEvent("Invite Friends Clicked in slide menu");
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, localContext.getString(R.string.trygenie));
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, localContext.getString(R.string.bodytext));
                 localContext.startActivity(Intent.createChooser(sharingIntent, localContext.getString(R.string.shareus)));
             } else if (text.getText().equals("Contact us")) {
+                Localytics.tagEvent("Contact Us Clicked in slide menu");
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", localContext.getString(R.string.supportemailaddress), null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, localContext.getString(R.string.subjecttoemail));
@@ -119,8 +125,10 @@ public class CustomMenuAdapter extends RecyclerView.Adapter {
             } else if (text.getText().equals("Help")) {
                 Intent intent = new Intent(localContext, WalkThroughActivity.class);
                 intent.putExtra("finish", true);
+                Localytics.tagEvent("Help Clicked in slide menu");
                 localContext.startActivity(intent);
             } else if (text.getText().equals("Feedback")) {
+                Localytics.tagEvent("Feedback Clicked in slide menu");
                 Intent intent = new Intent(localContext, FeedBackActivity.class);
                 localContext.startActivity(intent);
             }

@@ -19,6 +19,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
@@ -58,8 +59,9 @@ public class PaymentFragment extends GenieFragment {
     @Override
     public void onStart() {
         super.onStart();
+        Localytics.openSession();
+        Localytics.tagScreen("Payment Fragment");
         hideKeyboard(getActivity());
-        mixPanelTimerStart(PaymentFragment.class.getName());
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
@@ -67,7 +69,6 @@ public class PaymentFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
-        mixPanelTimerStop(PaymentFragment.class.getName());
         logging.LogV("Showed", "on Stop");
         super.onStop();
         ((BaseActivity) getActivity()).emitPayOnline(created_at, "back");

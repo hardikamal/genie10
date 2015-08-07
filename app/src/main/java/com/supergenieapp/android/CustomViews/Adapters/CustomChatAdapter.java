@@ -1,16 +1,10 @@
 package com.supergenieapp.android.CustomViews.Adapters;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Notification;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -24,23 +18,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.supergenieapp.android.Activities.BaseActivity;
-import com.supergenieapp.android.Activities.LocationActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.Utils;
-import com.supergenieapp.android.Fragments.ChatFragment;
 import com.supergenieapp.android.Fragments.PaymentFragment;
 import com.supergenieapp.android.GenieApplication;
-import com.supergenieapp.android.Objects.Categories;
-import com.supergenieapp.android.Objects.Chat;
-import com.supergenieapp.android.Objects.FavValues;
 import com.supergenieapp.android.Objects.MessageValues;
 import com.supergenieapp.android.Objects.Messages;
 import com.supergenieapp.android.R;
@@ -57,7 +44,6 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
@@ -281,7 +267,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.payascod.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((BaseActivity) context).shoyCODAlert(costToPay);
+                        ((BaseActivity) context).showCODAlert(costToPay);
                     }
                 });
 

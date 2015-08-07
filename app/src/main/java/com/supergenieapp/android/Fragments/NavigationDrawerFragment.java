@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Adapters.CustomMenuAdapter;
 import com.supergenieapp.android.CustomViews.Button.Button;
 import com.supergenieapp.android.GenieFragment;
@@ -59,6 +60,8 @@ public class NavigationDrawerFragment extends GenieFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Localytics.openSession();
+        Localytics.tagScreen("Nav Drawer Fragment");
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
         }

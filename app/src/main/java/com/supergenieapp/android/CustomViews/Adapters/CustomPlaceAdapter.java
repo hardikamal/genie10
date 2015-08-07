@@ -96,7 +96,6 @@ public class CustomPlaceAdapter extends RecyclerView.Adapter {
                 intent.putExtra("address", messages.getText());
                 ((Activity) context).setResult(1, intent);
                 ((Activity) context).finish();
-                ((LocationActivity) context).mixPanelBuild("Shared Fav Location from List");
             }
         });
     }

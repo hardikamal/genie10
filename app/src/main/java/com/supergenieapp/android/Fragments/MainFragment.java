@@ -13,6 +13,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Adapters.CustomAdapter;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
@@ -46,7 +47,6 @@ public class MainFragment extends GenieFragment {
     onSelect on_Select;
     CustomAdapter customAdapter = null;
     ViewGroup viewGroup;
-    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,8 +70,9 @@ public class MainFragment extends GenieFragment {
     @Override
     public void onStart() {
         super.onStart();
+        Localytics.openSession();
+        Localytics.tagScreen("Main Fragment");
         hideKeyboard(getActivity());
-        mixPanelTimerStart(MainFragment.class.getName());
         logging.LogV("Showed", "on Start");
         mBus.register(this);
     }
@@ -79,15 +80,12 @@ public class MainFragment extends GenieFragment {
     @Override
     public void onStop() {
         mBus.unregister(this);
-        mixPanelTimerStop(MainFragment.class.getName());
-        mixPanelBuildHashMap("General Run " + MainFragment.class.getName(), mixpanelDataAdd);
         logging.LogV("Showed", "on Stop");
         super.onStop();
     }
 
     public void refreshData() {
         if (dbDataSource.getAllCategories().size() > 0) {
-            mixpanelDataAdd.put("Refresh Categories", "From Local");
             ArrayList<Categories> catList = dbDataSource.getAllCategories();
             if (catList.size() > 0) {
                 categoriesList.clear();
@@ -97,14 +95,11 @@ public class MainFragment extends GenieFragment {
                 setupCategories(categoriesList);
             }
         } else {
-            mixpanelDataAdd.put("Refresh Categories", "From Server");
             logging.LogV("Refreshing Data");
-            mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
             JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(final JSONArray response) {
-                            mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                             System.out.println(response.toString());
                             if (response.length() > 0) {
                                 ArrayList<Categories> localCategories = dbDataSource.getAllCategories();
@@ -143,7 +138,6 @@ public class MainFragment extends GenieFragment {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
                     error.printStackTrace();
                 }
             }) {

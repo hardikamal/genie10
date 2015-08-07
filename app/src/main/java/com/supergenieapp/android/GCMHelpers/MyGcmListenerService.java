@@ -168,8 +168,8 @@ public class MyGcmListenerService extends GcmListenerService {
                 }
             }
         } else {
-            Log.v("GCM PUSH", data.toString());
-            sendNotification("Unhandled Push Notification Received");
+//            Log.v("GCM PUSH", data.toString());
+//            sendNotification("Unhandled Push Notification Received");
         }
     }
 

@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.Gson;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.FontChangeCrawler;
 import com.supergenieapp.android.Extras.Logging;
@@ -98,42 +99,27 @@ public class GenieBaseActivity extends AppCompatActivity {
         }
     }
 
-    public void mixPanelBuildHashMap(String eventName, HashMap<String, Object> myValues) {
+    public void localyticsBuildHashMap(String eventName, HashMap<String, String> myValues) {
         memoryConsumption(myValues);
-
+        Localytics.tagEvent(eventName, myValues);
     }
 
-    public void mixPanelBuildJSON(String eventName, JSONObject jsonObject) {
-
+    public void localyticsBuild(String eventName) {
+        Localytics.tagEvent(eventName);
     }
 
-    public void mixPanelBuild(String eventName) {
-
-    }
-
-    public void mixPanelFlush() {
-
-    }
-
-    public void mixPanelTimerStart(String timerName) {
-
-    }
-
-    public void mixPanelTimerStop(String timerName) {
-
-    }
-    public void memoryConsumption(HashMap<String, Object> map) {
+    public void memoryConsumption(HashMap<String, String> map) {
         ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
         ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         activityManager.getMemoryInfo(mi);
         if (mi.lowMemory) {
-            mixPanelBuild("Low Memory Detected");
+            localyticsBuild("Low Memory Detected");
         }
-        map.put("Is Memory Low", mi.lowMemory);
-        map.put("Memory Consumption", mi.availMem / 1048576L);
+        map.put("Is Memory Low", String.valueOf(mi.lowMemory));
+        map.put("Memory Consumption", String.valueOf(mi.availMem / 1048576L));
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            map.put("Memory Total", mi.totalMem / 1048576L);
-            map.put("Memory free percentage", (mi.availMem * 100) / mi.totalMem);
+            map.put("Memory Total", String.valueOf(mi.totalMem / 1048576L));
+            map.put("Memory free percentage", String.valueOf((mi.availMem * 100) / mi.totalMem));
         }
     }
 }

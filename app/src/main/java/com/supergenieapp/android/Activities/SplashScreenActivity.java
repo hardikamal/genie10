@@ -16,6 +16,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Database.DBHandler;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GCMHelpers.QuickstartPreferences;
@@ -44,15 +45,13 @@ public class SplashScreenActivity extends GenieActivity {
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    HashMap<String, String> dataAdd = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         sharedPreferences.edit().putBoolean("syncwithserver", true).apply();
-        logging.LogD("Splash Screen", "Entered ");
-        mixpanelDataAdd.put("Splash Screen", "Entered");
 
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
@@ -67,7 +66,7 @@ public class SplashScreenActivity extends GenieActivity {
             public void onReceive(Context context, Intent intent) {
                 logging.LogD("GCM BroadCast", "Received");
                 logging.LogD("Read Preference", "Yes");
-                mixpanelDataAdd.put("GCM BroadCast", "Received");
+                dataAdd.put("GCM BroadCast", "Received");
                 boolean sentToken = intent.getBooleanExtra("status", false);
                 boolean verifyStatus = intent.getBooleanExtra("verify", false);
 
@@ -88,13 +87,16 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("SplashScreen Activity");
+        Localytics.upload();
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
-        if (utils.isConnectedMobile() || utils.isConnectedWifi()) {
+        if (utils.isOnline() && utils.isNetworkAvailable()) {
             logging.LogD("Internet", "Available");
-            mixpanelDataAdd.put("Internet", "Available");
+            dataAdd.put("Internet", "Available");
             if (checkPlayServices()) {
                 logging.LogD("Play Services", "Up to date");
-                mixpanelDataAdd.put("Play Services", "Up to date");
+                dataAdd.put("Play Services", "Up to date");
                 // Start IntentService to register this application with GCM.
                 logging.LogD("Register", "GCM Start");
                 if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
@@ -102,13 +104,13 @@ public class SplashScreenActivity extends GenieActivity {
                     startService(intent);
                 } else {
                     logging.LogV("Register", "Token Not found");
-                    mixpanelDataAdd.put("Register", "Token Not found");
+                    dataAdd.put("Register", "Token Not found");
                     runToRegisterPage(true);
                 }
             }
         } else {
             logging.LogD("Internet", "Show Alert");
-            mixpanelDataAdd.put("Internet not found", "Show Alert");
+            dataAdd.put("Internet not found", "Show Alert");
             showAlertToUser();
         }
     }
@@ -116,7 +118,6 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mixPanelTimerStart(SplashScreenActivity.class.getName());
         logging.LogI("On Start");
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
@@ -125,9 +126,8 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(SplashScreenActivity.class.getName());
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        mixPanelBuildHashMap("General Run " + SplashScreenActivity.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run SplashScreenActivity", dataAdd);
         super.onDestroy();
     }
 
@@ -141,13 +141,13 @@ public class SplashScreenActivity extends GenieActivity {
                 .setPositiveButton(R.string.openSettings, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         logging.LogD("Settings", "Clicked");
-                        mixpanelDataAdd.put("Settings", "Clicked");
+                        dataAdd.put("Settings", "Clicked");
                         // opens the settings page
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                     }
                 }).setNegativeButton(R.string.exitapp, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                mixpanelDataAdd.put("Alert", "Exit App");
+                dataAdd.put("Alert", "Exit App");
                 // kills the page and exists the app
                 finish();
             }
@@ -166,7 +166,8 @@ public class SplashScreenActivity extends GenieActivity {
                     } catch (Exception err) {
                         err.printStackTrace();
                     }
-                    mixpanelDataAdd.put("Activity", "Walkthru");
+                    dataAdd.put("Activity", "Walkthru");
+                    localyticsBuild("Activity Walkthru");
                     logging.LogI("Start Walk Thru Activity");
                     Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
                     startActivity(intent);
@@ -187,8 +188,8 @@ public class SplashScreenActivity extends GenieActivity {
                 } catch (Exception err) {
                     err.printStackTrace();
                 }
-                mixpanelDataAdd.put("Activity", "Verify");
-                mixPanelBuild("Verify Account On Return");
+                dataAdd.put("Activity", "Verify");
+                localyticsBuild("Verify Account On Return");
                 logging.LogI("Start Verify Activity");
                 Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
                 intent.putExtra("page", "Verify");
@@ -215,14 +216,12 @@ public class SplashScreenActivity extends GenieActivity {
     }
 
     private void getCategories() {
-        mixpanelDataAdd.put("Server Call", "Categories");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
+        dataAdd.put("Server Call", "Categories");
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                        mixpanelDataAdd.put("Server Call", "Categories Success");
+                        dataAdd.put("Server Call", "Categories Success");
                         if (response.length() > 0) {
                             new Thread(new Runnable() {
                                 public void run() {
@@ -244,7 +243,7 @@ public class SplashScreenActivity extends GenieActivity {
                                     } catch (Exception err) {
                                         err.printStackTrace();
                                     }
-                                    mixpanelDataAdd.put("Activity", "MainActivity");
+                                    dataAdd.put("Activity", "MainActivity");
 
                                     Intent intent = new Intent(SplashScreenActivity.this, BaseActivity.class);
                                     intent.putExtra("page", "categories");
@@ -254,17 +253,16 @@ public class SplashScreenActivity extends GenieActivity {
                                 }
                             }).start();
                         } else {
-                            mixpanelDataAdd.put("Server Call", "Categories Error");
-                            mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
+                            dataAdd.put("Server Call", "Categories Error");
+                            localyticsBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
                             Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                mixpanelDataAdd.put("Server Call", "Categories Server 500 Error");
-                mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
+                dataAdd.put("Server Call", "Categories Server 500 Error");
+                localyticsBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
                 Crouton.makeText(SplashScreenActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                 error.printStackTrace();
             }
@@ -323,8 +321,8 @@ public class SplashScreenActivity extends GenieActivity {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                mixpanelDataAdd.put("PlayServices", "Not supported");
-                mixPanelBuild("PlayServices Device Not Supported");
+                dataAdd.put("PlayServices", "Not supported");
+                localyticsBuild("PlayServices Device Not Supported");
                 logging.LogI("This device is not supported.");
                 finish();
             }

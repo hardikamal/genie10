@@ -139,9 +139,6 @@ public class CustomOrderAdapter extends RecyclerView.Adapter {
         viewHolderMain.repeatorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((OrderDetailsActivity) context).mixpanelDataAdd.put("Pressed", "Repeat Order");
-                ((OrderDetailsActivity) context).mixPanelBuild("Just Clicked Repeat Order");
-                showToast("Just Clicked Repeat Order", Style.INFO);
             }
         });
 

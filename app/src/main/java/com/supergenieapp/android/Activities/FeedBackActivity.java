@@ -15,6 +15,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GenieBaseActivity;
@@ -38,6 +39,15 @@ public class FeedBackActivity extends GenieBaseActivity {
     ButtonRectangle buttonRectangle;
     @InjectView(R.id.edittext)
     EditText editText;
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("Feedback");
+        Localytics.upload();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +97,7 @@ public class FeedBackActivity extends GenieBaseActivity {
 
     @OnClick(R.id.button)
     public void OnClickSubmit() {
+        localyticsBuild("Feedback Submited");
         if (editText.getText().toString().trim().length() > 0) {
             submitFeedback(editText.getText().toString());
         } else {
@@ -106,7 +117,6 @@ public class FeedBackActivity extends GenieBaseActivity {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERFEEDBACKURL);
                             progressDialog.cancel();
                             onBackPressed();
                         }
@@ -114,7 +124,7 @@ public class FeedBackActivity extends GenieBaseActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     progressDialog.cancel();
-                    mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERFEEDBACKURL);
+                    localyticsBuild("Failed to send feedback");
                     Crouton.makeText(FeedBackActivity.this, getString(R.string.failedtosubmitfeedback), Style.ALERT).show();
                 }
             }) {

@@ -18,6 +18,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Fragments.RegisterFragment;
 import com.supergenieapp.android.Fragments.VerifyFragment;
@@ -53,7 +54,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     private static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
     static int time = 61;
-    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    HashMap<String, String> dataAdd = new HashMap<>();
 
     private BroadcastReceiver myBroadcastReceiver =
             new BroadcastReceiver() {
@@ -74,7 +75,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                                     code = code.trim();
                                     if (code.length() == 4) {
                                         mBus.post(code);
-                                        mixpanelDataAdd.put("Verification Code", code);
+                                        dataAdd.put("Verification Code", code);
                                     }
                                 }
                             }
@@ -87,15 +88,13 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     @Override
     protected void onStart() {
         super.onStart();
-        mixPanelTimerStart(RegisterActivity.class.getName());
         logging.LogI("On Start");
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(RegisterActivity.class.getName());
-        mixPanelBuildHashMap("General Run " + SplashScreenActivity.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run Register Activity", dataAdd);
         super.onDestroy();
     }
 
@@ -123,10 +122,10 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
         if (getIntent().getStringExtra("page").equals("Register")) {
             startFragment(R.id.body, new RegisterFragment());
-            mixpanelDataAdd.put("Fragment", "Register Fragment");
+            dataAdd.put("Fragment", "Register Fragment");
         } else {
             startFragment(R.id.body, new VerifyFragment());
-            mixpanelDataAdd.put("Fragment", "Verify Fragment");
+            dataAdd.put("Fragment", "Verify Fragment");
         }
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
@@ -134,6 +133,9 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     public void onResume() {
         super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("Order Details Activity");
+        Localytics.upload();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         registerReceiver(myBroadcastReceiver, filter);
@@ -146,6 +148,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onSuccess(Register register) {
+        localyticsBuild("Registration Success");
         VerifyFragment verifyFragment = new VerifyFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("runtimer", true);
@@ -155,19 +158,19 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onError(Register register) {
+        localyticsBuild("Registration Failed");
         Crouton.makeText(this, getString(R.string.signupfailed), Style.ALERT).show();
     }
 
     @Override
     public void onSuccess(Verify verify) {
-        mixpanelDataAdd.put("Server Call", "Categories");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.CATEGORIES);
+        localyticsBuild("Verification Success");
+        dataAdd.put("Server Call", "Categories");
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.CATEGORIES,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                        mixpanelDataAdd.put("Server Call", "Categories Success");
+                        dataAdd.put("Server Call", "Categories Success");
                         if (response.length() > 0) {
                             new Thread(new Runnable() {
                                 public void run() {
@@ -183,7 +186,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                                         }
                                     }
                                     logging.LogI("Start Main Activity");
-                                    mixpanelDataAdd.put("Activity", "MainActivity");
+                                    dataAdd.put("Activity", "MainActivity");
                                     Intent intent = new Intent(RegisterActivity.this, BaseActivity.class);
                                     intent.putExtra("page", "categories");
                                     intent.putStringArrayListExtra("category", categoriesList);
@@ -192,17 +195,16 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
                                 }
                             }).start();
                         } else {
-                            mixpanelDataAdd.put("Server Call", "Categories Error");
-                            mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
+                            dataAdd.put("Server Call", "Categories Error");
+                            localyticsBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " Error");
                             Crouton.makeText(RegisterActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.CATEGORIES);
-                mixpanelDataAdd.put("Server Call", "Categories Server 500 Error");
-                mixPanelBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
+                dataAdd.put("Server Call", "Categories Server 500 Error");
+                localyticsBuild(DataFields.getServerUrl() + DataFields.CATEGORIES + " 500 Error");
                 Crouton.makeText(RegisterActivity.this, getString(R.string.errortryagain), Style.INFO).show();
                 error.printStackTrace();
             }
@@ -219,12 +221,13 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
 
     @Override
     public void onRedo(Verify verify) {
-        mixPanelBuild("User redoing registration");
+        localyticsBuild("User redoing registration");
         startFragmentFromLeft(R.id.body, new RegisterFragment());
     }
 
     @Override
     public void onError(Verify verify) {
+        localyticsBuild("Verification Error");
         Crouton.makeText(this, getString(R.string.servererrortryagain), Style.ALERT).show();
     }
 

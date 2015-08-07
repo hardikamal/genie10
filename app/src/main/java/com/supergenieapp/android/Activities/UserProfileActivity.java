@@ -41,6 +41,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
@@ -88,7 +89,7 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
     final int PICK_IMAGE = 2;
 
     private final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Remove Picture", "Cancel"};
-    HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    HashMap<String, String> dataAdd = new HashMap<>();
 
     @Override
     public void onBackPressed() {
@@ -100,17 +101,17 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mixPanelTimerStart(UserProfileActivity.class.getName());
-        logging.LogI("On Start");
+    protected void onResume() {
+        super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("User Profile Activity");
+        Localytics.upload();
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(UserProfileActivity.class.getName());
-        mixPanelBuildHashMap("General Run " + UserProfileActivity.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run UserProfileActivity", dataAdd);
         super.onDestroy();
     }
 
@@ -151,17 +152,14 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressBar.show();
 
-        mixpanelDataAdd.put("Server Call", "Get User Profile");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.USERPROFILE);
+        dataAdd.put("Server Call", "Get User Profile");
         JsonObjectRequest req = new JsonObjectRequest(DataFields.getServerUrl() + DataFields.USERPROFILE,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
                         progressBar.dismiss();
                         progressBar.cancel();
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
-                        mixpanelDataAdd.put("Server Call", "User data Success");
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
+                        dataAdd.put("Server Call", "User data Success");
                         try {
                             if (response.has("phone")) {
                                 number.setText(response.getString("phone"));
@@ -215,9 +213,8 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
             public void onErrorResponse(VolleyError error) {
                 progressBar.dismiss();
                 progressBar.cancel();
-                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.USERPROFILE);
-                mixpanelDataAdd.put("Server Call", "Users Server 500 Error");
-                mixPanelBuild(DataFields.getServerUrl() + DataFields.USERPROFILE + " 500 Error");
+                dataAdd.put("Server Call", "Users Server 500 Error");
+                localyticsBuild(DataFields.getServerUrl() + DataFields.USERPROFILE + " 500 Error");
                 error.printStackTrace();
             }
         }) {
@@ -242,8 +239,7 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                mixpanelDataAdd.put("Pressed", "Home/Back Menu");
-                mixPanelBuild("Home/Back Menu Pressed");
+                dataAdd.put("Pressed", "Home/Back Menu");
                 onBackPressed();
                 return true;
             case R.id.action_menu:
@@ -253,8 +249,9 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
                 if (mNavigationDrawerFragment.isVisible()) {
                     mNavigationDrawerFragment.toggleDrawerLayout();
                 }
-                mixpanelDataAdd.put("Pressed", "Share Menu");
-                mixPanelBuild("Profile Share Pressed");
+                dataAdd.put("Pressed", "Share Menu");
+                localyticsBuild("Profile Share Pressed");
+                localyticsBuild("Profile Share Pressed from User profile");
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
@@ -272,7 +269,8 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
             deletePicture();
             // user is returning from capturing an image using the camera
             if (requestCode == CAMERA_CAPTURE) {
-                mixpanelDataAdd.put("Pressed", "Take a picture");
+                dataAdd.put("Pressed", "Take a picture");
+                localyticsBuild("Take Picture");
                 Bundle extras = data.getExtras();
                 Bitmap bitmap = (Bitmap) extras.get("data");
                 ThumbnailUtils.extractThumbnail(bitmap, radius * 2, radius * 2);
@@ -287,7 +285,8 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
                 }
 
             } else if (requestCode == PICK_IMAGE) {
-                mixpanelDataAdd.put("Pressed", "Pick picture");
+                dataAdd.put("Pressed", "Pick picture");
+                localyticsBuild("Pick Picture");
                 ContentResolver resolver = getContentResolver();
                 Uri actualUri = data.getData();
                 List<String> uriPath = actualUri.getPathSegments();
@@ -370,7 +369,7 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                mixPanelBuild("User Profile Picture Clicked " + options[item]);
+                localyticsBuild("User Profile Picture Clicked " + options[item]);
                 if (options[item].equals("Take Photo")) {
                     try {
                         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -404,13 +403,13 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
 
     @OnClick(R.id.update)
     public void onClickUpdate() {
-        mixpanelDataAdd.put("Pressed", "Update");
+        dataAdd.put("Pressed", "Update");
         if (name.getText().toString().trim().length() > 0) {
             if (email.getText().toString().trim().length() > 0 && !utils.isValidEmail(email.getText().toString())) {
                 Crouton.makeText(UserProfileActivity.this, getString(R.string.entervalidemail), Style.INFO, R.id.body).show();
                 return;
             }
-            mixPanelBuild("User Updated Profile");
+            localyticsBuild("User Updated Profile");
             final ProgressDialog progressBar = new ProgressDialog(this);
             progressBar.setCancelable(true);
             progressBar.setMessage(getString(R.string.updatinguserinformation));
@@ -457,7 +456,7 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
     }
 
     private void setPicture() {
-        mixPanelBuild("User Updated Profile picture");
+        localyticsBuild("User Updated Profile picture");
         userIcon.setDrawingCacheEnabled(true);
         Bitmap bitmap = userIcon.getDrawingCache();
         try {
@@ -471,8 +470,8 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
 
     @OnClick(R.id.locationButton)
     public void onCLickLocation() {
-        mixPanelBuild("User Updated Profile Location");
-        mixpanelDataAdd.put("Pressed", "Location Button to update user location");
+        localyticsBuild("User Updated Profile Location");
+        dataAdd.put("Pressed", "Location Button to update user location");
         final ProgressDialog progressBar = new ProgressDialog(this);
         progressBar.setCancelable(true);
         progressBar.setMessage(getString(R.string.gettinglocationinfo));

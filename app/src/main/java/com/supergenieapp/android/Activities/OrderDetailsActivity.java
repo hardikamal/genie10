@@ -26,6 +26,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Adapters.CustomOrderAdapter;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
@@ -64,20 +65,26 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
     @InjectView(R.id.noorders)
     TextView noOrders;
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    public HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
+    public HashMap<String, String> dataAdd = new HashMap<>();
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("Order Details Activity");
+        Localytics.upload();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mixPanelTimerStart(OrderDetailsActivity.class.getName());
         logging.LogI("On Start");
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(OrderDetailsActivity.class.getName());
-        mixPanelBuildHashMap("General Run " + OrderDetailsActivity.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run OrderDetailsActivity", dataAdd);
         super.onDestroy();
     }
 
@@ -114,14 +121,12 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
     private void getUserOrders() {
         loadingView.setLoading(true);
         final ArrayList<Order> orders = new ArrayList<>();
-        mixpanelDataAdd.put("Server Call", "Get Orders");
-        mixPanelTimerStart(DataFields.getServerUrl() + DataFields.ORDERS);
+        dataAdd.put("Server Call", "Get Orders");
         JsonArrayRequest req = new JsonArrayRequest(DataFields.getServerUrl() + DataFields.ORDERS,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(final JSONArray response) {
-                        mixPanelTimerStop(DataFields.getServerUrl() + DataFields.ORDERS);
-                        mixpanelDataAdd.put("Server Call", "ORDERS data Success");
+                        dataAdd.put("Server Call", "ORDERS data Success");
                         System.out.print(response.toString());
                         try {
                             for (int i = 0; i < response.length(); i++) {
@@ -186,9 +191,8 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
             @Override
             public void onErrorResponse(VolleyError error) {
                 // // TODO: 8/6/2015
-                mixPanelTimerStop(DataFields.getServerUrl() + DataFields.ORDERS);
-                mixpanelDataAdd.put("Server Call", "ORDERS Server 500 Error");
-                mixPanelBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
+                dataAdd.put("Server Call", "ORDERS Server 500 Error");
+                localyticsBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
                 error.printStackTrace();
                 ArrayList<Order> orders = new ArrayList<>();
                 setupOrders(orders);
@@ -217,7 +221,7 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
             noOrders.setVisibility(View.GONE);
         }
         loadingView.setLoading(false);
-        mixpanelDataAdd.put("Size Orders", "Returned Size " + orders.size());
+        dataAdd.put("Size Orders", "Returned Size " + orders.size());
         orderList.removeAllViews();
         orderList.setHasFixedSize(true);
         orderList.setLayoutManager(new LinearLayoutManager(this));
@@ -252,8 +256,7 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                mixpanelDataAdd.put("Pressed", "Home/Back Menu");
-                mixPanelBuild("Home/Back Menu Pressed");
+                dataAdd.put("Pressed", "Home/Back Menu");
                 onBackPressed();
                 return true;
             case R.id.action_menu:
@@ -263,8 +266,9 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
                 if (mNavigationDrawerFragment.isVisible()) {
                     mNavigationDrawerFragment.toggleDrawerLayout();
                 }
-                mixpanelDataAdd.put("Pressed", "Share Menu");
-                mixPanelBuild("Profile Share Pressed");
+                dataAdd.put("Pressed", "Share Menu");
+                localyticsBuild("Profile Share Pressed");
+                localyticsBuild("Profile Share Pressed in Order Details");
                 String shareBody = getString(R.string.bodytext);
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

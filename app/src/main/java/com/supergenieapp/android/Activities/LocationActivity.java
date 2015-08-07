@@ -39,6 +39,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
 import com.supergenieapp.android.Extras.DataFields;
@@ -104,18 +105,11 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @InjectView(R.id.searchlayout)
     LinearLayout searchLayout;
     private MessageValues messageValues = null;
-    private HashMap<String, Object> mixpanelDataAdd = new HashMap<>();
-    private String provider;
+    private HashMap<String, String> dataAdd = new HashMap<>();
     int PLACE_PICKER_REQUEST = 1;
     GoogleMap map;
     AlertDialog.Builder dialog;
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private Location mLastLocation;
-    private boolean mRequestingLocationUpdates = false;
-    private LocationRequest mLocationRequest;
-    private static int UPDATE_INTERVAL = 10000; // 10 sec
-    private static int FATEST_INTERVAL = 5000; // 5 sec
-    private static int DISPLACEMENT = 10; // 10 meters
     protected GoogleApiClient mGoogleApiClient;
     protected GoogleApiClient mGoogleApiClientLocation;
 
@@ -123,6 +117,15 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(4.428586, 105.769779), new LatLng(37.059575, 65.230231));
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Localytics.openSession();
+        Localytics.tagScreen("Location Activity");
+        Localytics.upload();
+    }
 
     @Override
     protected void onStart() {
@@ -133,22 +136,20 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         if (mGoogleApiClientLocation != null) {
             mGoogleApiClientLocation.connect();
         }
-        mixPanelTimerStart(LocationActivity.class.getName());
         logging.LogI("On Start");
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        mixPanelTimerStop(LocationActivity.class.getName());
-        mixPanelBuildHashMap("General Run " + LocationActivity.class.getName(), mixpanelDataAdd);
+        localyticsBuildHashMap("General Run LocationActivity", dataAdd);
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        mixPanelBuild("Back Pressed from Location screen");
-        mixpanelDataAdd.put("Pressed", "Back");
+        localyticsBuild("Back Pressed from Location screen");
+        dataAdd.put("Pressed", "Back");
         super.onBackPressed();
     }
 
@@ -183,7 +184,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                mixpanelDataAdd.put("Location", "Refresh");
+                dataAdd.put("Location", "Refresh");
                 runOnUiThread(new Runnable() {
                     public void run() {
                         refreshLocation.performClick();
@@ -205,7 +206,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mixpanelDataAdd.put("Pick Places", "Result on Activity");
+        dataAdd.put("Pick Places", "Result on Activity");
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
@@ -238,7 +239,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         if (_Location.length() == 0) {
             _Location = "Latitude : " + place.getLatLng().latitude + " Longitude : " + place.getLatLng().longitude;
         }
-        mixpanelDataAdd.put("Return Location", _Location);
+        dataAdd.put("Return Location", _Location);
         return _Location;
     }
 
@@ -259,7 +260,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
         if (!gps_enabled && !network_enabled) {
             // notify user
-            mixpanelDataAdd.put("Location", "Unavailable");
+            dataAdd.put("Location", "Unavailable");
+            localyticsBuild("Location Unavailable");
             dialog.setCancelable(false);
             dialog.setMessage(getString(R.string.locationisoff));
             dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
@@ -279,13 +281,14 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             });
             dialog.show();
         } else {
-            mixpanelDataAdd.put("Location", "Available");
+            dataAdd.put("Location", "Available");
         }
     }
 
     @OnClick(R.id.refreshLocation)
     public void onClickRefresh() {
-        mixpanelDataAdd.put("Pressed", "Refresh Button");
+        dataAdd.put("Pressed", "Refresh Button");
+        localyticsBuild("Refresh My location");
         messageValues = getLocation();
         LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
 
@@ -301,7 +304,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
     @OnClick(R.id.pickplaces)
     public void onClickPickPlaces() {
-        mixpanelDataAdd.put("Pressed", "Pick Places Button");
+        dataAdd.put("Pressed", "Pick Places Button");
+        localyticsBuild("Pick Places");
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         Context context = getApplicationContext();
         try {
@@ -315,8 +319,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
     @OnClick(R.id.pickplacebutton)
     public void onClickPickPlaceButton() {
-        mixpanelDataAdd.put("Pressed", "Picked Places Button");
-        mixPanelBuild("Location Pick Places Clicked");
+        dataAdd.put("Pressed", "Picked Places Button");
+        localyticsBuild("Location Pick Places Clicked");
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         Context context = getApplicationContext();
         try {
@@ -330,7 +334,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
     @OnClick(R.id.location)
     public void onClickLocation() {
-        mixpanelDataAdd.put("Pressed", "Location Button");
+        dataAdd.put("Pressed", "Location Button");
+        localyticsBuild("Send Location");
         if (messageValues == null)
             messageValues = getLocation();
         showSaveLaterBox(messageValues);
@@ -339,8 +344,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @OnClick(R.id.search)
     public void onClickSearch() {
         searchLayout.setBackgroundColor(getResources().getColor(R.color.white));
-        mixpanelDataAdd.put("Pressed", "Search Button");
-        mixPanelBuild("Search Location Button Clicked");
+        dataAdd.put("Pressed", "Search Button");
+        localyticsBuild("Search Location Button Clicked");
         mAutocompleteView.setVisibility(View.VISIBLE);
         mAutocompleteView.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -349,8 +354,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
 
     @OnClick(R.id.locationButton)
     public void onClickLocationButton() {
-        mixpanelDataAdd.put("Pressed", "Share my Location Button");
-        mixPanelBuild("Share My Location Button Clicked");
+        dataAdd.put("Pressed", "Share my Location Button");
+        localyticsBuild("Share My Location Button Clicked");
         if (messageValues == null)
             messageValues = getLocation();
         showSaveLaterBox(messageValues);
@@ -424,8 +429,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                     .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            mixpanelDataAdd.put("Location", "Saved as a Fav");
-                            mixPanelBuild("Save as Fav location button clicked");
+                            dataAdd.put("Location", "Saved as a Fav");
+                            localyticsBuild("Save as Fav location button clicked");
                             if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
                                 dbDataSource.addFavNormal(new FavValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
                                         , messageValues.getLat(), saveas.getText().toString().trim()));
@@ -438,20 +443,20 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                     })
                     .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            mixpanelDataAdd.put("Location", "Not Saved");
+                            dataAdd.put("Location", "Not Saved");
                             setResultBackToActivity(messageValues);
                         }
                     });
             alert.show();
         } else {
-            mixpanelDataAdd.put("Location", "Invalid");
+            dataAdd.put("Location", "Invalid");
             dialog = new AlertDialog.Builder(this);
             dialog.setCancelable(true);
             dialog.setMessage(getString(R.string.notabletogetyourlocation));
             dialog.setPositiveButton(getString(R.string.opensettings), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    mixpanelDataAdd.put("Pressed", "Settings Button");
+                    dataAdd.put("Pressed", "Settings Button");
                     Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(myIntent);
                 }
@@ -459,7 +464,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             dialog.setNegativeButton(getString(R.string.goback), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    mixpanelDataAdd.put("Pressed", "Cancel Button");
+                    dataAdd.put("Pressed", "Cancel Button");
                     paramDialogInterface.cancel();
                     onBackPressed();
                 }
@@ -481,7 +486,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 .setNegativeButton("Save as Favorites", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        mixpanelDataAdd.put("Location", "Saved as a Fav");
+                        dataAdd.put("Location", "Saved as a Fav");
                         if (saveas.getText().toString().trim().length() > 0 && !dbDataSource.CheckIfExists(saveas.getText().toString().trim())) {
                             dbDataSource.addFavNormal(new FavValues(messageValues.get_id(), messageValues.getText(), messageValues.getLng()
                                     , messageValues.getLat(), saveas.getText().toString().trim()));
@@ -494,7 +499,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
                 })
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mixpanelDataAdd.put("Location", "Not Saved");
+                        dataAdd.put("Location", "Not Saved");
                         setResultBackToActivity(messageValues);
                     }
                 });
@@ -598,7 +603,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             // Zoom in, animating the camera.
             map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
 
-            mixpanelDataAdd.put("Google Location Search", "Returned Results");
+            dataAdd.put("Google Location Search", "Returned Results");
 
             hideKeyboard(LocationActivity.this);
             places.release();
@@ -633,8 +638,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-            mixpanelDataAdd.put("Google Location Search", "Result Clicked");
-            mixPanelBuild("Google Location Service Resulted shared");
+            dataAdd.put("Google Location Search", "Result Clicked");
+            localyticsBuild("Google Location Service Resulted shared");
         }
     };
 
