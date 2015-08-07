@@ -494,9 +494,19 @@ public class ChatFragment extends GenieFragment {
     public void onClickMore() {
         localyticsBuild("Clicked attachments in chat");
         if (moreLayout.getVisibility() == View.VISIBLE) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                moreButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_attachment_black_24dp, getActivity().getTheme()));
+            } else {
+                send.setImageDrawable(getResources().getDrawable(R.drawable.ic_attachment_black_24dp));
+            }
             moreLayout.setVisibility(View.GONE);
         } else if (moreLayout.getVisibility() == View.GONE) {
             moreLayout.setVisibility(View.VISIBLE);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                moreButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_close_black_24dp, getActivity().getTheme()));
+            } else {
+                send.setImageDrawable(getResources().getDrawable(R.drawable.ic_close_black_24dp));
+            }
         }
         new Thread(new Runnable() {
             public void run() {

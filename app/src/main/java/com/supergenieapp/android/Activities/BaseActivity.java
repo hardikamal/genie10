@@ -393,7 +393,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         ChatFragment chatFragment = new ChatFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("id", categorie_selected.getId());
-        bundle.putBoolean("position", true);
         bundle.putString("color", categorie_selected.getBg_color());
         bundle.putLong("hide_time", categorie_selected.getHide_chats_time());
         bundle.putString("url", categorie_selected.getImage_url());

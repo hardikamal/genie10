@@ -68,7 +68,7 @@
                 android:layout_gravity="center_vertical"
                 android:alpha="0.5"
                 android:padding="@dimen/_5sdp"
-                android:src="@drawable/ic_expand_more_black_24dp" />
+                android:src="@drawable/ic_attachment_black_24dp" />
 
             <EditText
                 android:id="@+id/message"
