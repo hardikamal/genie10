@@ -55,7 +55,7 @@ android {
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
             versionCode 11
-            versionName '1.1.0.Internal'
+            versionName '1.0.5.Internal'
         }
         releaseConfig {
             minSdkVersion 14
@@ -63,7 +63,7 @@ android {
             signingConfig signingConfigs.Release
             targetSdkVersion 21
             versionCode 11
-            versionName '1.1.0.Beta'
+            versionName '1.0.5.Beta'
         }
     }
 }
