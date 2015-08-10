@@ -84,7 +84,7 @@
         \n\nJust Chat, Order, Done!  You can download the app here: \nhttps://play.google.com/store/apps/details?id=com.supergenieapp.android</string>
     <string name="shareus">Share Us</string>
     <string name="today">Today</string>
-    <string name="paynow">Pay Now</string>
+    <string name="paynow">Pay Online</string>
     <string name="paycod">Pay as COD</string>
     <string name="price999">Rs. 999.00</string>
     <string name="paynowrandomtext">Your order from SuperGenie is Rs. 999.00. You will receive your order soon.</string>
@@ -377,5 +377,8 @@
     <string name="pleaseaddyourcomments">Please add your comments</string>
     <string name="typeyourcomments">Type your comments</string>
     <string name="title_activity_paytm">PAYTMActivity</string>
-    <string name="paytmwallet">PayTm Wallet</string>
+    <string name="paytmwallet">PayTM Wallet</string>
+    <string name="thanksforusingsupergenie">Thanks for using SuperGenie!</string>
+    <string name="rateyourexperience">Rate your experience</string>
+    <string name="defaultrating">-/5.0</string>
 </resources>

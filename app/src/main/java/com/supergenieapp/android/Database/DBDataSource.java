@@ -25,13 +25,18 @@ import java.util.List;
 public class DBDataSource {
     private Context context;
     private SQLiteDatabase database;
+    private DBHandler dbHandler;
 
     public DBDataSource(Context context) {
         this.context = context;
+        dbHandler = new DBHandler(context);
     }
 
     public void open() throws SQLException {
-        database = new DBHandler(context).getWritableDatabase();
+        if (dbHandler == null && context != null) {
+            dbHandler = new DBHandler(context);
+        }
+        database = dbHandler.getWritableDatabase();
     }
 
     public boolean isOpen() {

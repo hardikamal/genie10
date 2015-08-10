@@ -1142,6 +1142,20 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
             mSocket.emit("pay online", jsonObject);
     }
 
+    public void emitPayWallet(long created_at, String action) {
+        localyticsBuild("User Clicked Pay wallet");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("created_at", created_at);
+            jsonObject.put("button_clicked", action);
+            jsonObject.put("cid", categorie_selected.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mSocket.connected())
+            mSocket.emit("pay wallet", jsonObject);
+    }
+
     @Override
     public void onInit(int status) {
         if (!sharedPreferences.getBoolean("isMuted", true)) {

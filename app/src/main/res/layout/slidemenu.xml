@@ -18,6 +18,11 @@
         android:orientation="horizontal">
 
         <Button
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"/>
+
+        <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

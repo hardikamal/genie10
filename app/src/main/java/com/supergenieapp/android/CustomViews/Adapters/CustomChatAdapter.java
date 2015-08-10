@@ -26,6 +26,10 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.paytm.pgsdk.PaytmMerchant;
+import com.paytm.pgsdk.PaytmOrder;
+import com.paytm.pgsdk.PaytmPGService;
+import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
@@ -46,6 +50,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -131,6 +137,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.paynow)
         ButtonFlat paynow;
         @Optional
+        @InjectView(R.id.paytm)
+        ButtonFlat paytm;
+        @Optional
         @InjectView(R.id.catimage)
         ImageView catimage;
         @Optional
@@ -171,6 +180,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.datelayout, parent, false), context);
         } else if (currentMessage.getMessageType() == DataFields.PAYNOW) {
             viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
+        } else if (currentMessage.getMessageType() == DataFields.RATEORDER) {
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.rateorder, parent, false), context);
         } else {
             if (messagesList.get(viewType).getDirection() == DataFields.INCOMING) {
                 viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
@@ -241,13 +252,16 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 if (object.has("cod") && object.getBoolean("cod")) {
                     viewHolderMain.payascod.setVisibility(View.VISIBLE);
                     viewHolderMain.paynow.setVisibility(View.GONE);
+                    viewHolderMain.paytm.setVisibility(View.GONE);
                 } else {
                     viewHolderMain.payascod.setVisibility(View.GONE);
                     viewHolderMain.paynow.setVisibility(View.VISIBLE);
+                    viewHolderMain.paytm.setVisibility(View.VISIBLE);
                 }
                 final String costToPay = String.valueOf(object.getDouble("cost"));
                 viewHolderMain.payascod.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setTextColor(Color.parseColor(color));
+                viewHolderMain.paytm.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -267,6 +281,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         bundle.putLong("created_at", messages.getCreatedAt());
                         paymentFragment.setArguments(bundle);
                         ((BaseActivity) context).startFragmentFromRight(R.id.body, paymentFragment);
+                    }
+                });
+
+                viewHolderMain.paytm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((BaseActivity) context).emitPayWallet(messages.getCreatedAt(), "payment");
+                        showPayTmWalletTransaction();
                     }
                 });
 
@@ -569,6 +591,76 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 }
             }
         }
+    }
+
+    private void showPayTmWalletTransaction() {
+        PaytmPGService Service = PaytmPGService.getStagingService(); //for testing environment
+        /*Service = PaytmPGService.getStagingService();*/ //for production environment
+
+
+		/*PaytmMerchant constructor takes two parameters
+        1) Checksum generation url
+		2) Checksum verification url
+		Merchant should replace the below values with his values*/
+
+        PaytmMerchant Merchant = new PaytmMerchant("https://pguat.paytm.com/merchant-chksum/ChecksumGenerator", "https://pguat.paytm.com/merchant-chksum/ValidateChksum");
+
+        //below parameter map is required to construct PaytmOrder object, Merchant should replace below map values with his own values
+
+        Map<String, String> paramMap = new HashMap<>();
+
+        //these are mandatory parameters
+        paramMap.put("REQUEST_TYPE", "DEFAULT");
+        paramMap.put("ORDER_ID", "121212121212");
+        paramMap.put("MID", "klbGlV59135347348753");
+        paramMap.put("CUST_ID", "CUST123");
+        paramMap.put("CHANNEL_ID", "WAP");
+        paramMap.put("INDUSTRY_TYPE_ID", "Retail");
+        paramMap.put("WEBSITE", "paytm");
+        paramMap.put("TXN_AMOUNT", "1");
+        paramMap.put("THEME", "merchant");
+
+
+        PaytmOrder Order = new PaytmOrder(paramMap);
+
+        Service.initialize(Order, Merchant, null);
+        Service.startPaymentTransaction(context, false, false, new PaytmPaymentTransactionCallback() {
+            @Override
+            public void onTransactionSuccess(Bundle inResponse) {
+                Log.i("Transaction Success", inResponse.toString());
+                // TODO: 8/10/2015 emit success
+            }
+
+            @Override
+            public void onTransactionFailure(String inErrorMessage, Bundle inResponse) {
+                Log.i("Error", "onTransactionFailure :" + inErrorMessage);
+                // TODO: 8/10/2015 emit failure
+            }
+
+            @Override
+            public void networkNotAvailable() {
+                Log.i("Internet Success", String.valueOf(false));
+                // TODO: 8/10/2015 emit no network
+            }
+
+            @Override
+            public void clientAuthenticationFailed(String inErrorMessage) {
+                Log.i("Error", "clientAuthenticationFailed :" + inErrorMessage);
+                // TODO: 8/10/2015 emit client error
+            }
+
+            @Override
+            public void someUIErrorOccurred(String s) {
+                Log.i("Error", "UI Error :" + s);
+                // TODO: 8/10/2015 emit Error on UI
+            }
+
+            @Override
+            public void onErrorLoadingWebPage(int i, String s, String s1) {
+                Log.i("Error", "Loading Webpage :" + s + " :" + s1);
+                // TODO: 8/10/2015 emit Web page loading
+            }
+        });
     }
 
     @Override
