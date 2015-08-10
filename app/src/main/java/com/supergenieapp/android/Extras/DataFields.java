@@ -67,6 +67,8 @@ public class DataFields {
     public static final int PAYNOW = 5;
     public static final int PAYASCOD = 6;
 
+    public static final int RATEORDER = 11;
+
     public static final int ALERTMSG = 2;
     public static final int NotificationId = 1;
 

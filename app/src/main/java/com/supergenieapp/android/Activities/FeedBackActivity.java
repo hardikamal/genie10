@@ -41,8 +41,7 @@ public class FeedBackActivity extends GenieBaseActivity {
     EditText editText;
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         Localytics.openSession();
         Localytics.tagScreen("Feedback");
@@ -97,7 +96,7 @@ public class FeedBackActivity extends GenieBaseActivity {
 
     @OnClick(R.id.button)
     public void OnClickSubmit() {
-        localyticsBuild("Feedback Submited");
+        localyticsBuild("Feedback Submitted");
         if (editText.getText().toString().trim().length() > 0) {
             submitFeedback(editText.getText().toString());
         } else {
@@ -107,7 +106,7 @@ public class FeedBackActivity extends GenieBaseActivity {
 
     private void submitFeedback(String feedback) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Submiting Feedback");
+        progressDialog.setTitle("Submitting Feedback");
         progressDialog.setCancelable(false);
         progressDialog.show();
         JSONObject json = new JSONObject();

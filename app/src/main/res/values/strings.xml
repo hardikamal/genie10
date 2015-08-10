@@ -370,8 +370,12 @@
     <string name="notabletoregisteruser">Not able to register user. Try again.</string>
     <string name="title_activity_feed_back">Feedback</string>
     <string name="submit">Submit</string>
-    <string name="pleasetypeyourfeedback">Please type your feedback here&#8230;</string>
+    <string name="pleasetypeyourfeedback">How can we improve the app experience?</string>
     <string name="failedtosubmitfeedback">Failed to submit feedback. Try again.</string>
     <string name="inindia">in India</string>
     <string name="madewith">Made with</string>
+    <string name="pleaseaddyourcomments">Please add your comments</string>
+    <string name="typeyourcomments">Type your comments</string>
+    <string name="title_activity_paytm">PAYTMActivity</string>
+    <string name="paytmwallet">PayTm Wallet</string>
 </resources>

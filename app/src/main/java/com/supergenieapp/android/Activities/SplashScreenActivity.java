@@ -56,9 +56,6 @@ public class SplashScreenActivity extends GenieActivity {
         // Butter knife injects all the elements in to objects
         ButterKnife.inject(this);
 
-        // Start Database
-        new DBHandler(this);
-
         start = System.currentTimeMillis();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -88,7 +85,7 @@ public class SplashScreenActivity extends GenieActivity {
     protected void onResume() {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("SplashScreen Activity");
+        Localytics.tagScreen("Splash Screen");
         Localytics.upload();
         // As app requires internet to perform any task. This is a check post to check internet connectivity.
         if (utils.isOnline() && utils.isNetworkAvailable()) {
@@ -109,6 +106,7 @@ public class SplashScreenActivity extends GenieActivity {
                 }
             }
         } else {
+            localyticsBuild("Internet not found");
             logging.LogD("Internet", "Show Alert");
             dataAdd.put("Internet not found", "Show Alert");
             showAlertToUser();
@@ -127,7 +125,7 @@ public class SplashScreenActivity extends GenieActivity {
     protected void onDestroy() {
         logging.LogI("On Destroy");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        localyticsBuildHashMap("General Run SplashScreenActivity", dataAdd);
+        localyticsBuildHashMap("Splash Screen Activity", dataAdd);
         super.onDestroy();
     }
 
@@ -167,7 +165,7 @@ public class SplashScreenActivity extends GenieActivity {
                         err.printStackTrace();
                     }
                     dataAdd.put("Activity", "Walkthru");
-                    localyticsBuild("Activity Walkthru");
+                    localyticsBuild("Walkthru");
                     logging.LogI("Start Walk Thru Activity");
                     Intent intent = new Intent(SplashScreenActivity.this, WalkThroughActivity.class);
                     startActivity(intent);
@@ -278,6 +276,7 @@ public class SplashScreenActivity extends GenieActivity {
     }
 
     private void showRatingAlert() {
+        localyticsBuild("Showed Rating alert");
         AlertDialog.Builder alertDialogBuilder;
         AlertDialog alert;
         alertDialogBuilder = new AlertDialog.Builder(this);
@@ -286,6 +285,7 @@ public class SplashScreenActivity extends GenieActivity {
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.rateit), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        localyticsBuild("App is Rated");
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.supergenieapp.android")));
                         sharedPreferences.edit().putBoolean("trackvisitcount", false).apply();
                         sharedPreferences.edit().putInt("visitedcount", 0).apply();
@@ -293,12 +293,14 @@ public class SplashScreenActivity extends GenieActivity {
                     }
                 }).setNegativeButton(getString(R.string.remindmelater), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                localyticsBuild("App rating (Remind me later)");
                 dialog.dismiss();
                 sharedPreferences.edit().putInt("visitedcount", DataFields.RATEREMINDMERESET).apply();
                 getCategories();
             }
         }).setNeutralButton(getString(R.string.dontaskagain), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                localyticsBuild("App rating (don't Ask)");
                 sharedPreferences.edit().putBoolean("trackvisitcount", false).apply();
                 sharedPreferences.edit().putInt("visitedcount", 0).apply();
                 dialog.dismiss();

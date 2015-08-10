@@ -111,6 +111,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                 startFragmentFromRight(R.id.body, new MainFragment());
                 categorie_selected = null;
                 mToolbar.setLogo(R.drawable.genie_logo);
+                localyticsBuild("Go to categories Screen");
             } else if (getIntent().getStringExtra("page").contains("message")) {
                 dataAdd.put("Page", "Go to Chat Screen");
                 int id = sharedPreferences.getInt("catid", 0);
@@ -1128,6 +1129,7 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     public void emitPayOnline(long created_at, String action) {
+        localyticsBuild("User CLicked Pay online");
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("created_at", created_at);

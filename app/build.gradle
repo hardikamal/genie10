@@ -54,16 +54,16 @@ android {
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Beta
             targetSdkVersion 21
-            versionCode 11
-            versionName '1.0.5.Internal'
+            versionCode 12
+            versionName '1.0.6.Internal'
         }
         releaseConfig {
             minSdkVersion 14
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
-            versionCode 11
-            versionName '1.0.5.Beta'
+            versionCode 12
+            versionName '1.0.6.Beta'
         }
     }
 }
@@ -81,10 +81,11 @@ dependencies {
     compile 'de.halfbit:tinybus:3.0.1'
     compile 'com.mcxiaoke.volley:library:1.0.17'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
-    compile('com.github.nkzawa:socket.io-client:0.5.2') {
+    compile('com.github.nkzawa:socket.io-client:0.6.0') {
         exclude group: 'org.json', module: 'json'
     }
     compile files('libs/localytics.jar')
+    compile files('libs/pgsdk.jar')
     compile 'com.intuit.sdp:sdp-android:1.0.0'
     compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
