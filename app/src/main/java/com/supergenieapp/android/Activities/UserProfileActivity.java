@@ -104,14 +104,14 @@ public class UserProfileActivity extends GenieBaseActivity implements Navigation
     protected void onResume() {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("User Profile Activity");
+        Localytics.tagScreen("User Profile");
         Localytics.upload();
     }
 
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        localyticsBuildHashMap("General Run UserProfileActivity", dataAdd);
+        localyticsBuildHashMap("User Profile Activity", dataAdd);
         super.onDestroy();
     }
 

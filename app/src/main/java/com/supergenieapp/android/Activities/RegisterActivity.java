@@ -94,7 +94,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        localyticsBuildHashMap("General Run Register Activity", dataAdd);
+        localyticsBuildHashMap("Register Activity", dataAdd);
         super.onDestroy();
     }
 
@@ -134,7 +134,7 @@ public class RegisterActivity extends GenieBaseActivity implements RegisterFragm
     public void onResume() {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("Order Details Activity");
+        Localytics.tagScreen("Register Page");
         Localytics.upload();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");

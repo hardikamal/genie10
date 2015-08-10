@@ -71,7 +71,7 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
     public void onResume() {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("Order Details Activity");
+        Localytics.tagScreen("Order Details");
         Localytics.upload();
     }
 
@@ -84,7 +84,7 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        localyticsBuildHashMap("General Run OrderDetailsActivity", dataAdd);
+        localyticsBuildHashMap("Order Details Activity", dataAdd);
         super.onDestroy();
     }
 

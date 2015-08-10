@@ -166,6 +166,7 @@ public class PaymentFragment extends GenieFragment {
                         parentLoadingView.setLoading(false);
                         if (view.getUrl().contains("http://getgenieapp.com") || view.getUrl().contains("http://supergenieapp.com")) {
                             if (goBack) {
+                                localyticsBuild("Payment Done");
                                 goBack = false;
                                 getActivity().onBackPressed();
                             }

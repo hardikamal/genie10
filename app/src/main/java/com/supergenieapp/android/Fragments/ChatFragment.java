@@ -363,7 +363,7 @@ public class ChatFragment extends GenieFragment {
     public void onResume() {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("Chat Fragment");
+        Localytics.tagScreen("Chat Screen");
         logging.LogV("on Resume Chat");
         dbDataSource.UpdateCatNotification(id, 0);
         new NotificationHandler(getActivity()).cancelNotification(DataFields.NotificationId);

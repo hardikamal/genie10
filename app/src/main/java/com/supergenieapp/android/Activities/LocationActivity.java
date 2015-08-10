@@ -123,7 +123,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     {
         super.onResume();
         Localytics.openSession();
-        Localytics.tagScreen("Location Activity");
+        Localytics.tagScreen("Location Page");
         Localytics.upload();
     }
 
@@ -142,7 +142,7 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @Override
     protected void onDestroy() {
         logging.LogI("On Destroy");
-        localyticsBuildHashMap("General Run LocationActivity", dataAdd);
+        localyticsBuildHashMap("Location Activity", dataAdd);
         super.onDestroy();
     }
 
