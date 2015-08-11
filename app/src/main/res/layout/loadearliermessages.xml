@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:inputType="text"
+            android:textSize="16sp"
             android:text="@string/loadearliermessages" />
     </com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat>
 

@@ -190,6 +190,11 @@ public abstract class Button extends CustomView {
         textButton.setTextColor(color);
     }
 
+    public void setTextSize(float size) {
+        textButton.setTextSize(size);
+    }
+
+
     public TextView getTextView() {
         return textButton;
     }

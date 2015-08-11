@@ -50,7 +50,7 @@
         android:padding="@dimen/_5sdp"
         android:textColor="@color/white"
         android:textIsSelectable="false"
-        android:textSize="@dimen/_12sdp" />
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             android:layout_gravity="end"
             android:text="23:59"
             android:textColor="@color/white"
-            android:textSize="@dimen/_8sdp" />
+            android:textSize="8sp" />
 
     </LinearLayout>
 </RelativeLayout>

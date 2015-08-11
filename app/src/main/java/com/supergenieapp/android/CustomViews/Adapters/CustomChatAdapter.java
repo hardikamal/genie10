@@ -242,6 +242,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             viewHolderMain.date.setTextColor(Color.parseColor(color));
         } else if (messages.getMessageType() == DataFields.PAYNOW) {
             try {
+                viewHolderMain.payascod.setTextSize(18);
+                viewHolderMain.paynow.setTextSize(18);
+                viewHolderMain.paytm.setTextSize(18);
                 final JSONObject object = new JSONObject(messageValues.getText());
                 if (object.has("service_provider"))
                     viewHolderMain.companyName.setText(object.getString("service_provider"));

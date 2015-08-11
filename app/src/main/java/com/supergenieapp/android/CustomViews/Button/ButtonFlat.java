@@ -19,7 +19,7 @@ public class ButtonFlat extends Button {
 
     }
 
-    protected void setDefaultProperties(){
+    protected void setDefaultProperties() {
         minHeight = 36;
         minWidth = 88;
         rippleSize = 3;
@@ -33,13 +33,13 @@ public class ButtonFlat extends Button {
     protected void setAttributes(AttributeSet attrs) {
         // Set text button
         String text = null;
-        int textResource = attrs.getAttributeResourceValue(ANDROIDXML,"text",-1);
-        if(textResource != -1){
+        int textResource = attrs.getAttributeResourceValue(ANDROIDXML, "text", -1);
+        if (textResource != -1) {
             text = getResources().getString(textResource);
-        }else{
-            text = attrs.getAttributeValue(ANDROIDXML,"text");
+        } else {
+            text = attrs.getAttributeValue(ANDROIDXML, "text");
         }
-        if(text != null){
+        if (text != null) {
             textButton = new TextView(getContext());
             textButton.setText(text.toUpperCase());
             textButton.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -49,10 +49,10 @@ public class ButtonFlat extends Button {
             textButton.setLayoutParams(params);
             addView(textButton);
         }
-        int bacgroundColor = attrs.getAttributeResourceValue(ANDROIDXML,"background",-1);
-        if(bacgroundColor != -1){
+        int bacgroundColor = attrs.getAttributeResourceValue(ANDROIDXML, "background", -1);
+        if (bacgroundColor != -1) {
             setBackgroundColor(getResources().getColor(bacgroundColor));
-        }else{
+        } else {
             // Color by hexadecimal
             // Color by hexadecimal
             background = attrs.getAttributeIntValue(ANDROIDXML, "background", -1);
@@ -71,13 +71,13 @@ public class ButtonFlat extends Button {
             paint.setAntiAlias(true);
             paint.setColor(makePressColor());
             canvas.drawCircle(x, y, radius, paint);
-            if(radius > getHeight()/rippleSize)
+            if (radius > getHeight() / rippleSize)
                 radius += rippleSpeed;
-            if(radius >= getWidth()){
+            if (radius >= getWidth()) {
                 x = -1;
                 y = -1;
-                radius = getHeight()/rippleSize;
-                if(onClickListener != null&& clickAfterRipple)
+                radius = getHeight() / rippleSize;
+                if (onClickListener != null && clickAfterRipple)
                     onClickListener.onClick(this);
             }
             invalidate();
@@ -87,21 +87,22 @@ public class ButtonFlat extends Button {
 
     /**
      * Make a dark color to ripple effect
+     *
      * @return
      */
     @Override
-    protected int makePressColor(){
+    protected int makePressColor() {
         return Color.parseColor("#88DDDDDD");
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         textButton.setText(text.toUpperCase());
     }
 
     // Set color of background
-    public void setBackgroundColor(int color){
+    public void setBackgroundColor(int color) {
         backgroundColor = color;
-        if(isEnabled())
+        if (isEnabled())
             beforeBackground = backgroundColor;
         textButton.setTextColor(color);
     }
@@ -111,7 +112,7 @@ public class ButtonFlat extends Button {
         return textButton;
     }
 
-    public String getText(){
+    public String getText() {
         return textButton.getText().toString();
     }
 
