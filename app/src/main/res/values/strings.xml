@@ -7,7 +7,7 @@
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>
     <string name="title_activity_main" />
-    <string name="splashScreenAlertBoxMessage">Attention!  Please enable internet to shop. Would you like to enable them now?</string>
+    <string name="splashScreenAlertBoxMessage">Attention! \nInternet connection is not active. Please check the internet settings.</string>
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
     <string name="title_activity_register">RegisterActivity</string>
@@ -67,7 +67,7 @@
     <string name="terms"><![CDATA[Terms & Services]]></string>
     <string name="smsrequestresend">Request Sent. Please check your SMS.</string>
     <string name="space10char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
-    <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="space12char">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</string>
     <string name="mapservicemissing">MAP SERVICE MISSING</string>
     <string name="mapupdate">MAP UPDATE REQUIRED</string>
     <string name="sendcurrentlocation">Send your location</string>

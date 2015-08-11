@@ -67,7 +67,7 @@
                             android:layout_weight="1"
                             android:singleLine="true"
                             android:textIsSelectable="true"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/_16sdp" />
 
                         <TextView
                             android:id="@+id/rate"
@@ -76,7 +76,7 @@
                             android:layout_gravity="end"
                             android:singleLine="true"
                             android:textIsSelectable="false"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/_14sdp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -92,7 +92,7 @@
                             android:gravity="center_vertical"
                             android:maxLines="4"
                             android:textIsSelectable="true"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/_14sdp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -156,7 +156,7 @@
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/white"
                 android:textIsSelectable="false"
-                android:textSize="14sp" />
+                android:textSize="@dimen/_14sdp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -175,9 +175,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="23:59"
                     android:textColor="@color/white"
-                    android:textSize="8sp" />
+                    android:textSize="@dimen/_8sdp" />
 
                 <ImageView
                     android:id="@+id/tick"
