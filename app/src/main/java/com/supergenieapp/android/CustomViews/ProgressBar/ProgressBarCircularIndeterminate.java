@@ -11,14 +11,13 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 
 import com.supergenieapp.android.Extras.Utils;
-import com.supergenieapp.android.R;
 
 public class ProgressBarCircularIndeterminate extends CustomView {
 
 
     final static String ANDROIDXML = "http://schemas.android.com/apk/res/android";
 
-    int backgroundColor = getResources().getColor(R.color.colorPrimary);
+    int backgroundColor = Color.parseColor("#1E88E5");
 
 
     public ProgressBarCircularIndeterminate(Context context, AttributeSet attrs) {
@@ -37,14 +36,14 @@ public class ProgressBarCircularIndeterminate extends CustomView {
         // Color by resource
         int bacgroundColor = attrs.getAttributeResourceValue(ANDROIDXML, "background", -1);
         if (bacgroundColor != -1) {
-            setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            setBackgroundColor(getResources().getColor(bacgroundColor));
         } else {
             // Color by hexadecimal
             int background = attrs.getAttributeIntValue(ANDROIDXML, "background", -1);
             if (background != -1)
                 setBackgroundColor(background);
             else
-                setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                setBackgroundColor(Color.parseColor("#1E88E5"));
         }
 
         setMinimumHeight(Utils.dpToPx(3, getResources()));
@@ -93,7 +92,7 @@ public class ProgressBarCircularIndeterminate extends CustomView {
         if (radius1 < getWidth() / 2) {
             Paint paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setColor(getResources().getColor(R.color.colorPrimary));
+            paint.setColor(makePressColor());
             radius1 = (radius1 >= getWidth() / 2) ? (float) getWidth() / 2 : radius1 + 1;
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius1, paint);
         } else {
@@ -101,7 +100,7 @@ public class ProgressBarCircularIndeterminate extends CustomView {
             Canvas temp = new Canvas(bitmap);
             Paint paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setColor(getResources().getColor(R.color.colorPrimary));
+            paint.setColor(makePressColor());
             temp.drawCircle(getWidth() / 2, getHeight() / 2, getHeight() / 2, paint);
             Paint transparentPaint = new Paint();
             transparentPaint.setAntiAlias(true);
@@ -161,6 +160,7 @@ public class ProgressBarCircularIndeterminate extends CustomView {
 
         canvas.drawBitmap(bitmap, 0, 0, new Paint());
     }
+
 
     // Set color of background
     public void setBackgroundColor(int color) {
