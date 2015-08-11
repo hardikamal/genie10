@@ -184,7 +184,6 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // // TODO: 8/6/2015
                 dataAdd.put("Server Call", "ORDERS Server 500 Error");
                 localyticsBuild(DataFields.getServerUrl() + DataFields.ORDERS + " 500 Error");
                 error.printStackTrace();
@@ -313,7 +312,6 @@ public class OrderDetailsActivity extends GenieBaseActivity implements Navigatio
     }
 
     private void onSectionAttached(int anInt) {
-        // // TODO: 8/6/2015
     }
 
     public void closeMenu() {

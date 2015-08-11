@@ -456,13 +456,6 @@ public class ChatFragment extends GenieFragment {
             final Animation animTranslate = AnimationUtils.loadAnimation(getActivity(), R.anim.fly_in_from_center);
             buttonSend.startAnimation(animTranslate);
             String typedMessage = message.getText().toString().trim();
-
-            if (typedMessage.equals("Rate Us")) {
-                MessageValues messageValues2 = new MessageValues(11, typedMessage);
-                dbDataSource.addNormal(new Messages("1", DataFields.RATEORDER, id, messageValues2, 1, Utils.getCurrentTimeMillis(), 0, 0));
-            }
-            // TODO: 8/10/2015 remove above code
-
             message.setText("");
             MessageValues messageValues = new MessageValues(1, typedMessage);
             Messages messageObject = new Messages("1", DataFields.TEXT, id, messageValues, 1, Utils.getCurrentTimeMillis(), 0, 0);

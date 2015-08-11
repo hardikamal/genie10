@@ -1361,7 +1361,6 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
     }
 
     private void onSectionAttached(int anInt) {
-        // // TODO: 8/6/2015  
     }
 
     public void closeMenu() {
