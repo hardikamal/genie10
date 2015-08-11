@@ -1,17 +1,17 @@
 package com.supergenieapp.android.CustomViews.Adapters;
 
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
-import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.content.ClipboardManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,9 +46,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
@@ -154,18 +156,53 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.imageLayout)
         LinearLayout imageLayout;
+        @Optional
+        @InjectView(R.id.rateLayout)
+        LinearLayout rateLayout;
+        @Optional
+        @InjectView(R.id.submit)
+        ButtonFlat submit;
+        @Optional
+        @InjectView(R.id.ratingbar)
+        RatingBar ratingbar;
+        @Optional
+        @InjectView(R.id.rateText)
+        TextView rateText;
+        @Optional
+        @InjectView(R.id.feedbacktext)
+        TextView feedbacktext;
         Context localContext;
+        Messages localMessage;
 
-        public ViewHolderMain(View itemView, Context context) {
+        public ViewHolderMain(View itemView, Context context, Messages localMessage) {
             super(itemView);
             ButterKnife.inject(this, itemView);
             this.localContext = context;
+            this.localMessage = localMessage;
             itemView.setOnLongClickListener(this);
         }
 
         @Override
         public boolean onLongClick(View v) {
-//            Toast.makeText(localContext, "Long Clicked", Toast.LENGTH_SHORT).show();
+            if (localContext != null && localMessage != null) {
+                ClipboardManager clipboard = (ClipboardManager) localContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                if (localMessage.getMessageValues() != null && localMessage.getMessageValues().get_id() == DataFields.TEXT) {
+                    final android.content.ClipData clipData = android.content.ClipData
+                            .newPlainText("copy text", localMessage.getMessageValues().getText());
+                    clipboard.setPrimaryClip(clipData);
+                    Crouton.makeText((BaseActivity) localContext, "Text copied to clipboard", Style.INFO, R.id.body).show();
+                } else if (localMessage.getMessageValues() != null && localMessage.getMessageValues().get_id() == DataFields.LOCATION) {
+                    final android.content.ClipData clipData = android.content.ClipData
+                            .newPlainText("address text", localMessage.getMessageValues().getText());
+                    clipboard.setPrimaryClip(clipData);
+                    Crouton.makeText((BaseActivity) localContext, "Address copied to clipboard", Style.INFO, R.id.body).show();
+                } else if (localMessage.getMessageValues() != null && localMessage.getMessageValues().get_id() == DataFields.IMAGE) {
+                    final android.content.ClipData clipData = android.content.ClipData
+                            .newRawUri("image url", Uri.parse(localMessage.getMessageValues().getUrl()));
+                    clipboard.setPrimaryClip(clipData);
+                    Crouton.makeText((BaseActivity) localContext, "Image copied to clipboard", Style.INFO, R.id.body).show();
+                }
+            }
             return false;
         }
     }
@@ -175,18 +212,18 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         ViewHolderMain viewHolderMain;
         Messages currentMessage = messagesList.get(viewType);
         if (currentMessage.getMessageType() == DataFields.LOADMORE) {
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.loadearliermessages, parent, false), context);
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.loadearliermessages, parent, false), context, null);
         } else if (currentMessage.getMessageType() == DataFields.DATESHOW) {
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.datelayout, parent, false), context);
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.datelayout, parent, false), context, null);
         } else if (currentMessage.getMessageType() == DataFields.PAYNOW) {
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context);
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.paynow, parent, false), context, null);
         } else if (currentMessage.getMessageType() == DataFields.RATEORDER) {
-            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.rateorder, parent, false), context);
+            viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.rateorder, parent, false), context, null);
         } else {
             if (messagesList.get(viewType).getDirection() == DataFields.INCOMING) {
-                viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context);
+                viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.incoming, parent, false), context, currentMessage);
             } else {
-                viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context);
+                viewHolderMain = new ViewHolderMain(LayoutInflater.from(context).inflate(R.layout.outgoing, parent, false), context, currentMessage);
             }
         }
         return viewHolderMain;
@@ -233,6 +270,26 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         System.out.println("JSON for get all " + jsonObject.toString());
                         ((BaseActivity) context).sendLoadMoreMessagesCall(jsonObject);
                     }
+                }
+            });
+        } else if (messages.getMessageType() == DataFields.RATEORDER) {
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.parseColor(color), Color.parseColor(color)});
+            gd.setCornerRadius(10f);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                viewHolderMain.rateLayout.setBackground(gd);
+            } else {
+                viewHolderMain.rateLayout.setBackgroundDrawable(gd);
+            }
+            viewHolderMain.submit.setTextColor(context.getResources().getColor(R.color.white));
+            viewHolderMain.rateText.setTextColor(Color.parseColor(color));
+            viewHolderMain.submit.setTextSize(18);
+            viewHolderMain.ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                @Override
+                public void onRatingChanged(RatingBar ratingBar, float rating,
+                                            boolean fromUser) {
+                    viewHolderMain.ratingbar.setRating(Math.round(rating));
                 }
             });
         } else if (messages.getMessageType() == DataFields.DATESHOW) {
@@ -527,6 +584,21 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         bundle.putBoolean("image", true);
                         paymentFragment.setArguments(bundle);
                         ((BaseActivity) context).startFragment(R.id.body, paymentFragment);
+                    }
+                });
+
+                viewHolderMain.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (messages.getMessageValues() != null) {
+                            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                            final android.content.ClipData clipData = android.content.ClipData
+                                    .newRawUri("image url", Uri.parse(messages.getMessageValues().getUrl()));
+                            clipboard.setPrimaryClip(clipData);
+                            Crouton.makeText((BaseActivity) context, "Image copied to clipboard", Style.INFO, R.id.body).show();
+                            return true;
+                        }
+                        return false;
                     }
                 });
 

@@ -29,4 +29,9 @@
 
     <style name="Widget.GifMoviewView" parent="@android:style/Widget"></style>
 
+    <style name="StarRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/star_rating_bar_full</item>
+        <item name="android:minHeight">36dip</item>
+        <item name="android:maxHeight">36dip</item>
+    </style>
 </resources>

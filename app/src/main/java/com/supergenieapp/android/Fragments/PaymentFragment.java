@@ -182,6 +182,6 @@ public class PaymentFragment extends GenieFragment {
             }
         });
 
-        webview.loadUrl(url);
+        webview.loadUrl("http://supergenieapp.com");
     }
 }
