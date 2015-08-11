@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#c23532</color>
+    <color name="colorPrimary">#26ACEC</color>
     <color name="colorPrimaryDark">#B2B2B2</color>
     <color name="colorPrimaryFooter">#B2B2B2</color>
     <color name="navigationBarColor">#000000</color>

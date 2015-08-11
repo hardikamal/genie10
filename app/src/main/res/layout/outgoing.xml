@@ -46,6 +46,7 @@
         android:layout_alignStart="@+id/viewLayout"
         android:layout_below="@+id/viewLayout"
         android:layout_gravity="end"
+        android:autoLink="all"
         android:padding="@dimen/_5sdp"
         android:textIsSelectable="false"
         android:textSize="@dimen/_14sdp" />

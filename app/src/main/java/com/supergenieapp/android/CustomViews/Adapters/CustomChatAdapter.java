@@ -627,6 +627,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 
             if (messages.getDirection() == DataFields.INCOMING) {
 //            if (position % 2 == 0) {
+                viewHolderMain.text.setLinkTextColor(context.getResources().getColor(R.color.white));
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space10char));
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
@@ -646,6 +647,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             } else {
                 viewHolderMain.text.setText(messageValues.getText() + " " + context.getResources().getString(R.string.space12char));
                 viewHolderMain.text.setTextColor(Color.parseColor(color));
+                viewHolderMain.text.setLinkTextColor(Color.parseColor(color));
                 viewHolderMain.time.setTextColor(Color.parseColor(color));
                 GradientDrawable gd = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,

@@ -7,7 +7,7 @@
     <string name="copyrights">© 2015 Genie</string>
     <string name="welcomeMessage">Welcome to SuperGenie</string>
     <string name="title_activity_main" />
-    <string name="splashScreenAlertBoxMessage">Attention! \nInternet connection is not active. Please check the internet settings.</string>
+    <string name="splashScreenAlertBoxMessage">Attention! \nSuperGenie is not able to connect to internet.</string>
     <string name="openSettings">Open Settings</string>
     <string name="exitapp">Exit App</string>
     <string name="title_activity_register">RegisterActivity</string>
