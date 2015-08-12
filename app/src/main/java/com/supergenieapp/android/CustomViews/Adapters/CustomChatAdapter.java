@@ -34,6 +34,7 @@ import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
+import com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.Fragments.PaymentFragment;
@@ -124,7 +125,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         TextView companyName;
         @Optional
         @InjectView(R.id.rate)
-        TextView rate;
+        AutoResizeTextView rate;
         @Optional
         @InjectView(R.id.orderdetails)
         TextView orderdetails;
@@ -138,20 +139,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.paytm)
         ButtonFlat paytm;
         @Optional
-        @InjectView(R.id.catimage)
-        ImageView catimage;
-        @Optional
         @InjectView(R.id.paylayout)
         LinearLayout paylayout;
+        @Optional
+        @InjectView(R.id.backgroundButtons)
+        LinearLayout backgroundButtons;
         @Optional
         @InjectView(R.id.viewLayout)
         RelativeLayout viewLayout;
         @Optional
         @InjectView(R.id.mainLayout)
         RelativeLayout mainLayout;
-        @Optional
-        @InjectView(R.id.imageLayout)
-        LinearLayout imageLayout;
         @Optional
         @InjectView(R.id.rateLayout)
         LinearLayout rateLayout;
@@ -301,11 +299,16 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.payascod.setTextSize(18);
                 viewHolderMain.paynow.setTextSize(18);
                 viewHolderMain.paytm.setTextSize(18);
+                viewHolderMain.payascod.setTextColor(context.getResources().getColor(R.color.white));
+                viewHolderMain.paynow.setTextColor(context.getResources().getColor(R.color.white));
+                viewHolderMain.paytm.setTextColor(context.getResources().getColor(R.color.white));
+                viewHolderMain.rate.setTextColor(Color.parseColor("#444444"));
+                viewHolderMain.backgroundButtons.setBackgroundColor(Color.parseColor(color));
                 final JSONObject object = new JSONObject(messageValues.getText());
                 if (object.has("service_provider"))
                     viewHolderMain.companyName.setText(object.getString("service_provider"));
                 if (object.has("cost"))
-                    viewHolderMain.rate.setText("Rs. " + String.valueOf(object.getDouble("cost")));
+                    viewHolderMain.rate.setText("Rs " + String.valueOf(object.getDouble("cost")));
                 if (object.has("description"))
                     viewHolderMain.orderdetails.setText(object.getString("description"));
                 if (object.has("cod") && object.getBoolean("cod")) {
@@ -318,9 +321,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.paytm.setVisibility(View.VISIBLE);
                 }
                 final String costToPay = String.valueOf(object.getDouble("cost"));
-                viewHolderMain.payascod.setTextColor(Color.parseColor(color));
-                viewHolderMain.paynow.setTextColor(Color.parseColor(color));
-                viewHolderMain.paytm.setTextColor(Color.parseColor(color));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -337,6 +337,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         }
                         bundle.putString("url", url);
                         bundle.putLong("created_at", messages.getCreatedAt());
+                        bundle.putString("color", color);
                         paymentFragment.setArguments(bundle);
                         ((BaseActivity) context).startFragmentFromRight(R.id.body, paymentFragment);
                     }
@@ -357,73 +358,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     }
                 });
 
-                String path = DataFields.TempFolder + "/" + utils.hashString(categoryUrl);
-                File imgFile = new File(path);
-                if (imgFile.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    viewHolderMain.catimage.setImageBitmap(myBitmap);
-                } else {
-                    if (categoryUrl.matches("data:image.*base64.*")) {
-                        String base_64_source = categoryUrl.replaceAll("data:image.*base64", "");
-                        byte[] data = Base64.decode(base_64_source, Base64.DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        if (bitmap != null) {
-                            FileOutputStream out = null;
-                            try {
-                                out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                try {
-                                    if (out != null) {
-                                        out.close();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            viewHolderMain.catimage.setImageBitmap(bitmap);
-                        }
-                    } else {
-                        imageLoader.get(categoryUrl, new ImageLoader.ImageListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-
-                            @Override
-                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                if (response != null && response.getBitmap() != null) {
-                                    viewHolderMain.catimage.setImageBitmap(response.getBitmap());
-                                    FileOutputStream out = null;
-                                    try {
-                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(categoryUrl));
-                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    } finally {
-                                        try {
-                                            if (out != null) {
-                                                out.close();
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-                GradientDrawable gd = new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[]{Color.parseColor(color), Color.parseColor(color)});
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    viewHolderMain.imageLayout.setBackground(gd);
-                } else {
-                    viewHolderMain.imageLayout.setBackgroundDrawable(gd);
-                }
                 GradientDrawable gdRound = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{Color.parseColor(color), Color.parseColor(color)});
@@ -433,7 +367,8 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 } else {
                     viewHolderMain.paylayout.setBackgroundDrawable(gdRound);
                 }
-                viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
+//                viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
+                viewHolderMain.text.setVisibility(View.GONE);
                 viewHolderMain.time.setText(new Utils(context).convertLongToDate(Utils.convertCurrentTimeMillis(messages.getCreatedAt()), new SimpleDateFormat("HH:mm")));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -565,17 +500,30 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         imageLoader.get(messageValues.getUrl(), new ImageLoader.ImageListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
+                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    viewHolderMain.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.image404, context.getTheme()));
+                                } else {
+                                    viewHolderMain.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.image404));
+                                }
                             }
 
                             @Override
                             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                                 if (response != null && response.getBitmap() != null) {
-                                    viewHolderMain.imageView.setImageBitmap(response.getBitmap());
                                     FileOutputStream out = null;
+                                    Bitmap bitmap = response.getBitmap();
                                     try {
-                                        out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
-                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                        String file = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
+                                        String thumbFile = DataFields.TempFolder + "/thumb_" + utils.hashString(messageValues.getUrl());
+                                        File newFile = new File(file);
+                                        out = new FileOutputStream(file);
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                        if (newFile.exists()) {
+                                            if ((newFile.length() / 1024) < 250) {
+                                                out = new FileOutputStream(thumbFile);
+                                                bitmap.compress(Bitmap.CompressFormat.PNG, (int) (((newFile.length() / 1024) * 100) / 250), out);
+                                            }
+                                        }
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     } finally {
@@ -587,6 +535,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                                             e.printStackTrace();
                                         }
                                     }
+                                    viewHolderMain.imageView.setImageBitmap(bitmap);
                                 }
                             }
                         });
@@ -706,20 +655,21 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
 
         //these are mandatory parameters
         paramMap.put("REQUEST_TYPE", "DEFAULT");
-        paramMap.put("ORDER_ID", "121212121212");
-        paramMap.put("MID", "klbGlV59135347348753");
-        paramMap.put("CUST_ID", "CUST123");
-        paramMap.put("CHANNEL_ID", "WAP");
+        paramMap.put("ORDER_ID", "1234321234321");
+        paramMap.put("MID", "Superg22080238560446");
+        paramMap.put("Merchant Key", "%!MigifWB!czKWxI");
+        paramMap.put("CHANNEL_ID", "WEB");
         paramMap.put("INDUSTRY_TYPE_ID", "Retail");
-        paramMap.put("WEBSITE", "paytm");
-        paramMap.put("TXN_AMOUNT", "1");
-        paramMap.put("THEME", "merchant");
+        paramMap.put("WEBSITE", "Supergenieweb");
+        paramMap.put("TXN_AMOUNT", "100");
+//        paramMap.put("MOBILE_NO", "8376800272");
+//        paramMap.put("EMAIL", "david.upadhyay@paytm.com");
 
 
         PaytmOrder Order = new PaytmOrder(paramMap);
 
         Service.initialize(Order, Merchant, null);
-        Service.startPaymentTransaction(context, false, false, new PaytmPaymentTransactionCallback() {
+        Service.startPaymentTransaction(context, true, true, new PaytmPaymentTransactionCallback() {
             @Override
             public void onTransactionSuccess(Bundle inResponse) {
                 Log.i("Transaction Success", inResponse.toString());

@@ -56,6 +56,7 @@ public class PaymentFragment extends GenieFragment {
     String url = "http://supergenieapp.com";
     long created_at = Utils.getCurrentTimeMillis();
     boolean goBack = true;
+    String color = "#26ACEC";
 
     @Override
     public void onStart() {
@@ -91,6 +92,9 @@ public class PaymentFragment extends GenieFragment {
         if (bundle != null) {
             url = bundle.getString("url", url);
             created_at = bundle.getLong("created_at", created_at);
+            if (bundle.containsKey("color")) {
+                color = bundle.getString("color", color);
+            }
             if (bundle.getBoolean("image", false)) {
                 rootView = inflater.inflate(R.layout.image_view, container, false);
                 ButterKnife.inject(this, rootView);
@@ -151,6 +155,8 @@ public class PaymentFragment extends GenieFragment {
     }
 
     private void setWebForm() {
+        parentLoadingView.setLoadingBackgroundColor(Color.parseColor(color));
+        parentLoadingView.setTextColor(Color.parseColor(color));
         parentLoadingView.setLoading(true);
         parentLoadingView.setText(getString(R.string.paymentpageload));
         Crouton.makeText((Activity) getActivity(), getString(R.string.finishordertext), Style.INFO, R.id.body).show();
@@ -168,7 +174,8 @@ public class PaymentFragment extends GenieFragment {
                             if (goBack) {
                                 localyticsBuild("Payment Done");
                                 goBack = false;
-                                getActivity().onBackPressed();
+                                if (getActivity() != null)
+                                    getActivity().onBackPressed();
                             }
                         }
                     }
