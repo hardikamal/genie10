@@ -17,6 +17,9 @@ import com.supergenieapp.android.R;
  * Created by buraktamturk on 01/03/15.
  */
 public class LoadingView extends ViewSwitcher {
+    ProgressBarCircularIndeterminate progressBarCircularIndeterminate;
+    TextView textView;
+
     public static class InnerView extends LinearLayout {
         public InnerView(Context context) {
             super(context);
@@ -26,15 +29,15 @@ public class LoadingView extends ViewSwitcher {
         }
 
         public void setText(int stringResourceId) {
-            ((TextView)findViewById(R.id.LoadingView_text)).setVisibility(View.VISIBLE);
-            ((TextView)findViewById(R.id.LoadingView_text)).setText(stringResourceId);
+            ((TextView) findViewById(R.id.LoadingView_text)).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.LoadingView_text)).setText(stringResourceId);
         }
 
         public void setText(String loadingText) {
-            if(loadingText == null) {
-                ((TextView)findViewById(R.id.LoadingView_text)).setVisibility(View.GONE);
+            if (loadingText == null) {
+                ((TextView) findViewById(R.id.LoadingView_text)).setVisibility(View.GONE);
             } else {
-                ((TextView)findViewById(R.id.LoadingView_text)).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.LoadingView_text)).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.LoadingView_text)).setText(loadingText);
             }
         }
@@ -55,11 +58,13 @@ public class LoadingView extends ViewSwitcher {
 
     private void init(AttributeSet attrs) {
         // we don't want the loading indicator appear while developing, right?
-        if(!isInEditMode()) {
+        if (!isInEditMode()) {
             loadingView = new InnerView(getContext());
             addView(loadingView);
 
-            if(attrs != null) {
+            if (attrs != null) {
+                progressBarCircularIndeterminate = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBar);
+                textView = (TextView) findViewById(R.id.LoadingView_text);
                 LoadingConfiguration c = LoadingConfiguration.getDefault();
                 TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingView, 0, 0);
 
@@ -68,11 +73,11 @@ public class LoadingView extends ViewSwitcher {
 //                int color = a.getColor(R.styleable.LoadingView_lv_color, c.textColor == null ? 0 : c.textColor);
 //                if(color != 0)
                 {
-                    ((TextView)loadingView.findViewById(R.id.LoadingView_text)).setTextColor(getResources().getColor(R.color.colorPrimary));
+                    ((TextView) loadingView.findViewById(R.id.LoadingView_text)).setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
 
                 String str = a.getString(R.styleable.LoadingView_lv_title);
-                if(str == null)
+                if (str == null)
                     str = c.resourceStringId != -1 ? getContext().getString(c.resourceStringId) : c.loading;
 
                 setText(str);
@@ -84,7 +89,7 @@ public class LoadingView extends ViewSwitcher {
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
 
-        if(getChildCount() == 2)
+        if (getChildCount() == 2)
             setLoading(disloading);
     }
 
@@ -93,7 +98,7 @@ public class LoadingView extends ViewSwitcher {
     }
 
     public void setLoading(boolean state) {
-        if((getCurrentView() == loadingView) != state) {
+        if ((getCurrentView() == loadingView) != state) {
             showNext();
         }
     }
@@ -104,5 +109,15 @@ public class LoadingView extends ViewSwitcher {
 
     public void setText(String loadingText) {
         loadingView.setText(loadingText);
+    }
+
+    public void setTextColor(int color) {
+        if (textView != null)
+            textView.setTextColor(color);
+    }
+
+    public void setLoadingBackgroundColor(int color) {
+        if (progressBarCircularIndeterminate != null)
+            progressBarCircularIndeterminate.setBackgroundColor(color);
     }
 }

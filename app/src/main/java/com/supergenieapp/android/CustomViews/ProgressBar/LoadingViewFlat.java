@@ -17,12 +17,17 @@ import com.supergenieapp.android.R;
  * Created by buraktamturk on 01/03/15.
  */
 public class LoadingViewFlat extends ViewSwitcher {
+    ProgressBarCircularIndeterminate progressBarCircularIndeterminate;
+    TextView textView;
+
     public static class InnerView extends LinearLayout {
         public InnerView(Context context) {
             super(context);
             setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             setOrientation(HORIZONTAL);
             LayoutInflater.from(context).inflate(R.layout.loadingviewflat_layout, this, true);
+//            progressBarCircularIndeterminate = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBar);
+//            textView = (TextView) findViewById(R.id.LoadingView_text);
         }
 
         public void setText(int stringResourceId) {
@@ -54,12 +59,13 @@ public class LoadingViewFlat extends ViewSwitcher {
     }
 
     private void init(AttributeSet attrs) {
-        // we don't want the loading indicator appear while developing, right?
         if (!isInEditMode()) {
             loadingView = new InnerView(getContext());
             addView(loadingView);
 
             if (attrs != null) {
+                progressBarCircularIndeterminate = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBar);
+                textView = (TextView) findViewById(R.id.LoadingView_text);
                 LoadingConfiguration c = LoadingConfiguration.getDefault();
                 TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LoadingView, 0, 0);
 
@@ -104,5 +110,15 @@ public class LoadingViewFlat extends ViewSwitcher {
 
     public void setText(String loadingText) {
         loadingView.setText(loadingText);
+    }
+
+    public void setTextColor(int color) {
+        if (textView != null)
+            textView.setTextColor(color);
+    }
+
+    public void setLoadingBackgroundColor(int color) {
+        if (progressBarCircularIndeterminate != null)
+            progressBarCircularIndeterminate.setBackgroundColor(color);
     }
 }

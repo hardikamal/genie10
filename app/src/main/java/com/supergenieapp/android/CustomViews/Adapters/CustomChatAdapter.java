@@ -245,6 +245,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             } else {
                 viewHolderMain.loadingview.setBackgroundDrawable(gd);
             }
+            viewHolderMain.loadingview.setLoadingBackgroundColor(Color.parseColor(color));
+            viewHolderMain.loadingview.setTextColor(Color.parseColor(color));
+
             viewHolderMain.loadmessages.setTextColor(Color.parseColor(color));
             viewHolderMain.loadmessages.setOnClickListener(new View.OnClickListener() {
                 @Override

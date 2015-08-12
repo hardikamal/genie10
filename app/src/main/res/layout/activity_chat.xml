@@ -24,31 +24,14 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <!--<com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/loadingview"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-
-        <!--app:lv_loading="true"-->
-        <!--app:lv_title="@string/speech_prompt" />-->
-
-        <com.supergenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate
-            android:id="@+id/progressBar"
-            android:layout_width="@dimen/_35sdp"
-            android:layout_height="@dimen/_35sdp"
-            android:layout_gravity="center"
+        <com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/loadingview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_20sdp"
             android:layout_marginStart="@dimen/_20sdp"
-            android:background="@color/colorPrimary" />
-
-        <com.supergenieapp.android.CustomViews.Button.ButtonFlat
-            android:id="@+id/speachTextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:clickable="false"
-            android:text="@string/speech_prompt" />
+            app:lv_loading="true"
+            app:lv_title="@string/speech_prompt" />
 
         <View
             android:layout_width="wrap_content"

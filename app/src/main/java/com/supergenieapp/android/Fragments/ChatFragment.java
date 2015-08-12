@@ -34,6 +34,7 @@ import com.supergenieapp.android.Activities.LocationActivity;
 import com.supergenieapp.android.CustomViews.Adapters.CustomChatAdapter;
 import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
+import com.supergenieapp.android.CustomViews.ProgressBar.LoadingViewFlat;
 import com.supergenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.NotificationHandler;
@@ -102,10 +103,8 @@ public class ChatFragment extends GenieFragment {
     CircularButton location;
     @InjectView(R.id.locationText)
     TextView locationText;
-    @InjectView(R.id.progressBar)
-    ProgressBarCircularIndeterminate progressBarCircularIndeterminate;
-    @InjectView(R.id.speachTextButton)
-    ButtonFlat speachTextButton;
+    @InjectView(R.id.loadingview)
+    LoadingViewFlat loadingViewFlat;
     @InjectView(R.id.doneButton)
     ButtonFlat doneButton;
 
@@ -149,8 +148,8 @@ public class ChatFragment extends GenieFragment {
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
-        progressBarCircularIndeterminate.setBackgroundColor(Color.parseColor(color));
-        speachTextButton.setTextColor(Color.parseColor(color));
+        loadingViewFlat.setLoadingBackgroundColor(Color.parseColor(color));
+        loadingViewFlat.setTextColor(Color.parseColor(color));
         doneButton.setTextColor(Color.parseColor(color));
         dataAdd.put("Chat Fragment", String.valueOf(id));
 
