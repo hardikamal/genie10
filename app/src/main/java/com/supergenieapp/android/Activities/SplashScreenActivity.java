@@ -50,7 +50,12 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
+        if (year > 2012) {
+            setContentView(R.layout.activity_splash_screen);
+        } else {
+            setContentView(R.layout.activity_splash_screen_standalone);
+        }
+
         sharedPreferences.edit().putBoolean("syncwithserver", true).apply();
 
         // Butter knife injects all the elements in to objects

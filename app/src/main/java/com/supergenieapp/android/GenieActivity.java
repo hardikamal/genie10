@@ -39,7 +39,7 @@ public class GenieActivity extends Activity {
     public ImageLoader imageLoader;
     public Utils utils;
     public DBDataSource dbDataSource;
-
+    public int year;
     /**
      * @param savedInstance
      */
@@ -55,6 +55,7 @@ public class GenieActivity extends Activity {
         imageLoader = genieApplication.getImageLoader();
         utils = new Utils(this);
         dbDataSource = genieApplication.getDBDataSource();
+        year = genieApplication.DeviceYear();
     }
 
     public void setupUI(View view, final Activity activity) {
