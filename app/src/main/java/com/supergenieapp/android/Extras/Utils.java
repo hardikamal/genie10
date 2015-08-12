@@ -175,7 +175,10 @@ public class Utils {
 
     public String getDeviceSerialNumber() {
         TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        return tManager.getDeviceId();
+        if (tManager.getDeviceId() != null)
+            return tManager.getDeviceId();
+        else
+            return Build.SERIAL;
     }
 
     public String getMacId() {
