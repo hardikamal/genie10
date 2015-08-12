@@ -32,7 +32,9 @@ import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.BaseActivity;
 import com.supergenieapp.android.Activities.LocationActivity;
 import com.supergenieapp.android.CustomViews.Adapters.CustomChatAdapter;
+import com.supergenieapp.android.CustomViews.Button.ButtonFlat;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
+import com.supergenieapp.android.CustomViews.ProgressBar.ProgressBarCircularIndeterminate;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.Extras.NotificationHandler;
 import com.supergenieapp.android.Extras.Utils;
@@ -100,6 +102,13 @@ public class ChatFragment extends GenieFragment {
     CircularButton location;
     @InjectView(R.id.locationText)
     TextView locationText;
+    @InjectView(R.id.progressBar)
+    ProgressBarCircularIndeterminate progressBarCircularIndeterminate;
+    @InjectView(R.id.speachTextButton)
+    ButtonFlat speachTextButton;
+    @InjectView(R.id.doneButton)
+    ButtonFlat doneButton;
+
 
     boolean wentBackground = false;
     boolean imageResource = true;
@@ -135,12 +144,14 @@ public class ChatFragment extends GenieFragment {
                 position = -1;
             }
 
-            System.out.println(position);
             id = bundle.getInt("id", 0);
             color = bundle.getString("color", color);
             hide_time = bundle.getLong("hide_time");
             url = bundle.getString("url");
         }
+        progressBarCircularIndeterminate.setBackgroundColor(Color.parseColor(color));
+        speachTextButton.setTextColor(Color.parseColor(color));
+        doneButton.setTextColor(Color.parseColor(color));
         dataAdd.put("Chat Fragment", String.valueOf(id));
 
         if (!sharedPreferences.getBoolean("agent", true)) {
@@ -274,7 +285,6 @@ public class ChatFragment extends GenieFragment {
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (linearLayoutManager != null && linearLayoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                        System.out.println(linearLayoutManager.findFirstCompletelyVisibleItemPosition());
                         position = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     }
                 }
@@ -296,7 +306,6 @@ public class ChatFragment extends GenieFragment {
             scroll();
         }
         if (scroll == DataFields.ScrollPosition) {
-            System.out.println(position);
             scroll(position);
         }
     }
@@ -356,7 +365,6 @@ public class ChatFragment extends GenieFragment {
         logging.LogV("Showed", "on Start");
         mBus.register(this);
         logging.LogI("On Start");
-        System.out.println(position);
     }
 
     @Override
@@ -372,7 +380,6 @@ public class ChatFragment extends GenieFragment {
             wentBackground = false;
             displayMessages(true, DataFields.ScrollDown);
         }
-        System.out.println(position);
     }
 
     @Override
@@ -380,7 +387,6 @@ public class ChatFragment extends GenieFragment {
         super.onPause();
         wentBackground = true;
         logging.LogV("on onPause Chat");
-        System.out.println(position);
     }
 
     @Override
@@ -413,7 +419,6 @@ public class ChatFragment extends GenieFragment {
             Categories categories = dbDataSource.getCategories(messageObject.getCategory());
             if (categories != null)
                 dbDataSource.UpdateCatNotification(messageObject.getCategory(), categories.getNotification_count() + 1);
-            System.out.println(dbDataSource.getCategories(messageObject.getCategory()).getNotification_count());
             Crouton.makeText(getActivity(), genieApplication.getString(R.string.newmessagereceivedin) + categories.getName(), Style.CONFIRM, viewGroup).show();
         }
     }
@@ -484,7 +489,6 @@ public class ChatFragment extends GenieFragment {
             jsonObject.put("cid", id);
             if (getActivity() != null && (((BaseActivity) getActivity()).getSocket().connected()))
                 ((BaseActivity) getActivity()).getSocket().emit("user message", jsonObject);
-            System.out.println(jsonObject.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

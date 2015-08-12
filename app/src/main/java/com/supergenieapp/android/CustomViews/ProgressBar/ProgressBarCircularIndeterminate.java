@@ -23,7 +23,6 @@ public class ProgressBarCircularIndeterminate extends CustomView {
     public ProgressBarCircularIndeterminate(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAttributes(attrs);
-
     }
 
     // Set atributtes of XML to View

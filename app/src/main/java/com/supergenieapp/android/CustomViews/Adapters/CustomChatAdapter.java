@@ -518,8 +518,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 String path = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
                 File imgFile = new File(path);
                 if (imgFile.exists()) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                    viewHolderMain.imageView.setImageBitmap(myBitmap);
+                    System.out.println(imgFile.length());
+                    System.out.println(imgFile.length() / 1024);
+                    if ((imgFile.length() / 1024) < 100) {
+                        displayFile(viewHolderMain.imageView, imgFile.getAbsolutePath());
+                    } else {
+                        String thumbPath = DataFields.TempFolder + "/thumb_" + utils.hashString(categoryUrl);
+                        File thumbFile = new File(thumbPath);
+                        if (thumbFile.exists()) {
+                            displayFile(viewHolderMain.imageView, thumbFile.getAbsolutePath());
+                        } else {
+                            displayFile(viewHolderMain.imageView, imgFile.getAbsolutePath());
+                        }
+                    }
                 } else {
                     if (messageValues.getUrl().matches("data:image.*base64.*")) {
                         String base_64_source = messageValues.getUrl().replaceAll("data:image.*base64", "");
@@ -528,8 +539,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                         if (bitmap != null) {
                             FileOutputStream out = null;
                             try {
-                                out = new FileOutputStream(DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl()));
+                                String file = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
+                                String thumbFile = DataFields.TempFolder + "/thumb_" + utils.hashString(messageValues.getUrl());
+                                File newFile = new File(file);
+                                File newThumbFile = new File(thumbFile);
+                                out = new FileOutputStream(file);
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                if (newFile.exists()) {
+                                    if ((newFile.length() / 1024) < 100) {
+
+                                    }
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             } finally {
@@ -743,5 +763,11 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return messagesList.size();
+    }
+
+    private void displayFile(ImageView imageView, String file) {
+        Bitmap myBitmap = BitmapFactory.decodeFile(file);
+        if (myBitmap != null)
+            imageView.setImageBitmap(myBitmap);
     }
 }
