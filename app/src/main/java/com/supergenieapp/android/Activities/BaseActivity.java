@@ -51,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -644,8 +645,17 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                                         if (response != null && response.getBitmap() != null) {
                                             FileOutputStream out = null;
                                             try {
-                                                out = new FileOutputStream(DataFields.TempFolder + "/" + Utils.hashString(urlLocal));
+                                                String file = DataFields.TempFolder + "/" + utils.hashString(urlLocal);
+                                                String thumbFile = DataFields.TempFolder + "/thumb_" + utils.hashString(urlLocal);
+                                                File newFile = new File(file);
+                                                out = new FileOutputStream(file);
                                                 response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
+                                                if (newFile.exists()) {
+                                                    if ((newFile.length() / 1024) < 250) {
+                                                        out = new FileOutputStream(thumbFile);
+                                                        response.getBitmap().compress(Bitmap.CompressFormat.PNG, (int) (((newFile.length() / 1024) * 100) / 250), out);
+                                                    }
+                                                }
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             } finally {

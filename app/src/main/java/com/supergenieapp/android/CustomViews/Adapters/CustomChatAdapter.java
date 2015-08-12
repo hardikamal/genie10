@@ -89,10 +89,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         utils = new Utils(context);
     }
 
-    public void showToast(String message, Style style) {
-
-    }
-
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -329,7 +325,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(View v) {
                         ((BaseActivity) context).emitPayOnline(messages.getCreatedAt(), "payment");
-                        showToast(context.getString(R.string.finishordertext), Style.INFO);
                         PaymentFragment paymentFragment = new PaymentFragment();
                         Bundle bundle = new Bundle();
                         String url = context.getString(R.string.website);
@@ -523,7 +518,7 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 if (imgFile.exists()) {
                     System.out.println(imgFile.length());
                     System.out.println(imgFile.length() / 1024);
-                    if ((imgFile.length() / 1024) < 100) {
+                    if ((imgFile.length() / 1024) < 250) {
                         displayFile(viewHolderMain.imageView, imgFile.getAbsolutePath());
                     } else {
                         String thumbPath = DataFields.TempFolder + "/thumb_" + utils.hashString(categoryUrl);
@@ -545,12 +540,12 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                                 String file = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
                                 String thumbFile = DataFields.TempFolder + "/thumb_" + utils.hashString(messageValues.getUrl());
                                 File newFile = new File(file);
-                                File newThumbFile = new File(thumbFile);
                                 out = new FileOutputStream(file);
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                                 if (newFile.exists()) {
-                                    if ((newFile.length() / 1024) < 100) {
-
+                                    if ((newFile.length() / 1024) < 250) {
+                                        out = new FileOutputStream(thumbFile);
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, (int) (((newFile.length() / 1024) * 100) / 250), out);
                                     }
                                 }
                             } catch (Exception e) {
