@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
@@ -194,6 +195,9 @@ public abstract class Button extends CustomView {
         textButton.setTextSize(size);
     }
 
+    public void setTextStyleBold() {
+        textButton.setTypeface(null, Typeface.BOLD);
+    }
 
     public TextView getTextView() {
         return textButton;

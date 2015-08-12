@@ -379,6 +379,7 @@
     <string name="title_activity_paytm">PAYTMActivity</string>
     <string name="paytmwallet">Wallet</string>
     <string name="thanksforusingsupergenie">Thanks for using SuperGenie!</string>
-    <string name="rateyourexperience">Rate your experience&#160;&#160;&#160;</string>
+    <string name="rateyourexperience">Rate your experience</string>
     <string name="defaultrating">-/5.0</string>
+    <string name="rs">\u20B9&#160;</string>
 </resources>

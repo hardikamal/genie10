@@ -11,6 +11,7 @@
 
     <LinearLayout
         android:id="@+id/paylayout"
+        android:background="#ccc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -18,17 +19,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
             android:layout_weight="1"
+            android:layout_margin="@dimen/_1sdp"
             android:background="@color/white"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -39,7 +33,8 @@
                         android:id="@+id/companyname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:textColor="@color/color444"
                         android:gravity="center"
                         android:singleLine="true"
                         android:textIsSelectable="true"
@@ -49,11 +44,10 @@
                         android:id="@+id/rate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_margin="@dimen/_5sdp"
                         android:gravity="center"
-                        android:textColor="@color/color444"
                         android:singleLine="true"
+                        android:textColor="@color/color444"
                         android:textIsSelectable="false"
                         android:textSize="@dimen/_30sdp" />
 
@@ -62,7 +56,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:maxLines="4"
                         android:textIsSelectable="true"
                         android:textSize="@dimen/_12sdp" />
@@ -71,14 +65,14 @@
                         android:id="@+id/backgroundButtons"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_1sdp"
-                        android:alpha="0.75"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:orientation="vertical">
 
                         <com.supergenieapp.android.CustomViews.Button.ButtonFlat
                             android:id="@+id/payascod"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:padding="@dimen/_10sdp"
                             android:text="@string/paycod"
                             android:textIsSelectable="false" />
 
@@ -92,11 +86,12 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:padding="@dimen/_10sdp"
                                 android:text="@string/paytmwallet"
                                 android:textIsSelectable="false" />
 
                             <View
-                                android:layout_width="@dimen/_1sdp"
+                                android:layout_width="@dimen/_2sdp"
                                 android:layout_height="match_parent"
                                 android:background="@color/white" />
 
@@ -105,6 +100,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:padding="@dimen/_10sdp"
                                 android:text="@string/paynow"
                                 android:textIsSelectable="false" />
                         </LinearLayout>
@@ -112,13 +108,13 @@
 
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/text"

@@ -273,14 +273,13 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             GradientDrawable gd = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{Color.parseColor(color), Color.parseColor(color)});
-            gd.setCornerRadius(10f);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 viewHolderMain.rateLayout.setBackground(gd);
             } else {
                 viewHolderMain.rateLayout.setBackgroundDrawable(gd);
             }
             viewHolderMain.submit.setTextColor(context.getResources().getColor(R.color.white));
-            viewHolderMain.rateText.setTextColor(Color.parseColor(color));
+//            viewHolderMain.rateText.setTextColor(Color.parseColor(color));
             viewHolderMain.submit.setTextSize(18);
             viewHolderMain.ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
@@ -299,16 +298,19 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.payascod.setTextSize(18);
                 viewHolderMain.paynow.setTextSize(18);
                 viewHolderMain.paytm.setTextSize(18);
+//                viewHolderMain.payascod.setTextStyleBold();
+//                viewHolderMain.paynow.setTextStyleBold();
+//                viewHolderMain.paytm.setTextStyleBold();
                 viewHolderMain.payascod.setTextColor(context.getResources().getColor(R.color.white));
                 viewHolderMain.paynow.setTextColor(context.getResources().getColor(R.color.white));
                 viewHolderMain.paytm.setTextColor(context.getResources().getColor(R.color.white));
-                viewHolderMain.rate.setTextColor(Color.parseColor("#444444"));
+                viewHolderMain.rate.setTextColor(Color.parseColor(color));
                 viewHolderMain.backgroundButtons.setBackgroundColor(Color.parseColor(color));
                 final JSONObject object = new JSONObject(messageValues.getText());
                 if (object.has("service_provider"))
                     viewHolderMain.companyName.setText(object.getString("service_provider"));
                 if (object.has("cost"))
-                    viewHolderMain.rate.setText("Rs " + String.valueOf(object.getDouble("cost")));
+                    viewHolderMain.rate.setText(context.getString(R.string.rs) + String.valueOf(object.getDouble("cost")));
                 if (object.has("description"))
                     viewHolderMain.orderdetails.setText(object.getString("description"));
                 if (object.has("cod") && object.getBoolean("cod")) {
@@ -361,14 +363,14 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 GradientDrawable gdRound = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{Color.parseColor(color), Color.parseColor(color)});
-                gdRound.setCornerRadius(10f);
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     viewHolderMain.paylayout.setBackground(gdRound);
                 } else {
                     viewHolderMain.paylayout.setBackgroundDrawable(gdRound);
                 }
-//                viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
+                viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
                 viewHolderMain.text.setVisibility(View.GONE);
+                viewHolderMain.time.setVisibility(View.GONE);
                 viewHolderMain.time.setText(new Utils(context).convertLongToDate(Utils.convertCurrentTimeMillis(messages.getCreatedAt()), new SimpleDateFormat("HH:mm")));
             } catch (JSONException e) {
                 e.printStackTrace();
