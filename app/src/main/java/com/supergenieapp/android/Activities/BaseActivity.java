@@ -590,6 +590,8 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         chat = new Chat(id, categoryId, direction, status, Utils.getCurrentTimeMillis(), updated_at, messageType, url, text);
                     } else if (messageType == DataFields.PAYNOW) {
                         chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
+                    } else if (messageType == DataFields.RATEORDER) {
+                        chat = new Chat(id, categoryId, direction, status, created_at, updated_at, messageType, url, text);
                     }
 
                     if (chat != null) {
@@ -609,6 +611,9 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
                         }
                         if (chat.getType() == DataFields.PAYASCOD) {
                             messageValues = new MessageValues(DataFields.PAYASCOD, chat.getText());
+                        }
+                        if (chat.getType() == DataFields.RATEORDER) {
+                            messageValues = new MessageValues(DataFields.RATEORDER, chat.getText());
                         }
                         final Messages messageObject = new Messages(chat.getId(), chat.getType(), chat.getCategory_Id(), messageValues, chat.getStatus(), chat.getCreated_at(), chat.getUpdated_at(), direction);
                         dbDataSource.addNormal(messageObject);

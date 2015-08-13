@@ -298,6 +298,24 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                     viewHolderMain.ratingbar.setRating(Math.round(rating));
                 }
             });
+            viewHolderMain.submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO: 8/13/2015 emit call for rating
+                }
+            });
+            try {
+                final JSONObject object = new JSONObject(messageValues.getText());
+                if (object.has("description"))
+                    viewHolderMain.orderdetails.setText(object.getString("description"));
+                if (object.has("rating") && object.getString("rating") != null) {
+                    viewHolderMain.submit.setText("Thanks You");
+                    viewHolderMain.submit.setClickable(false);
+                    viewHolderMain.ratingbar.setRating(Math.round(Integer.parseInt(object.getString("rating"))));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (messages.getMessageType() == DataFields.DATESHOW) {
             Utils utils = new Utils(context);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
