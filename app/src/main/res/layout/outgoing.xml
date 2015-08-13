@@ -18,6 +18,11 @@
         android:layout_marginBottom="@dimen/_minus10sdp"
         android:padding="@dimen/_5sdp"
         android:visibility="gone">
+        <!-- -->
+        <!--<TextView-->
+            <!--android:id="@+id/url"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
 
         <ImageView
             android:id="@+id/mapView"

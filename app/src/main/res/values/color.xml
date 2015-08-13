@@ -22,4 +22,7 @@
     <color name="green">#00FF00</color>
     <color name="yellow">#FFFF00</color>
     <color name="red">#FF0000</color>
+    <color name="saffronindia">#FF9933</color>
+    <color name="greenindia">#138808</color>
+    <color name="blueindia">#000080</color>
 </resources>

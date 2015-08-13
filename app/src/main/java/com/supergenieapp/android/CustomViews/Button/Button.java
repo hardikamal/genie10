@@ -10,12 +10,15 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.supergenieapp.android.Extras.Utils;
 import com.supergenieapp.android.R;
+
+import org.w3c.dom.Text;
 
 public abstract class Button extends CustomView {
 
@@ -197,6 +200,10 @@ public abstract class Button extends CustomView {
 
     public void setTextStyleBold() {
         textButton.setTypeface(null, Typeface.BOLD);
+    }
+
+    public void setInputTypeAsText() {
+        textButton.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 
     public TextView getTextView() {

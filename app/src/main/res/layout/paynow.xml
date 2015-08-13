@@ -83,12 +83,14 @@
                         android:layout_weight="1"
                         android:padding="@dimen/_10sdp"
                         android:text="@string/paytmwallet"
-                        android:textIsSelectable="false" />
+                        android:textIsSelectable="false"
+                        android:visibility="gone" />
 
                     <View
                         android:layout_width="@dimen/_2sdp"
                         android:layout_height="match_parent"
-                        android:background="@color/white" />
+                        android:background="@color/white"
+                        android:visibility="gone" />
 
                     <com.supergenieapp.android.CustomViews.Button.ButtonFlat
                         android:id="@+id/paynow"

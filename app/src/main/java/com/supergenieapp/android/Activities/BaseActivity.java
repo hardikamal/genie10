@@ -109,7 +109,11 @@ public class BaseActivity extends GenieBaseActivity implements MainFragment.onSe
         if (getIntent().getExtras() != null) {
             if (getIntent().getStringExtra("page").equalsIgnoreCase("categories")) {
                 setSupportActionBar(mToolbar);
-                startFragmentFromRight(R.id.body, new MainFragment());
+                MainFragment mainFragment = new MainFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("refresh", true);
+                mainFragment.setArguments(bundle);
+                startFragmentFromRight(R.id.body, mainFragment);
                 categorie_selected = null;
                 mToolbar.setLogo(R.drawable.genie_logo);
                 localyticsBuild("Go to categories Screen");

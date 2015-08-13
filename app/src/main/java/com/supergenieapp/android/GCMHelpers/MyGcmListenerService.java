@@ -30,6 +30,7 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.localytics.android.Localytics;
 import com.supergenieapp.android.Activities.SplashScreenActivity;
 import com.supergenieapp.android.Database.DBDataSource;
 import com.supergenieapp.android.Extras.DataFields;
@@ -167,9 +168,21 @@ public class MyGcmListenerService extends GcmListenerService {
                     sendNotification(showMessage(messageValues));
                 }
             }
+        } else if (data.containsKey("promotion")) {
+            try {
+                JSONObject jsonObject = new JSONObject(data.getString("promotion"));
+                if (jsonObject.has("promotion") && jsonObject.has("id") && jsonObject.getString("promotion") != null) {
+                    new NotificationHandler(this).promotionNotification(jsonObject.getInt("id"), jsonObject.getString("promotion"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Localytics.tagEvent("Promotion gcm message");
+            Localytics.upload();
         } else {
-//            Log.v("GCM PUSH", data.toString());
-//            sendNotification("Unhandled Push Notification Received");
+            Localytics.tagEvent("unhandled gcm message");
+            Localytics.upload();
+            // unhandled gcm message
         }
     }
 

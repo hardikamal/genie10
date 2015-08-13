@@ -160,9 +160,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @InjectView(R.id.ratingbar)
         RatingBar ratingbar;
         @Optional
-        @InjectView(R.id.rateText)
-        TextView rateText;
-        @Optional
         @InjectView(R.id.feedbacktext)
         TextView feedbacktext;
         @Optional
@@ -293,7 +290,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             }
             viewHolderMain.backgroundButtons.setBackgroundColor(Color.parseColor(color));
             viewHolderMain.submit.setTextColor(context.getResources().getColor(R.color.white));
-//            viewHolderMain.rateText.setTextColor(Color.parseColor(color));
             viewHolderMain.submit.setTextSize(18);
             viewHolderMain.ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
@@ -312,9 +308,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 viewHolderMain.payascod.setTextSize(18);
                 viewHolderMain.paynow.setTextSize(18);
                 viewHolderMain.paytm.setTextSize(18);
-//                viewHolderMain.payascod.setTextStyleBold();
-//                viewHolderMain.paynow.setTextStyleBold();
-//                viewHolderMain.paytm.setTextStyleBold();
                 viewHolderMain.payascod.setTextColor(context.getResources().getColor(R.color.white));
                 viewHolderMain.paynow.setTextColor(context.getResources().getColor(R.color.white));
                 viewHolderMain.paytm.setTextColor(context.getResources().getColor(R.color.white));
@@ -330,11 +323,13 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 if (object.has("cod") && object.getBoolean("cod")) {
                     viewHolderMain.payascod.setVisibility(View.VISIBLE);
                     viewHolderMain.paynow.setVisibility(View.GONE);
-                    viewHolderMain.paytm.setVisibility(View.GONE);
+//                    viewHolderMain.paytm.setVisibility(View.GONE);
+                    // TODO: 8/13/2015 paytm
                 } else {
                     viewHolderMain.payascod.setVisibility(View.GONE);
                     viewHolderMain.paynow.setVisibility(View.VISIBLE);
-                    viewHolderMain.paytm.setVisibility(View.VISIBLE);
+//                    viewHolderMain.paytm.setVisibility(View.VISIBLE);
+                    // TODO: 8/13/2015 paytm
                 }
                 final String costToPay = String.valueOf(object.getDouble("cost"));
                 viewHolderMain.paynow.setOnClickListener(new View.OnClickListener() {
@@ -477,7 +472,6 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 String path = DataFields.TempFolder + "/" + utils.hashString(messageValues.getUrl());
                 File imgFile = new File(path);
                 if (imgFile.exists()) {
-                    System.out.println(imgFile.length());
                     System.out.println(imgFile.length() / 1024);
                     if ((imgFile.length() / 1024) < 250) {
                         displayFile(viewHolderMain.imageView, imgFile.getAbsolutePath());
@@ -682,20 +676,17 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         //these are mandatory parameters
         paramMap.put("REQUEST_TYPE", "DEFAULT");
         paramMap.put("ORDER_ID", "1234321234321");
+        paramMap.put("CUST_ID", "8123213");
         paramMap.put("MID", "Superg22080238560446");
-        paramMap.put("Merchant Key", "%!MigifWB!czKWxI");
-        paramMap.put("CHANNEL_ID", "WEB");
+        paramMap.put("CHANNEL_ID", "WAP");
         paramMap.put("INDUSTRY_TYPE_ID", "Retail");
-        paramMap.put("WEBSITE", "Supergenieweb");
+        paramMap.put("WEBSITE", "Supergeniewap");
         paramMap.put("TXN_AMOUNT", "100");
-//        paramMap.put("MOBILE_NO", "8376800272");
-//        paramMap.put("EMAIL", "david.upadhyay@paytm.com");
-
 
         PaytmOrder Order = new PaytmOrder(paramMap);
 
         Service.initialize(Order, Merchant, null);
-        Service.startPaymentTransaction(context, true, true, new PaytmPaymentTransactionCallback() {
+        Service.startPaymentTransaction(context, true, false, new PaytmPaymentTransactionCallback() {
             @Override
             public void onTransactionSuccess(Bundle inResponse) {
                 Log.i("Transaction Success", inResponse.toString());

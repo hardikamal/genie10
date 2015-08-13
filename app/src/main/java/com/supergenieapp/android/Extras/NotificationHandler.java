@@ -242,4 +242,38 @@ public class NotificationHandler {
             }
         }
     }
+
+    public void promotionNotification(int id, String msg) {
+        Intent resultIntent = new Intent(context, SplashScreenActivity.class);
+        resultIntent.putExtra("intent", "true");
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
+        stackBuilder.addParentStack(SplashScreenActivity.class);
+
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+                0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        RemoteViews expandedView = new RemoteViews(context.getPackageName(),
+                R.layout.notification_small);
+
+        expandedView.setTextViewText(R.id.title, context.getString(R.string.app_name));
+        expandedView.setTextViewText(R.id.t1, msg);
+        expandedView.setTextViewText(R.id.time, new Utils(context).getCurrentTime());
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.icons_97x97)
+                .setAutoCancel(true)
+                .setContent(expandedView)
+                .setSound(defaultSoundUri)
+                .setContentIntent(resultPendingIntent).build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(id, notification);
+    }
 }

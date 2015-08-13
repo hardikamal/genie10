@@ -337,4 +337,13 @@ public class SplashScreenActivity extends GenieActivity {
         }
         return true;
     }
+
+    @Override
+    public void onNewIntent(Intent newIntent) {
+        this.setIntent(newIntent);
+
+        if (newIntent.getExtras() != null) {
+            localyticsBuild("User Clicked on Notification");
+        }
+    }
 }

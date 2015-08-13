@@ -23,7 +23,7 @@
             android:layout_margin="@dimen/_1sdp"
             android:orientation="vertical">
 
-            <TextView
+            <com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView
                 android:id="@+id/rateText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 android:singleLine="true"
                 android:text="@string/rateyourexperience"
                 android:textColor="@color/color444"
-                android:textSize="@dimen/_16sdp" />
+                android:textSize="@dimen/_18sdp" />
 
 
             <TextView

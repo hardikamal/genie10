@@ -107,6 +107,7 @@ public class MainFragment extends GenieFragment {
                                 for (int i = 0; i < response.length(); i++) {
                                     try {
                                         JSONObject jsonObject = new JSONObject(response.getJSONObject(i).toString());
+                                        System.out.println(jsonObject.getInt("id"));
                                         Categories categories = new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
                                                 jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
                                                 jsonObject.getLong("hide_chats_time"));
@@ -166,6 +167,7 @@ public class MainFragment extends GenieFragment {
                 for (String raw : rawList) {
                     try {
                         JSONObject jsonObject = new JSONObject(raw);
+                        System.out.println(jsonObject.getInt("id"));
                         categoriesList.add(new Categories(jsonObject.getInt("id"), caculateNotificationCount(localCategories, jsonObject.getInt("id"), jsonObject.getInt("notification_count")),
                                 jsonObject.getString("bg_color"), jsonObject.getString("image_url"), jsonObject.getString("description"), jsonObject.getString("name"),
                                 jsonObject.getLong("hide_chats_time")));

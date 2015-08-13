@@ -86,8 +86,6 @@
     <string name="today">Today</string>
     <string name="paynow">Online</string>
     <string name="paycod">Cash on Delivery</string>
-    <string name="price999">Rs. 999.00</string>
-    <string name="paynowrandomtext">Your order from SuperGenie is Rs. 999.00. You will receive your order soon.</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>
@@ -377,7 +375,7 @@
     <string name="pleaseaddyourcomments">Please add your comments</string>
     <string name="typeyourcomments">Type your comments</string>
     <string name="title_activity_paytm">PAYTMActivity</string>
-    <string name="paytmwallet">Wallet</string>
+    <string name="paytmwallet">Paytm</string>
     <string name="thanksforusingsupergenie">Thanks for using SuperGenie!</string>
     <string name="rateyourexperience">Rate your experience</string>
     <string name="defaultrating">-/5.0</string>
