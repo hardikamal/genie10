@@ -165,6 +165,9 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
         @Optional
         @InjectView(R.id.feedbacktext)
         TextView feedbacktext;
+        @Optional
+        @InjectView(R.id.innerWhiteLayout)
+        LinearLayout innerWhiteLayout;
         Context localContext;
         Messages localMessage;
 
@@ -273,11 +276,22 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
             GradientDrawable gd = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{Color.parseColor(color), Color.parseColor(color)});
+            gd.setCornerRadius(10f);
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 viewHolderMain.rateLayout.setBackground(gd);
             } else {
                 viewHolderMain.rateLayout.setBackgroundDrawable(gd);
             }
+            GradientDrawable gdWhite = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
+            gdWhite.setCornerRadius(10f);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                viewHolderMain.innerWhiteLayout.setBackground(gdWhite);
+            } else {
+                viewHolderMain.innerWhiteLayout.setBackgroundDrawable(gdWhite);
+            }
+            viewHolderMain.backgroundButtons.setBackgroundColor(Color.parseColor(color));
             viewHolderMain.submit.setTextColor(context.getResources().getColor(R.color.white));
 //            viewHolderMain.rateText.setTextColor(Color.parseColor(color));
             viewHolderMain.submit.setTextSize(18);
@@ -363,10 +377,20 @@ public class CustomChatAdapter extends RecyclerView.Adapter {
                 GradientDrawable gdRound = new GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{Color.parseColor(color), Color.parseColor(color)});
+                gdRound.setCornerRadius(10f);
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     viewHolderMain.paylayout.setBackground(gdRound);
                 } else {
                     viewHolderMain.paylayout.setBackgroundDrawable(gdRound);
+                }
+                GradientDrawable gdWhite = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{context.getResources().getColor(R.color.white), context.getResources().getColor(R.color.white)});
+                gdWhite.setCornerRadius(10f);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolderMain.innerWhiteLayout.setBackground(gdWhite);
+                } else {
+                    viewHolderMain.innerWhiteLayout.setBackgroundDrawable(gdWhite);
                 }
                 viewHolderMain.text.setText("Make Payment" + " " + context.getResources().getString(R.string.space10char));
                 viewHolderMain.text.setVisibility(View.GONE);

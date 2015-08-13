@@ -46,6 +46,7 @@ public class GenieActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        Localytics.registerPush(getString(R.string.projectId));
         genieApplication = GenieApplication.getInstance();
         fontChangeCrawlerRegular = genieApplication.getFontChangeCrawlerRegular();
         sharedPreferences = genieApplication.getSecurePrefs();

@@ -11,103 +11,97 @@
 
     <LinearLayout
         android:id="@+id/paylayout"
-        android:background="#ccc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#ccc"
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/innerWhiteLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_margin="@dimen/_1sdp"
-            android:background="@color/white"
+            android:layout_weight="1"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/companyname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/color444"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/_18sdp" />
+
+            <com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView
+                android:id="@+id/rate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/color444"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/_30sdp" />
+
+            <TextView
+                android:id="@+id/orderdetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:gravity="center"
+                android:maxLines="4"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/_12sdp" />
+
+            <LinearLayout
+                android:id="@+id/backgroundButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="vertical">
+
+                <com.supergenieapp.android.CustomViews.Button.ButtonFlat
+                    android:id="@+id/payascod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/paycod"
+                    android:textIsSelectable="false" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/companyname"
-                        android:layout_width="match_parent"
+                    <com.supergenieapp.android.CustomViews.Button.ButtonFlat
+                        android:id="@+id/paytm"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:textColor="@color/color444"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:textIsSelectable="true"
-                        android:textSize="@dimen/_18sdp" />
+                        android:layout_weight="1"
+                        android:padding="@dimen/_10sdp"
+                        android:text="@string/paytmwallet"
+                        android:textIsSelectable="false" />
 
-                    <com.supergenieapp.android.CustomViews.TextView.AutoResizeTextView
-                        android:id="@+id/rate"
-                        android:layout_width="match_parent"
+                    <View
+                        android:layout_width="@dimen/_2sdp"
+                        android:layout_height="match_parent"
+                        android:background="@color/white" />
+
+                    <com.supergenieapp.android.CustomViews.Button.ButtonFlat
+                        android:id="@+id/paynow"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:textColor="@color/color444"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/_30sdp" />
-
-                    <TextView
-                        android:id="@+id/orderdetails"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:maxLines="4"
-                        android:textIsSelectable="true"
-                        android:textSize="@dimen/_12sdp" />
-
-                    <LinearLayout
-                        android:id="@+id/backgroundButtons"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:orientation="vertical">
-
-                        <com.supergenieapp.android.CustomViews.Button.ButtonFlat
-                            android:id="@+id/payascod"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/_10sdp"
-                            android:text="@string/paycod"
-                            android:textIsSelectable="false" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <com.supergenieapp.android.CustomViews.Button.ButtonFlat
-                                android:id="@+id/paytm"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="@dimen/_10sdp"
-                                android:text="@string/paytmwallet"
-                                android:textIsSelectable="false" />
-
-                            <View
-                                android:layout_width="@dimen/_2sdp"
-                                android:layout_height="match_parent"
-                                android:background="@color/white" />
-
-                            <com.supergenieapp.android.CustomViews.Button.ButtonFlat
-                                android:id="@+id/paynow"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="@dimen/_10sdp"
-                                android:text="@string/paynow"
-                                android:textIsSelectable="false" />
-                        </LinearLayout>
-
-
-                    </LinearLayout>
+                        android:layout_weight="1"
+                        android:padding="@dimen/_10sdp"
+                        android:text="@string/paynow"
+                        android:textIsSelectable="false" />
                 </LinearLayout>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
