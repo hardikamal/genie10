@@ -82,7 +82,7 @@ public class CustomPlaceAdapter extends RecyclerView.Adapter {
         viewHolderMain.main.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ((LocationActivity) context).deletePlace(messagesList.get(position));
+//                ((LocationActivity) context).deletePlace(messagesList.get(position));
 //                Crouton.makeText((Activity) context, messagesList.get(position).getName() + " is Deleted", Style.INFO, R.id.list).show();
                 return true;
             }

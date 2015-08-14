@@ -33,7 +33,6 @@ public class GenieFragment extends Fragment {
     public TinyBus mBus;
     public Utils utils;
     public ImageLoader imageLoader;
-    public int year;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -47,7 +46,6 @@ public class GenieFragment extends Fragment {
         gson = new Gson();
         utils = new Utils(getActivity());
         dbDataSource = genieApplication.getDBDataSource();
-        year = genieApplication.DeviceYear();
     }
 
     @Override

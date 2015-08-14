@@ -36,9 +36,9 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+//import com.google.android.gms.common.GooglePlayServicesUtil;
+//import com.google.android.gms.location.LocationRequest;
+//import com.google.android.gms.location.LocationServices;
 import com.localytics.android.Localytics;
 import com.supergenieapp.android.CustomViews.Adapters.CustomPlaceAdapter;
 import com.supergenieapp.android.CustomViews.Button.CircularButton;
@@ -46,24 +46,20 @@ import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GenieBaseActivity;
 import com.supergenieapp.android.Objects.FavValues;
 import com.supergenieapp.android.Objects.MessageValues;
-import com.supergenieapp.android.Place.PlaceAutocompleteAdapter;
+//import com.supergenieapp.android.Place.PlaceAutocompleteAdapter;
 import com.supergenieapp.android.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+//import com.google.android.gms.common.GooglePlayServicesRepairableException;
+//import com.google.android.gms.common.api.GoogleApiClient;
+//import com.google.android.gms.common.api.PendingResult;
+//import com.google.android.gms.common.api.ResultCallback;
+//import com.google.android.gms.maps.CameraUpdateFactory;
+//import com.google.android.gms.maps.GoogleMap;
+//import com.google.android.gms.maps.MapFragment;
+//import com.google.android.gms.maps.model.LatLng;
+//import com.google.android.gms.maps.model.LatLngBounds;
+//import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -87,7 +83,9 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 // On click on fav place will share the location
 // Adapter is CustomPlaceAdapter
 
-public class LocationActivity extends GenieBaseActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class LocationActivity extends GenieBaseActivity {
+//    implements
+//} GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     @InjectView(R.id.refreshLocation)
     CircularButton refreshLocation;
     @InjectView(R.id.location)
@@ -107,16 +105,16 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     private MessageValues messageValues = null;
     private HashMap<String, String> dataAdd = new HashMap<>();
     int PLACE_PICKER_REQUEST = 1;
-    GoogleMap map;
+//    GoogleMap map;
     AlertDialog.Builder dialog;
     private Location mLastLocation;
-    protected GoogleApiClient mGoogleApiClient;
-    protected GoogleApiClient mGoogleApiClientLocation;
+//    protected GoogleApiClient mGoogleApiClient;
+//    protected GoogleApiClient mGoogleApiClientLocation;
 
-    private PlaceAutocompleteAdapter mAdapter;
-
-    private static final LatLngBounds BOUNDS = new LatLngBounds(
-            new LatLng(4.428586, 105.769779), new LatLng(37.059575, 65.230231));
+//    private PlaceAutocompleteAdapter mAdapter;
+//
+//    private static final LatLngBounds BOUNDS = new LatLngBounds(
+//            new LatLng(4.428586, 105.769779), new LatLng(37.059575, 65.230231));
 
     @Override
     public void onResume()
@@ -130,12 +128,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     @Override
     protected void onStart() {
         super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-        if (mGoogleApiClientLocation != null) {
-            mGoogleApiClientLocation.connect();
-        }
+//        if (mGoogleApiClient != null) {
+//            mGoogleApiClient.connect();
+//        }
+//        if (mGoogleApiClientLocation != null) {
+//            mGoogleApiClientLocation.connect();
+//        }
         logging.LogI("On Start");
     }
 
@@ -164,18 +162,18 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         displayFavLocations();
         checkLocationStatus();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0 /* clientId */, this)
-                .addApi(Places.GEO_DATA_API)
-                .build();
-
-        mGoogleApiClientLocation = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                .getMap();
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, 0 /* clientId */, this)
+//                .addApi(Places.GEO_DATA_API)
+//                .build();
+//
+//        mGoogleApiClientLocation = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API).build();
+//
+//        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+//                .getMap();
 
         new Thread(new Runnable() {
             public void run() {
@@ -194,13 +192,13 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         }).start();
 
         // Register a listener that receives callbacks when a suggestion has been selected
-        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+//        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
-        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS, null);
-        mAutocompleteView.setAdapter(mAdapter);
+//        mAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1,
+//                mGoogleApiClient, BOUNDS, null);
+//        mAutocompleteView.setAdapter(mAdapter);
 
         fontChangeCrawlerRegular.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
     }
@@ -209,39 +207,39 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         dataAdd.put("Pick Places", "Result on Activity");
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                if (String.valueOf(place.getAddress()).length() > 0) {
-                    messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
-                    showSaveLaterBox(messageValues);
-                } else {
-                    messageValues = new MessageValues(DataFields.LOCATION, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
-                    showSaveLaterBox(messageValues);
-                }
+//                Place place = PlacePicker.getPlace(data, this);
+//                if (String.valueOf(place.getAddress()).length() > 0) {
+//                    messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+//                    showSaveLaterBox(messageValues);
+//                } else {
+//                    messageValues = new MessageValues(DataFields.LOCATION, getPlace(place), place.getLatLng().longitude, place.getLatLng().latitude);
+//                    showSaveLaterBox(messageValues);
+//                }
             }
         }
     }
 
-    private String getPlace(Place place) {
-        String _Location = "";
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-        try {
-            List<Address> listAddresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-            if (null != listAddresses && listAddresses.size() > 0) {
-                Address adrs = listAddresses.get(0);
-
-                for (int i = 0; i < adrs.getMaxAddressLineIndex(); i++) {
-                    _Location += adrs.getAddressLine(i) + " ";
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (_Location.length() == 0) {
-            _Location = "Latitude : " + place.getLatLng().latitude + " Longitude : " + place.getLatLng().longitude;
-        }
-        dataAdd.put("Return Location", _Location);
-        return _Location;
-    }
+//    private String getPlace(Place place) {
+//        String _Location = "";
+//        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+//        try {
+//            List<Address> listAddresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+//            if (null != listAddresses && listAddresses.size() > 0) {
+//                Address adrs = listAddresses.get(0);
+//
+//                for (int i = 0; i < adrs.getMaxAddressLineIndex(); i++) {
+//                    _Location += adrs.getAddressLine(i) + " ";
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        if (_Location.length() == 0) {
+//            _Location = "Latitude : " + place.getLatLng().latitude + " Longitude : " + place.getLatLng().longitude;
+//        }
+//        dataAdd.put("Return Location", _Location);
+//        return _Location;
+//    }
 
     private void checkLocationStatus() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -290,46 +288,46 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         dataAdd.put("Pressed", "Refresh Button");
         localyticsBuild("Refresh My location");
         messageValues = getLocation();
-        LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
-
-        map.addMarker(new MarkerOptions().position(currentLocation)
-                .title("Your Current Location:\n" + messageValues.getText()));
-
-        // Move the camera instantly to hamburg with a zoom of 15.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-
-        // Zoom in, animating the camera.
-        map.animateCamera(CameraUpdateFactory.zoomTo(18), 3000, null);
+//        LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
+//
+//        map.addMarker(new MarkerOptions().position(currentLocation)
+//                .title("Your Current Location:\n" + messageValues.getText()));
+//
+//        // Move the camera instantly to hamburg with a zoom of 15.
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+//
+//        // Zoom in, animating the camera.
+//        map.animateCamera(CameraUpdateFactory.zoomTo(18), 3000, null);
     }
 
     @OnClick(R.id.pickplaces)
     public void onClickPickPlaces() {
         dataAdd.put("Pressed", "Pick Places Button");
         localyticsBuild("Pick Places");
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        Context context = getApplicationContext();
-        try {
-            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+//        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//        Context context = getApplicationContext();
+//        try {
+//            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+//        } catch (GooglePlayServicesRepairableException e) {
+//            e.printStackTrace();
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @OnClick(R.id.pickplacebutton)
     public void onClickPickPlaceButton() {
         dataAdd.put("Pressed", "Picked Places Button");
         localyticsBuild("Location Pick Places Clicked");
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        Context context = getApplicationContext();
-        try {
-            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+//        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//        Context context = getApplicationContext();
+//        try {
+//            startActivityForResult(builder.build(context), PLACE_PICKER_REQUEST);
+//        } catch (GooglePlayServicesRepairableException e) {
+//            e.printStackTrace();
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @OnClick(R.id.location)
@@ -511,8 +509,8 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         double latitude = 0.00;
         String _Location = "";
 
-        mLastLocation = LocationServices.FusedLocationApi
-                .getLastLocation(mGoogleApiClientLocation);
+//        mLastLocation = LocationServices.FusedLocationApi
+//                .getLastLocation(mGoogleApiClientLocation);
 
         if (mLastLocation != null) {
             longitude = mLastLocation.getLongitude();
@@ -561,12 +559,12 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         }
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(this,
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-                Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onConnectionFailed(ConnectionResult connectionResult) {
+//        Toast.makeText(this,
+//                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+//                Toast.LENGTH_SHORT).show();
+//    }
 
     private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
                                               CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
@@ -578,76 +576,76 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
     /**
      * Callback for results from a Places Geo Data API query that shows the first place result in
      * the details view on screen.
-     */
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
-            = new ResultCallback<PlaceBuffer>() {
-        @Override
-        public void onResult(PlaceBuffer places) {
-            if (!places.getStatus().isSuccess()) {
-                // Request did not complete successfully
-                places.release();
-                return;
-            }
-            // Get the Place object from the buffer.
-            final Place place = places.get(0);
-
-            messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
-            LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
-
-            map.addMarker(new MarkerOptions().position(currentLocation)
-                    .title("Your Current Location:\n" + messageValues.getText()));
-
-            // Move the camera instantly to hamburg with a zoom of 15.
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
-
-            // Zoom in, animating the camera.
-            map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
-
-            dataAdd.put("Google Location Search", "Returned Results");
-
-            hideKeyboard(LocationActivity.this);
-            places.release();
-        }
-    };
-
-    /**
-     * Listener that handles selections from suggestions from the AutoCompleteTextView that
-     * displays Place suggestions.
-     * Gets the place id of the selected item and issues a request to the Places Geo Data API
-     * to retrieve more details about the place.
-     *
-     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
-     * String...)
-     */
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a PlaceAutocomplete object from which we
-             read the place ID.
-              */
-            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
-            final String placeId = String.valueOf(item.placeId);
-
-            /*
-             Issue a request to the Places Geo Data API to retrieve a Place object with additional
-              details about the place.
-              */
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                    .getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-            dataAdd.put("Google Location Search", "Result Clicked");
-            localyticsBuild("Google Location Service Resulted shared");
-        }
-    };
-
-    public void deletePlace(FavValues favValues) {
-        dbDataSource.deleteFav(favValues);
-        displayFavLocations();
-    }
-
+//     */
+//    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+//            = new ResultCallback<PlaceBuffer>() {
+//        @Override
+//        public void onResult(PlaceBuffer places) {
+//            if (!places.getStatus().isSuccess()) {
+//                // Request did not complete successfully
+//                places.release();
+//                return;
+//            }
+//            // Get the Place object from the buffer.
+//            final Place place = places.get(0);
+//
+//            messageValues = new MessageValues(DataFields.LOCATION, String.valueOf(place.getAddress()), place.getLatLng().longitude, place.getLatLng().latitude);
+//            LatLng currentLocation = new LatLng(messageValues.getLat(), messageValues.getLng());
+//
+//            map.addMarker(new MarkerOptions().position(currentLocation)
+//                    .title("Your Current Location:\n" + messageValues.getText()));
+//
+//            // Move the camera instantly to hamburg with a zoom of 15.
+//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+//
+//            // Zoom in, animating the camera.
+//            map.animateCamera(CameraUpdateFactory.zoomTo(18), 2000, null);
+//
+//            dataAdd.put("Google Location Search", "Returned Results");
+//
+//            hideKeyboard(LocationActivity.this);
+//            places.release();
+//        }
+//    };
+//
+//    /**
+//     * Listener that handles selections from suggestions from the AutoCompleteTextView that
+//     * displays Place suggestions.
+//     * Gets the place id of the selected item and issues a request to the Places Geo Data API
+//     * to retrieve more details about the place.
+//     *
+//     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
+//     * String...)
+//     */
+//    private AdapterView.OnItemClickListener mAutocompleteClickListener
+//            = new AdapterView.OnItemClickListener() {
+//        @Override
+//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            /*
+//             Retrieve the place ID of the selected item from the Adapter.
+//             The adapter stores each Place suggestion in a PlaceAutocomplete object from which we
+//             read the place ID.
+//              */
+//            final PlaceAutocompleteAdapter.PlaceAutocomplete item = mAdapter.getItem(position);
+//            final String placeId = String.valueOf(item.placeId);
+//
+//            /*
+//             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+//              details about the place.
+//              */
+//            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+//                    .getPlaceById(mGoogleApiClient, placeId);
+//            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+//            dataAdd.put("Google Location Search", "Result Clicked");
+//            localyticsBuild("Google Location Service Resulted shared");
+//        }
+//    };
+//
+//    public void deletePlace(FavValues favValues) {
+//        dbDataSource.deleteFav(favValues);
+//        displayFavLocations();
+//    }
+//
     private void displayFavLocations() {
         ArrayList<FavValues> favValues = dbDataSource.getAllFav();
         recyclerView.removeAllViews();
@@ -658,16 +656,16 @@ public class LocationActivity extends GenieBaseActivity implements GoogleApiClie
         dialog = new AlertDialog.Builder(this);
     }
 
-    @Override
-    public void onConnected(Bundle arg0) {
-
-        // Once connected with google api, get the location
-        refreshLocation.performClick();
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-        mGoogleApiClient.connect();
-        mGoogleApiClientLocation.connect();
-    }
+//    @Override
+//    public void onConnected(Bundle arg0) {
+//
+//        // Once connected with google api, get the location
+//        refreshLocation.performClick();
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int arg0) {
+//        mGoogleApiClient.connect();
+//        mGoogleApiClientLocation.connect();
+//    }
 }

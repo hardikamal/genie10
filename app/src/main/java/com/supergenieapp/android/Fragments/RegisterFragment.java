@@ -33,7 +33,7 @@ import com.supergenieapp.android.CustomViews.Button.ButtonRectangle;
 import com.supergenieapp.android.CustomViews.ProgressBar.LoadingView;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GCMHelpers.QuickstartPreferences;
-import com.supergenieapp.android.GCMHelpers.RegistrationIntentService;
+//import com.supergenieapp.android.GCMHelpers.RegistrationIntentService;
 import com.supergenieapp.android.GenieFragment;
 import com.supergenieapp.android.Objects.Register;
 import com.supergenieapp.android.R;
@@ -266,8 +266,8 @@ public class RegisterFragment extends GenieFragment {
             parentLoadingView.setLoading(true);
             InputMethodManager in = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(getStarted.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
-            getActivity().startService(intent);
+//            Intent intent = new Intent(getActivity(), RegistrationIntentService.class);
+//            getActivity().startService(intent);
         }
     }
 

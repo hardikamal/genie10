@@ -36,7 +36,6 @@ public class GenieBaseActivity extends AppCompatActivity {
     public Utils utils;
     public DBDataSource dbDataSource;
     public ImageLoader imageLoader;
-    public int year;
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -49,7 +48,6 @@ public class GenieBaseActivity extends AppCompatActivity {
         utils = new Utils(this);
         dbDataSource = genieApplication.getDBDataSource();
         imageLoader = genieApplication.getImageLoader();
-        year = genieApplication.DeviceYear();
     }
 
     public void startFragment(int container, Fragment fragment) {

@@ -1,5 +1,16 @@
+buildscript {
+    repositories {
+        maven {
+            url uri('https://projectastoriasdk.blob.core.windows.net/gradleplugin')
+        }
+    }
+    dependencies {
+        classpath 'com.microsoft.services:astoriaPlugin:1.0'
+    }
+}
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.microsoft.services'
 
 android {
     signingConfigs {
@@ -49,37 +60,33 @@ android {
         }
     }
     productFlavors {
-        betaConfig {
-            minSdkVersion 14
-            applicationId 'com.supergenieapp.android'
-            signingConfig signingConfigs.Beta
-            targetSdkVersion 21
-            versionCode 12
-            versionName '1.0.6.Internal'
-        }
-        releaseConfig {
+        windows {
             minSdkVersion 14
             applicationId 'com.supergenieapp.android'
             signingConfig signingConfigs.Release
             targetSdkVersion 21
-            versionCode 12
-            versionName '1.0.6.Beta'
+            versionCode 1
+            versionName '1.0.0.Windows'
+        }
+        android {
+            minSdkVersion 14
+            applicationId 'com.supergenieapp.android'
+            signingConfig signingConfigs.Release
+            targetSdkVersion 21
+            versionCode 1
+            versionName '1.0.0.Android'
         }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'ch.acra:acra:4.6.2'
-    compile 'com.google.android.gms:play-services-gcm:7.5.0'
-    compile 'com.google.android.gms:play-services-maps:7.5.0'
-    compile 'com.google.android.gms:play-services-location:7.5.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'de.halfbit:tinybus:3.0.1'
-    compile 'com.facebook.device.yearclass:yearclass:1.0.1'
     compile 'com.mcxiaoke.volley:library:1.0.17'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile('com.github.nkzawa:socket.io-client:0.6.0') {
@@ -93,8 +100,4 @@ dependencies {
     }
     compile 'net.steamcrafted:materialiconlib:1.0.3'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.1.4'
-    //    testCompile 'junit:junit:4.6'
-    //    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
-    //    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.0.0'
-    //    androidTestCompile fileTree(dir: 'libs', include: ['robotium-solo-5.4.1.jar'])
 }

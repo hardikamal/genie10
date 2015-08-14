@@ -11,7 +11,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.facebook.device.yearclass.YearClass;
 import com.localytics.android.Localytics;
 import com.localytics.android.LocalyticsActivityLifecycleCallbacks;
 import com.supergenieapp.android.Database.DBDataSource;
@@ -55,8 +54,6 @@ public class GenieApplication extends Application {
     private ImageLoader mImageLoader;
     private Socket mSocket;
     private DBDataSource dbDataSource;
-    private int year;
-
     {
         try {
             mSocket = IO.socket(DataFields.getChatUrl());
@@ -80,7 +77,6 @@ public class GenieApplication extends Application {
         mSecurePrefs = new SecurePreferences(this);
         mBus = TinyBus.from(this);
         ACRA.init(this);
-        year = YearClass.get(this);
         dbDataSource = new DBDataSource(this);
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
         registerComponentCallbacks(new MyComponentsLifecycleCallbacks());
@@ -114,10 +110,6 @@ public class GenieApplication extends Application {
     public LoggingBuilder getLoggingBuilder() {
         return loggingBuilder;
 
-    }
-
-    public int DeviceYear() {
-        return year;
     }
 
     public FontChangeCrawler getFontChangeCrawlerRegular() {

@@ -40,9 +40,15 @@
             android:name="LOCALYTICS_APP_KEY"
             android:value="66203bc5741151a26ddab04-f91c07dc-3c46-11e5-a3ac-00d0fea82624" />
 
-        <!-- <meta-data -->
-        <!-- android:name="LOCALYTICS_NOTIFICATION_ICON" -->
-        <!-- android:value="@drawable/icons_97x97" /> -->
+        <meta-data
+            android:name="Windows.package.identity.name"
+            android:value="17718RaviGadipudi.com.supergenie.android" />
+        <meta-data
+            android:name="Windows.package.identity.publisher"
+            android:value="CN=9443F537-5307-4CD9-95FA-0ADB8389108F" />
+        <meta-data
+            android:name="Windows.publisher.display.name"
+            android:value="SuperGenie" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -20,12 +20,12 @@ import com.localytics.android.Localytics;
 import com.supergenieapp.android.Database.DBHandler;
 import com.supergenieapp.android.Extras.DataFields;
 import com.supergenieapp.android.GCMHelpers.QuickstartPreferences;
-import com.supergenieapp.android.GCMHelpers.UpdateIntentService;
+//import com.supergenieapp.android.GCMHelpers.UpdateIntentService;
 import com.supergenieapp.android.GenieActivity;
 import com.supergenieapp.android.R;
 import com.supergenieapp.android.Slides.WalkThroughActivity;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,11 +50,7 @@ public class SplashScreenActivity extends GenieActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (year > 2012) {
-            setContentView(R.layout.activity_splash_screen);
-        } else {
-            setContentView(R.layout.activity_splash_screen_standalone);
-        }
+        setContentView(R.layout.activity_splash_screen);
 
         sharedPreferences.edit().putBoolean("syncwithserver", true).apply();
 
@@ -96,19 +92,18 @@ public class SplashScreenActivity extends GenieActivity {
         if (utils.isOnline() && utils.isNetworkAvailable()) {
             logging.LogD("Internet", "Available");
             dataAdd.put("Internet", "Available");
-            if (checkPlayServices()) {
-                logging.LogD("Play Services", "Up to date");
-                dataAdd.put("Play Services", "Up to date");
-                // Start IntentService to register this application with GCM.
-                logging.LogD("Register", "GCM Start");
-                if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
-                    Intent intent = new Intent(SplashScreenActivity.this, UpdateIntentService.class);
-                    startService(intent);
-                } else {
-                    logging.LogV("Register", "Token Not found");
-                    dataAdd.put("Register", "Token Not found");
-                    runToRegisterPage(true);
-                }
+            logging.LogD("Play Services", "Up to date");
+            dataAdd.put("Play Services", "Up to date");
+            // Start IntentService to register this application with GCM.
+            logging.LogD("Register", "GCM Start");
+            if (sharedPreferences.getString(DataFields.TOKEN, null) != null) {
+                Intent intent = new Intent(SplashScreenActivity.this, RegisterActivity.class);
+                intent.putExtra("page", "Register");
+                startService(intent);
+            } else {
+                logging.LogV("Register", "Token Not found");
+                dataAdd.put("Register", "Token Not found");
+                runToRegisterPage(true);
             }
         } else {
             localyticsBuild("Internet not found");
@@ -314,28 +309,6 @@ public class SplashScreenActivity extends GenieActivity {
         });
         alert = alertDialogBuilder.create();
         alert.show();
-    }
-
-    /**
-     * Check the device to make sure it has the Google Play Services APK. If
-     * it doesn't, display a dialog that allows users to download the APK from
-     * the Google Play Store or enable it in the device's system settings.
-     */
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                dataAdd.put("PlayServices", "Not supported");
-                localyticsBuild("PlayServices Device Not Supported");
-                logging.LogI("This device is not supported.");
-                finish();
-            }
-            return false;
-        }
-        return true;
     }
 
     @Override
